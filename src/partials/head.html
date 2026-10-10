@@ -1,0 +1,33 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020305">
+<meta name="color-scheme" content="dark">
+<script>
+  /* Runs before first paint: marks JS as available, restores the chosen language
+     and starts the page-transition wipe when arriving from another Scalium page. */
+  (function (d) {
+    var h = d.documentElement;
+    h.className = h.className.replace('no-js', 'js');
+    try {
+      var q = new URLSearchParams(location.search).get('lang');
+      var l = q || localStorage.getItem('scalium-lang') || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en');
+      if (l === 'ro') h.lang = 'ro';
+      h.setAttribute('data-lang', l === 'ro' ? 'ro' : 'en');
+      if (sessionStorage.getItem('scalium-wipe') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        h.classList.add('is-entering');
+        setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
+      }
+      sessionStorage.removeItem('scalium-wipe');
+    } catch (e) {}
+  })(document);
+</script>
+<link rel="preload" href="assets/fonts/mona-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/mona-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<!-- @wp:remove -->
+<link rel="stylesheet" href="assets/css/main.css">
+<script src="assets/js/main.js" defer></script>
+<!-- @wp:end -->
+<!-- @wp:head -->

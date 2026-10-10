@@ -1,0 +1,190 @@
+// Builds the Scalium site from /src into two deliverables:
+//   dist/site/                        static, minified website (open index.html or host anywhere)
+//   dist/scalium-wordpress-theme.zip  the same site as an installable WordPress theme
+//
+// Source HTML supports three small macros so markup stays readable:
+//   <!-- @include name -->                       inlines src/partials/name.html
+//   <!-- @picture name="..." sizes="..." ... -->  expands to a responsive AVIF/WebP <picture>
+//   <!-- @icons -->                              inlines the SVG icon sprite (Phosphor icons)
+import { build } from 'esbuild';
+import { readFile, writeFile, mkdir, rm, cp, readdir, stat } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { gzipSync } from 'node:zlib';
+import path from 'node:path';
+import { crops } from './crops.mjs';
+
+const SRC = 'src';
+const DIST = 'dist';
+const SITE = `${DIST}/site`;
+const THEME_DIR = `${DIST}/wordpress/scalium`;
+
+const ICONS = ['arrow-right', 'arrow-up-right', 'arrow-left', 'arrow-up', 'sparkle', 'paper-plane-tilt', 'chart-bar',
+  'gear-six', 'trend-up', 'check', 'list', 'x', 'lightning', 'users-three', 'target'];
+
+await rm(DIST, { recursive: true, force: true });
+await mkdir(`${SITE}/assets`, { recursive: true });
+
+// ---------------------------------------------------------------- icons
+async function iconSprite() {
+  const symbols = [];
+  for (const name of ICONS) {
+    const svg = await readFile(`node_modules/@phosphor-icons/core/assets/regular/${name}.svg`, 'utf8');
+    const inner = svg.replace(/^<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+    symbols.push(`<symbol id="i-${name}" viewBox="0 0 256 256">${inner}</symbol>`);
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">${symbols.join('')}</svg>`;
+}
+
+// ---------------------------------------------------------------- html macros
+const cropByName = Object.fromEntries(crops.map((c) => [c.name, c]));
+const attrs = (s) => Object.fromEntries([...s.matchAll(/([\w-]+)(?:="([^"]*)")?/g)].map((m) => [m[1], m[2] ?? true]));
+
+function picture(a) {
+  const c = cropByName[a.name];
+  if (!c) throw new Error(`Unknown picture: ${a.name}`);
+  const set = (ext) => c.widths.map((w) => `assets/img/${c.name}-${w}.${ext} ${Math.min(w, c.width * 2)}w`).join(', ');
+  const fallback = c.widths[Math.min(1, c.widths.length - 1)];
+  const eager = a.eager === true || a.eager === 'true';
+  const loading = eager ? 'fetchpriority="high" loading="eager"' : 'loading="lazy"';
+  const i18nAlt = a['alt-key'] ? ` data-i18n-attr="alt:${a['alt-key']}"` : '';
+  const cls = a.class ? ` class="${a.class}"` : '';
+  const pcls = a['picture-class'] ? ` class="${a['picture-class']}"` : '';
+  return `<picture${pcls}><source type="image/avif" srcset="${set('avif')}" sizes="${a.sizes}"><img${cls} src="assets/img/${c.name}-${fallback}.webp" srcset="${set('webp')}" sizes="${a.sizes}" width="${c.width}" height="${c.height}" alt="${a.alt ?? ''}"${i18nAlt} ${loading} decoding="async"></picture>`;
+}
+
+async function renderPage(file, sprite) {
+  let html = await readFile(`${SRC}/${file}`, 'utf8');
+  for (let pass = 0; pass < 3; pass++) {
+    html = await replaceAsync(html, /<!--\s*@include\s+([\w-]+)\s*-->/g, async (_, name) => readFile(`${SRC}/partials/${name}.html`, 'utf8'));
+  }
+  html = html.replace(/<!--\s*@icons\s*-->/g, sprite);
+  html = html.replace(/<!--\s*@picture\s+([\s\S]*?)-->/g, (_, a) => picture(attrs(a)));
+  if (/[–—]/.test(html)) throw new Error(`${file}: contains an en/em dash. Use a hyphen.`);
+  return minifyHtml(html);
+}
+
+async function replaceAsync(str, re, fn) {
+  const parts = [];
+  let last = 0;
+  for (const m of str.matchAll(re)) {
+    parts.push(str.slice(last, m.index), await fn(...m));
+    last = m.index + m[0].length;
+  }
+  parts.push(str.slice(last));
+  return parts.join('');
+}
+
+// Conservative minifier: strips comments (keeps WP markers) and indentation, never touches inline text.
+function minifyHtml(html) {
+  return html
+    .replace(/<!--(?!\s*@wp)[\s\S]*?-->/g, '')
+    .replace(/\n\s+/g, '\n')
+    .replace(/\n{2,}/g, '\n')
+    .trim() + '\n';
+}
+
+// ---------------------------------------------------------------- assets
+async function buildAssets() {
+  await build({
+    entryPoints: [`${SRC}/assets/css/main.css`],
+    bundle: true, minify: true, outfile: `${SITE}/assets/css/main.css`,
+    external: ['*.woff2', '*.svg', '*.avif', '*.webp'], target: ['chrome100', 'safari15', 'firefox100'], logLevel: 'warning',
+  });
+  await build({
+    entryPoints: [`${SRC}/assets/js/main.js`],
+    bundle: true, minify: true, format: 'iife', outfile: `${SITE}/assets/js/main.js`,
+    target: ['es2019'], logLevel: 'warning', legalComments: 'none',
+  });
+  await build({
+    entryPoints: [`${SRC}/assets/js/i18n.js`],
+    bundle: true, minify: true, format: 'iife', outfile: `${SITE}/assets/js/i18n.js`,
+    target: ['es2019'], logLevel: 'warning', charset: 'utf8',
+  });
+
+  await cp(`${SRC}/assets/fonts`, `${SITE}/assets/fonts`, { recursive: true });
+  await cp(`${SRC}/assets/img`, `${SITE}/assets/img`, { recursive: true });
+}
+
+// ---------------------------------------------------------------- wordpress theme
+// The theme reuses the built pages verbatim. Asset paths become theme URLs, page links
+// become WordPress permalinks, and the static <link>/<script> tags are replaced by
+// wp_head()/wp_footer() so plugins (SEO, caching, analytics) keep working.
+const PHP_ASSET = '<?php echo esc_url( SCALIUM_URI ); ?>/assets/';
+
+function toPhp(html) {
+  return html
+    .replace(/(["\s,])assets\//g, `$1${PHP_ASSET}`)
+    .replace(/href="index\.html#([\w-]+)"/g, (_, id) => `href="<?php echo esc_url( home_url( '/#${id}' ) ); ?>"`)
+    .replace(/href="index\.html"/g, `href="<?php echo esc_url( home_url( '/' ) ); ?>"`)
+    .replace(/href="contact\.html"/g, `href="<?php echo esc_url( scalium_contact_url() ); ?>"`);
+}
+
+function splitPage(html) {
+  const headEnd = html.indexOf('<!-- @wp:main-start -->');
+  const footStart = html.indexOf('<!-- @wp:main-end -->');
+  if (headEnd < 0 || footStart < 0) throw new Error('Missing @wp:main markers');
+  return {
+    head: html.slice(0, headEnd),
+    main: html.slice(headEnd + '<!-- @wp:main-start -->'.length, footStart),
+    foot: html.slice(footStart + '<!-- @wp:main-end -->'.length),
+  };
+}
+
+function wpHeader(head) {
+  return head
+    .replace(/<!-- @wp:remove -->[\s\S]*?<!-- @wp:end -->\n?/g, '')
+    .replace(/<html lang="en"([^>]*)>/, '<html <?php language_attributes(); ?>$1>')
+    .replace(/<title>[\s\S]*?<\/title>\n?/, '')
+    .replace('<!-- @wp:head -->', '<?php wp_head(); ?>')
+    .replace(/<body([^>]*)class="([^"]*)"([^>]*)>/, '<body$1 <?php body_class( \'$2\' ); ?>$3>\n<?php wp_body_open(); ?>')
+    .replace(/data-page="\w+"/, 'data-page="<?php echo esc_attr( scalium_page_key() ); ?>"');
+}
+
+function wpFooter(foot) {
+  return foot
+    .replace(/<!-- @wp:remove -->[\s\S]*?<!-- @wp:end -->\n?/g, '')
+    .replace('<!-- @wp:footer -->', '<?php wp_footer(); ?>');
+}
+
+async function buildTheme(pages) {
+  await mkdir(THEME_DIR, { recursive: true });
+  await cp(`${SITE}/assets`, `${THEME_DIR}/assets`, { recursive: true });
+  const home = splitPage(toPhp(pages['index.html']));
+  const contact = splitPage(toPhp(pages['contact.html']));
+
+  await writeFile(`${THEME_DIR}/header.php`, wpHeader(home.head));
+  await writeFile(`${THEME_DIR}/footer.php`, wpFooter(home.foot));
+  await writeFile(`${THEME_DIR}/front-page.php`, `<?php get_header(); ?>\n${home.main}\n<?php get_footer();\n`);
+  // The contact template keeps an editor slot: anything typed into the "Contact" page in WordPress shows up there.
+  const contactMain = contact.main.replace('<!-- @wp:content -->', '<?php while ( have_posts() ) : the_post(); the_content(); endwhile; ?>');
+  await writeFile(`${THEME_DIR}/page-contact.php`, `<?php get_header(); ?>\n${contactMain}\n<?php get_footer();\n`);
+  await writeFile(`${THEME_DIR}/index.php`, await readFile('wordpress/index.php', 'utf8'));
+  await writeFile(`${THEME_DIR}/functions.php`, await readFile('wordpress/functions.php', 'utf8'));
+  await writeFile(`${THEME_DIR}/style.css`, await readFile('wordpress/style.css', 'utf8'));
+  await cp('wordpress/screenshot.png', `${THEME_DIR}/screenshot.png`);
+
+  const zip = path.resolve(`${DIST}/scalium-wordpress-theme.zip`);
+  execFileSync('zip', ['-qr9', zip, 'scalium'], { cwd: `${DIST}/wordpress` });
+}
+
+// ---------------------------------------------------------------- run
+const sprite = await iconSprite();
+await buildAssets();
+const pages = {};
+for (const file of (await readdir(SRC)).filter((f) => f.endsWith('.html'))) {
+  pages[file] = await renderPage(file, sprite);
+  // Static output: WP markers are not needed, strip them.
+  const staticHtml = pages[file]
+    .replace(/<!-- @wp:[\w-]+ -->\n?/g, '');
+  await writeFile(`${SITE}/${file}`, staticHtml);
+}
+await buildTheme(pages);
+
+// Size report (what a first visit to the homepage downloads, before lazy images)
+const sizes = [];
+for (const f of ['index.html', 'contact.html', 'assets/css/main.css', 'assets/js/main.js', 'assets/js/i18n.js']) {
+  const buf = await readFile(`${SITE}/${f}`);
+  sizes.push({ file: f, kb: (buf.length / 1024).toFixed(1), gzipKb: (gzipSync(buf).length / 1024).toFixed(1) });
+}
+console.table(sizes);
+console.log(`Theme zip: ${((await stat(`${DIST}/scalium-wordpress-theme.zip`)).size / 1024).toFixed(0)} KB`);

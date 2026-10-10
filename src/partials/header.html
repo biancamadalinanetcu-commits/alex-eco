@@ -1,0 +1,43 @@
+<!-- @icons -->
+<div class="wipe" aria-hidden="true"><span class="wipe__edge"></span></div>
+<a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+
+<header class="nav" data-nav>
+  <div class="nav__inner">
+    <a class="nav__logo" href="index.html" aria-label="Scalium" data-home-link>
+      <img src="assets/img/logo-horizontal.svg" alt="Scalium" width="137" height="28">
+    </a>
+
+    <nav class="nav__links" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
+      <a class="link" href="index.html#services" data-i18n="nav.services">Services</a>
+      <a class="link" href="index.html#process" data-i18n="nav.process">Process</a>
+      <a class="link" href="index.html#results" data-i18n="nav.results">Results</a>
+    </nav>
+
+    <div class="nav__actions">
+      <a class="btn btn--primary btn--sm nav__cta" href="contact.html" data-transition>
+        <span data-i18n="cta.contact">Contact us</span>
+        <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+      </a>
+      <div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label">
+        <button type="button" class="lang__opt" data-lang="en" aria-pressed="true" lang="en">EN</button>
+        <button type="button" class="lang__opt" data-lang="ro" aria-pressed="false" lang="ro">RO</button>
+        <span class="lang__thumb" aria-hidden="true"></span>
+      </div>
+      <button type="button" class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+        <span class="sr-only" data-i18n="nav.menu">Menu</span>
+        <span class="nav__burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav__progress" aria-hidden="true"><span data-scroll-progress></span></div>
+</header>
+
+<div class="menu" id="menu" data-menu hidden>
+  <nav class="menu__links" aria-label="Mobile" data-i18n-attr="aria-label:nav.mobile">
+    <a href="index.html#services" style="--i:0"><span data-i18n="nav.services">Services</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+    <a href="index.html#process" style="--i:1"><span data-i18n="nav.process">Process</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+    <a href="index.html#results" style="--i:2"><span data-i18n="nav.results">Results</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+    <a href="contact.html" style="--i:3" data-transition><span data-i18n="cta.contact">Contact us</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+  </nav>
+</div>

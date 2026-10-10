@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020305">
+<meta name="color-scheme" content="dark">
+<script>
+/* Runs before first paint: marks JS as available, restores the chosen language
+and starts the page-transition wipe when arriving from another Scalium page. */
+(function (d) {
+var h = d.documentElement;
+h.className = h.className.replace('no-js', 'js');
+try {
+var q = new URLSearchParams(location.search).get('lang');
+var l = q || localStorage.getItem('scalium-lang') || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en');
+if (l === 'ro') h.lang = 'ro';
+h.setAttribute('data-lang', l === 'ro' ? 'ro' : 'en');
+if (sessionStorage.getItem('scalium-wipe') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+h.classList.add('is-entering');
+setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
+}
+sessionStorage.removeItem('scalium-wipe');
+} catch (e) {}
+})(document);
+</script>
+<link rel="preload" href="assets/fonts/mona-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/mona-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="assets/img/logo-mark.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/css/main.css">
+<script src="assets/js/main.js" defer></script>
+<title>Scalium | Meta Ads and Growth Marketing Agency</title>
+<meta name="description" content="Scalium helps eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and growth marketing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Scalium">
+<meta property="og:title" content="Scalium | Scale smarter with Meta Ads">
+<meta property="og:description" content="Meta Ads, marketing and growth marketing for eCommerce brands that want measurable scale.">
+<meta property="og:image" content="assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Scalium","description":"Meta Ads, marketing and growth marketing agency for eCommerce brands.","knowsLanguage":["en","ro"],"areaServed":"Worldwide","serviceType":["Meta Ads management","Marketing management","Growth marketing"]}</script>
+</head>
+<body class="site" data-page="home">
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-arrow-right" viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></symbol><symbol id="i-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></symbol><symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol><symbol id="i-arrow-up" viewBox="0 0 256 256"><path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/></symbol><symbol id="i-sparkle" viewBox="0 0 256 256"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></symbol><symbol id="i-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="i-chart-bar" viewBox="0 0 256 256"><path d="M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"/></symbol><symbol id="i-gear-six" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"/></symbol><symbol id="i-trend-up" viewBox="0 0 256 256"><path d="M240,56v64a8,8,0,0,1-16,0V75.31l-82.34,82.35a8,8,0,0,1-11.32,0L96,123.31,29.66,189.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0L136,140.69,212.69,64H168a8,8,0,0,1,0-16h64A8,8,0,0,1,240,56Z"/></symbol><symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="i-list" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></symbol><symbol id="i-x" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></symbol><symbol id="i-lightning" viewBox="0 0 256 256"><path d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"/></symbol><symbol id="i-users-three" viewBox="0 0 256 256"><path d="M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1-7.37-4.89,8,8,0,0,1,0-6.22A8,8,0,0,1,192,112a24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4ZM190.92,212a8,8,0,1,1-13.84,8,57,57,0,0,0-98.16,0,8,8,0,1,1-13.84-8,72.06,72.06,0,0,1,33.74-29.92,48,48,0,1,1,58.36,0A72.06,72.06,0,0,1,190.92,212ZM128,176a32,32,0,1,0-32-32A32,32,0,0,0,128,176ZM72,120a8,8,0,0,0-8-8A24,24,0,1,1,87.24,82a8,8,0,1,0,15.5-4A40,40,0,1,0,37,117.51,67.94,67.94,0,0,0,9.6,139.19a8,8,0,1,0,12.8,9.61A51.6,51.6,0,0,1,64,128,8,8,0,0,0,72,120Z"/></symbol><symbol id="i-target" viewBox="0 0 256 256"><path d="M221.87,83.16A104.1,104.1,0,1,1,195.67,49l22.67-22.68a8,8,0,0,1,11.32,11.32l-96,96a8,8,0,0,1-11.32-11.32l27.72-27.72a40,40,0,1,0,17.87,31.09,8,8,0,1,1,16-.9,56,56,0,1,1-22.38-41.65L184.3,60.39a87.88,87.88,0,1,0,23.13,29.67,8,8,0,0,1,14.44-6.9Z"/></symbol></svg>
+<div class="wipe" aria-hidden="true"><span class="wipe__edge"></span></div>
+<a class="skip-link" href="#main" data-i18n="skip">Skip to content</a>
+<header class="nav" data-nav>
+<div class="nav__inner">
+<a class="nav__logo" href="index.html" aria-label="Scalium" data-home-link>
+<img src="assets/img/logo-horizontal.svg" alt="Scalium" width="137" height="28">
+</a>
+<nav class="nav__links" aria-label="Primary" data-i18n-attr="aria-label:nav.label">
+<a class="link" href="index.html#services" data-i18n="nav.services">Services</a>
+<a class="link" href="index.html#process" data-i18n="nav.process">Process</a>
+<a class="link" href="index.html#results" data-i18n="nav.results">Results</a>
+</nav>
+<div class="nav__actions">
+<a class="btn btn--primary btn--sm nav__cta" href="contact.html" data-transition>
+<span data-i18n="cta.contact">Contact us</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+<div class="lang" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label">
+<button type="button" class="lang__opt" data-lang="en" aria-pressed="true" lang="en">EN</button>
+<button type="button" class="lang__opt" data-lang="ro" aria-pressed="false" lang="ro">RO</button>
+<span class="lang__thumb" aria-hidden="true"></span>
+</div>
+<button type="button" class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+<span class="sr-only" data-i18n="nav.menu">Menu</span>
+<span class="nav__burger" aria-hidden="true"><span></span><span></span></span>
+</button>
+</div>
+</div>
+<div class="nav__progress" aria-hidden="true"><span data-scroll-progress></span></div>
+</header>
+<div class="menu" id="menu" data-menu hidden>
+<nav class="menu__links" aria-label="Mobile" data-i18n-attr="aria-label:nav.mobile">
+<a href="index.html#services" style="--i:0"><span data-i18n="nav.services">Services</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="index.html#process" style="--i:1"><span data-i18n="nav.process">Process</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="index.html#results" style="--i:2"><span data-i18n="nav.results">Results</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="contact.html" style="--i:3" data-transition><span data-i18n="cta.contact">Contact us</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+</nav>
+</div>
+<main id="main">
+<section class="hero" id="top" aria-labelledby="hero-title">
+<div class="hero__bg" aria-hidden="true">
+<svg class="trails" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+<defs>
+<linearGradient id="trail-fade" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#4d94ff" stop-opacity="0"/>
+<stop offset=".45" stop-color="#4d94ff" stop-opacity=".22"/>
+<stop offset="1" stop-color="#4d94ff" stop-opacity=".05"/>
+</linearGradient>
+</defs>
+<g class="trails__base" stroke="url(#trail-fade)" fill="none" stroke-width="1">
+<path d="M-40 760C380 720 760 600 1640 260"/>
+<path d="M-40 842C460 822 980 702 1640 520"/>
+<path d="M420 940C700 700 1080 520 1640 420"/>
+<path d="M-40 430C300 470 520 600 760 940"/>
+</g>
+<g class="trails__comets" fill="none" stroke-linecap="round">
+<path pathLength="1000" style="--dur:7.5s;--delay:-1.2s" d="M-40 760C380 720 760 600 1640 260"/>
+<path pathLength="1000" style="--dur:9s;--delay:-5s" d="M-40 842C460 822 980 702 1640 520"/>
+<path pathLength="1000" style="--dur:8.2s;--delay:-3.4s" d="M420 940C700 700 1080 520 1640 420"/>
+<path pathLength="1000" style="--dur:10s;--delay:-7s" d="M-40 430C300 470 520 600 760 940"/>
+</g>
+</svg>
+<div class="hero__glow"></div>
+<div class="hero__horizon"></div>
+</div>
+<div class="container hero__grid">
+<div class="hero__copy" data-hero-copy>
+<p class="hero__eyebrow"><span class="dash is-on" aria-hidden="true"></span><span data-i18n-html="hero.eyebrow">Meta Ads <span>&times;</span> AI <span>&times;</span> Growth</span></p>
+<h1 class="hero__title" id="hero-title" data-i18n-html="hero.title"><span class="line"><span>Scale smarter</span></span> <span class="line"><span>with <em>Meta Ads.</em></span></span></h1>
+<p class="hero__lead" data-i18n="hero.lead">We help eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and performance-focused strategy.</p>
+<div class="hero__ctas">
+<a class="btn btn--primary" href="contact.html" data-transition>
+<span data-i18n="cta.contact">Contact us</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+<a class="btn btn--ghost" href="#services">
+<span data-i18n="hero.secondary">See our services</span>
+<svg class="icon icon--down" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+</div>
+</div>
+<div class="hero__visual" data-hero-visual>
+<div class="hero__tilt" data-tilt>
+<picture><source type="image/avif" srcset="assets/img/hero-dashboard-560.avif 560w, assets/img/hero-dashboard-900.avif 900w, assets/img/hero-dashboard-1200.avif 1200w" sizes="(min-width: 1024px) 60vw, 100vw"><img class="hero__img" src="assets/img/hero-dashboard-900.webp" srcset="assets/img/hero-dashboard-560.webp 560w, assets/img/hero-dashboard-900.webp 900w, assets/img/hero-dashboard-1200.webp 1200w" sizes="(min-width: 1024px) 60vw, 100vw" width="972" height="750" alt="Scalium Meta Ads dashboard with total revenue, ROAS and active ad campaigns" data-i18n-attr="alt:hero.alt" fetchpriority="high" loading="eager" decoding="async"></picture>
+</div>
+</div>
+</div>
+</section>
+<section class="statement" aria-labelledby="statement-text">
+<div class="container">
+<p class="statement__text" id="statement-text" data-scrub-words data-i18n="statement.text">Most brands don't have a traffic problem. They have a scaling problem. We build the system that turns ad spend into predictable revenue.</p>
+<ul class="outcomes">
+<li class="outcome" data-reveal style="--d:0">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg>
+<span data-i18n="outcome.1">More revenue</span>
+</li>
+<li class="outcome" data-reveal style="--d:1">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
+<span data-i18n="outcome.2">Lower CAC</span>
+</li>
+<li class="outcome" data-reveal style="--d:2">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-lightning"/></svg>
+<span data-i18n="outcome.3">Long-term growth</span>
+</li>
+</ul>
+</div>
+</section>
+<section class="services" id="services" aria-labelledby="services-title">
+<div class="container">
+<div class="section-head" data-reveal>
+<div class="dash" data-dash aria-hidden="true"></div>
+<h2 class="h2" id="services-title" data-i18n="services.title">Three services. One goal: profitable growth.</h2>
+<p class="section-lead" data-i18n="services.lead">Choose one or combine all three. The same team, the same data and the same target behind each of them.</p>
+</div>
+<div class="services__layout" data-services>
+<div class="services__list">
+<article class="service is-active" data-service="0" aria-labelledby="svc1-title">
+<div class="service__media">
+<picture><source type="image/avif" srcset="assets/img/svc-meta-520.avif 520w, assets/img/svc-meta-760.avif 760w, assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="assets/img/svc-meta-760.webp" srcset="assets/img/svc-meta-520.webp 520w, assets/img/svc-meta-760.webp 760w, assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc1-title" data-i18n="svc1.title">Brand scaling with Meta Ads</h3>
+<p class="service__text" data-i18n="svc1.text">Facebook and Instagram campaigns built to grow spend without losing efficiency. We structure the account, find the audiences that buy and scale budgets on the signals that matter.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d1">Full-funnel campaign structure</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d2">Audience research and targeting</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d3">Budget scaling and bid strategy</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d4">Advantage+ and catalog campaigns</span></li>
+</ul>
+</article>
+<article class="service" data-service="1" aria-labelledby="svc2-title">
+<div class="service__media">
+<picture><source type="image/avif" srcset="assets/img/svc-managed-520.avif 520w, assets/img/svc-managed-760.avif 760w, assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 1px, 92vw"><img src="assets/img/svc-managed-760.webp" srcset="assets/img/svc-managed-520.webp 520w, assets/img/svc-managed-760.webp 760w, assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 1px, 92vw" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc2-title" data-i18n="svc2.title">Marketing, run for you</h3>
+<p class="service__text" data-i18n="svc2.text">We run your marketing day to day: creative production and testing, launches, reporting and optimization. You get a senior team without building one in-house.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d1">Creative strategy and production</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d2">Continuous creative testing</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d3">Campaign launches and promotions</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d4">Clear weekly reporting</span></li>
+</ul>
+</article>
+<article class="service" data-service="2" aria-labelledby="svc3-title">
+<div class="service__media">
+<picture><source type="image/avif" srcset="assets/img/svc-growth-520.avif 520w, assets/img/svc-growth-760.avif 760w, assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="assets/img/svc-growth-760.webp" srcset="assets/img/svc-growth-520.webp 520w, assets/img/svc-growth-760.webp 760w, assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc3-title" data-i18n="svc3.title">Growth marketing</h3>
+<p class="service__text" data-i18n="svc3.text">Growth comes from the whole funnel, not a single channel. We test offers, landing pages and retention flows, fix tracking and use the data to find your next stage of growth.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d1">Conversion rate optimization</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d2">Tracking with Pixel, CAPI and GA4</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d3">Offer and funnel experiments</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d4">Retention and LTV strategy</span></li>
+</ul>
+</article>
+</div>
+<div class="services__stage" aria-hidden="true">
+<div class="stage">
+<div class="stage__frame">
+<div class="stage__slide is-active" data-slide="0">
+<picture><source type="image/avif" srcset="assets/img/svc-meta-520.avif 520w, assets/img/svc-meta-760.avif 760w, assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="assets/img/svc-meta-760.webp" srcset="assets/img/svc-meta-520.webp 520w, assets/img/svc-meta-760.webp 760w, assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<div class="stage__slide" data-slide="1">
+<picture><source type="image/avif" srcset="assets/img/svc-managed-520.avif 520w, assets/img/svc-managed-760.avif 760w, assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 40vw, 1px"><img src="assets/img/svc-managed-760.webp" srcset="assets/img/svc-managed-520.webp 520w, assets/img/svc-managed-760.webp 760w, assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 40vw, 1px" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<div class="stage__slide" data-slide="2">
+<picture><source type="image/avif" srcset="assets/img/svc-growth-520.avif 520w, assets/img/svc-growth-760.avif 760w, assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="assets/img/svc-growth-760.webp" srcset="assets/img/svc-growth-520.webp 520w, assets/img/svc-growth-760.webp 760w, assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<span class="stage__scan" data-scan></span>
+</div>
+<div class="stage__progress"><span class="is-active"></span><span></span><span></span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="process" id="process" aria-labelledby="process-title">
+<div class="process__pin" data-process>
+<div class="process__track" data-process-track>
+<div class="process__intro" data-reveal>
+<div class="dash" data-dash aria-hidden="true"></div>
+<h2 class="h2" id="process-title" data-i18n="process.title">From first ad to predictable scale.</h2>
+<p class="section-lead" data-i18n="process.lead">Five stages, one loop. Every cycle feeds the next one with better data.</p>
+<div class="process__emblem">
+<picture><source type="image/avif" srcset="assets/img/process-emblem-420.avif 420w, assets/img/process-emblem-700.avif 700w" sizes="(min-width: 960px) 30vw, 80vw"><img src="assets/img/process-emblem-700.webp" srcset="assets/img/process-emblem-420.webp 420w, assets/img/process-emblem-700.webp 700w" sizes="(min-width: 960px) 30vw, 80vw" width="352" height="232" alt="" loading="lazy" decoding="async"></picture>
+</div>
+</div>
+<div class="process__steps" data-process-steps>
+<div class="process__line" aria-hidden="true"><span class="process__fill" data-process-fill></span><span class="process__head" data-process-head></span></div>
+<ol class="steps">
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg><span data-i18n="step1.title">Create</span></h3>
+<p class="step__text" data-i18n="step1.text">Ad creatives built on research and produced fast with AI, ready to test from day one.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-paper-plane-tilt"/></svg><span data-i18n="step2.title">Launch</span></h3>
+<p class="step__text" data-i18n="step2.text">Campaigns go live across Facebook and Instagram with a clear testing plan.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-chart-bar"/></svg><span data-i18n="step3.title">Analyze</span></h3>
+<p class="step__text" data-i18n="step3.text">We read the numbers that matter and turn them into decisions, not just reports.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-gear-six"/></svg><span data-i18n="step4.title">Automate</span></h3>
+<p class="step__text" data-i18n="step4.text">Rules and AI-assisted optimization keep budgets working around the clock.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg><span data-i18n="step5.title">Scale</span></h3>
+<p class="step__text" data-i18n="step5.text">Winning ads and audiences get more budget, so growth stays profitable as spend increases.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section class="results" id="results" aria-labelledby="results-title">
+<div class="container">
+<div class="section-head section-head--center" data-reveal>
+<h2 class="h2" id="results-title" data-i18n-html="results.title">Data-driven <em>growth.</em></h2>
+<p class="section-lead" data-i18n="results.lead">Every decision is backed by numbers. These are the metrics we answer for.</p>
+</div>
+</div>
+<div class="results__media" data-zoom>
+<picture><source type="image/avif" srcset="assets/img/results-dashboard-640.avif 640w, assets/img/results-dashboard-1000.avif 1000w, assets/img/results-dashboard-1400.avif 1400w" sizes="(min-width: 1400px) 1300px, 94vw"><img class="results__img" src="assets/img/results-dashboard-1000.webp" srcset="assets/img/results-dashboard-640.webp 640w, assets/img/results-dashboard-1000.webp 1000w, assets/img/results-dashboard-1400.webp 1400w" sizes="(min-width: 1400px) 1300px, 94vw" width="1214" height="554" alt="Performance dashboard with ad spend, conversions and a rising revenue chart" data-i18n-attr="alt:results.alt" loading="lazy" decoding="async"></picture>
+</div>
+<div class="container">
+<dl class="stats" data-reveal>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-chart-bar"/></svg><span>ROAS</span></dt>
+<dd data-count="42" data-sign="+">+42%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-users-three"/></svg><span data-i18n="stat.leads">Leads</span></dt>
+<dd data-count="68" data-sign="+">+68%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg><span data-i18n="stat.revenue">Revenue</span></dt>
+<dd data-count="53" data-sign="+">+53%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span>CAC</span></dt>
+<dd data-count="37" data-sign="&minus;">&minus;37%</dd>
+</div>
+</dl>
+<p class="footnote" data-i18n="results.note">Illustrative figures. Results depend on brand, offer and budget.</p>
+</div>
+</section>
+<section class="cta" id="contact-cta" aria-labelledby="cta-title">
+<div class="container cta__content">
+<h2 class="cta__title" id="cta-title" data-reveal data-i18n="cta.title">Growing together.</h2>
+<p class="cta__sub" data-reveal style="--d:1" data-i18n="cta.sub">Meta Ads. Marketing. Growth Marketing.</p>
+<div class="cta__action" data-reveal style="--d:2">
+<a class="btn btn--primary btn--lg" href="contact.html" data-transition>
+<span data-i18n="cta.button">Contact us for more information and pricing</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+</div>
+</div>
+<div class="cta__media" data-cta-media aria-hidden="true">
+<picture><source type="image/avif" srcset="assets/img/cta-orb-800.avif 800w, assets/img/cta-orb-1280.avif 1280w, assets/img/cta-orb-1672.avif 1672w" sizes="100vw"><img class="cta__img" src="assets/img/cta-orb-1280.webp" srcset="assets/img/cta-orb-800.webp 800w, assets/img/cta-orb-1280.webp 1280w, assets/img/cta-orb-1672.webp 1672w" sizes="100vw" width="1672" height="609" alt="" loading="lazy" decoding="async"></picture>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="container">
+<div class="dash" data-dash aria-hidden="true"></div>
+<div class="footer__grid">
+<div class="footer__brand">
+<a class="footer__logo" href="index.html" aria-label="Scalium" data-home-link>
+<img src="assets/img/logo-horizontal.svg" alt="Scalium" width="157" height="32" loading="lazy">
+</a>
+<p class="footer__tag" data-i18n="footer.tag">Automate today. A bigger tomorrow.</p>
+</div>
+<nav class="footer__col" aria-labelledby="f-services">
+<p class="footer__head" id="f-services" data-i18n="nav.services">Services</p>
+<a class="link" href="index.html#services" data-i18n="svc1.short">Meta Ads scaling</a>
+<a class="link" href="index.html#services" data-i18n="svc2.short">Marketing management</a>
+<a class="link" href="index.html#services" data-i18n="svc3.short">Growth marketing</a>
+</nav>
+<nav class="footer__col" aria-labelledby="f-company">
+<p class="footer__head" id="f-company" data-i18n="footer.company">Company</p>
+<a class="link" href="index.html#process" data-i18n="nav.process">Process</a>
+<a class="link" href="index.html#results" data-i18n="nav.results">Results</a>
+<a class="link" href="contact.html" data-transition data-i18n="cta.contact">Contact us</a>
+</nav>
+<div class="footer__col">
+<p class="footer__head" data-i18n="lang.label">Language</p>
+<div class="lang lang--footer" role="group" aria-label="Language" data-i18n-attr="aria-label:lang.label">
+<button type="button" class="lang__opt" data-lang="en" aria-pressed="true" lang="en">English</button>
+<button type="button" class="lang__opt" data-lang="ro" aria-pressed="false" lang="ro">Română</button>
+<span class="lang__thumb" aria-hidden="true"></span>
+</div>
+</div>
+</div>
+<div class="footer__bottom">
+<p>&copy; <span data-year>2026</span> Scalium. <span data-i18n="footer.rights">All rights reserved.</span></p>
+<button type="button" class="to-top" data-to-top>
+<span data-i18n="footer.top">Back to top</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+</button>
+</div>
+</div>
+</footer>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

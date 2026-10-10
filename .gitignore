@@ -1,0 +1,4 @@
+node_modules/
+dist/wordpress/
+shots/
+.DS_Store
