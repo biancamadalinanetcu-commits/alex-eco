@@ -64,7 +64,8 @@ function initAnchors() {
   });
 
   $('[data-to-top]')?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    // With the logo intro, "top" means the opened hero, not the closed logo.
+    window.scrollTo({ top: introTrigger ? introTrigger.end : 0, behavior: reduceMotion ? 'auto' : 'smooth' });
     $('[data-home-link]')?.focus({ preventScroll: true });
   });
 }
@@ -129,8 +130,119 @@ function initReveal() {
   items.forEach((el) => io.observe(el));
 }
 
+/* ---------------------------------------------------------------- intro: fly through the logo */
+// One scrubbed value p (0 to 1) drives the whole scene through render(), so every element stays
+// in lockstep and the ScrollTrigger scrub smoothing applies to all of it at once.
+let introTrigger = null;
+function initIntro() {
+  const wrap = $('[data-intro-wrap]');
+  const intro = $('[data-intro]');
+  if (!wrap || !intro) return null;
+  if (reduceMotion || root.classList.contains('intro-skip')) {
+    root.classList.add('intro-skip', 'hero-go');
+    return null;
+  }
+  window.__scaliumIntro = true;
+
+  const heroLayers = $$('.hero__grid, .hero__bg', wrap);
+  const bg = $('.intro__bg', intro);
+  const mark = $('[data-intro-mark]', intro);
+  const blade = $('.intro__blade', intro);
+  const arrow = $('.intro__arrow', intro);
+  const sheen = $('.intro__sheen', intro);
+  const bloom = $('[data-intro-bloom]', intro);
+  const cue = $('[data-intro-cue]', intro);
+  const letters = $$('.intro__letter', intro).map((el) => ({ el, dx: parseFloat(el.style.getPropertyValue('--dx')) || 0 }));
+  const rings = $$('.intro__ring', intro).map((el) => ({ el, z: parseFloat(el.style.getPropertyValue('--z')) || 0 }));
+
+  // Light streaks for the warp, spread deterministically so every visit looks the same.
+  const streakWrap = $('[data-intro-streaks]', intro);
+  const count = window.innerWidth < 700 ? 18 : 30;
+  const streaks = Array.from({ length: count }, (_, i) => {
+    const el = document.createElement('span');
+    el.className = 'intro__streak';
+    streakWrap.appendChild(el);
+    const r = Math.abs((Math.sin(i * 12.9898 + 4.1) * 43758.5453) % 1);
+    return { el, angle: (i / count) * 360 + r * 10, r0: 5 + r * 14, len: 0.6 + r * 1.2, delay: r * 0.12 };
+  });
+
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const smooth = (a, b, v) => { const t = clamp01((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const TRAVEL = 4700;
+  let heroGo = false;
+
+  const render = (p) => {
+    // Wordmark: each letter flies at the camera and fans out from the centre.
+    const pl = smooth(0, 0.42, p);
+    const lo = 1 - smooth(0.1, 0.38, p);
+    letters.forEach(({ el, dx }) => {
+      el.style.transform = `translate3d(${dx * 30 * pl}vw, ${pl * 9}vh, ${pl * (560 + 340 * (1 - Math.abs(dx)))}px) rotateY(${dx * 48 * pl}deg) rotateX(${-16 * pl}deg)`;
+      el.style.opacity = lo;
+    });
+
+    // Mark: drifts to the centre, rushes toward the camera, then splits so we pass between the halves.
+    const pm = smooth(0.02, 0.82, p);
+    const center = smooth(0.04, 0.42, p);
+    mark.style.transform = `translateY(calc(var(--logo-w) * ${0.14 * center})) translateZ(${Math.pow(pm, 1.5) * 860}px) rotateX(${pm * 12}deg)`;
+    const ps = smooth(0.2, 0.86, p);
+    const mo = 1 - smooth(0.7, 0.9, p);
+    blade.style.transform = `translate3d(${-ps * 42}vw, ${ps * 26}vh, ${ps * 140}px) rotateZ(${-ps * 16}deg) rotateY(${ps * 42}deg)`;
+    arrow.style.transform = `translate3d(${ps * 30}vw, ${-ps * 38}vh, ${ps * 180}px) rotateZ(${ps * 10}deg) rotateY(${-ps * 40}deg)`;
+    blade.style.opacity = mo;
+    arrow.style.opacity = mo;
+    sheen.style.opacity = 1 - smooth(0.01, 0.1, p);
+
+    // Rings: a tunnel that streams past the camera.
+    const travel = Math.pow(smooth(0, 0.95, p), 1.15) * TRAVEL;
+    rings.forEach(({ el, z: z0 }) => {
+      const z = z0 + travel;
+      el.style.transform = `translateZ(${z}px)`;
+      el.style.opacity = (clamp01((z + 4400) / 1700) * (1 - clamp01((z - 420) / 420)) * 0.85).toFixed(3);
+    });
+
+    // Warp streaks.
+    streaks.forEach((s) => {
+      const t = clamp01((p - 0.1 - s.delay) / 0.68);
+      s.el.style.transform = `rotate(${s.angle}deg) translateX(${s.r0 + t * t * 120}vmin) scaleX(${s.len * (0.3 + t * 3.4)})`;
+      s.el.style.opacity = (Math.sin(Math.PI * t) * 0.9).toFixed(3);
+    });
+
+    // Light opens up and the scene dissolves onto the hero, which settles from a slight zoom.
+    bloom.style.transform = `scale(${0.15 + smooth(0.42, 0.82, p) * 3.4})`;
+    bloom.style.opacity = (Math.sin(Math.PI * clamp01((p - 0.42) / 0.38)) * 0.8).toFixed(3);
+    bg.style.opacity = 1 - smooth(0.6, 0.84, p);
+    intro.style.opacity = 1 - smooth(0.8, 0.95, p);
+    intro.style.visibility = p > 0.995 ? 'hidden' : '';
+    cue.style.opacity = 1 - smooth(0, 0.06, p);
+    const settle = 1 + 0.12 * (1 - smooth(0.56, 0.98, p));
+    heroLayers.forEach((el) => { el.style.transform = settle > 1.0005 ? `scale(${settle})` : ''; });
+
+    if (!heroGo && p >= 0.58) { heroGo = true; root.classList.add('hero-go'); }
+    root.classList.toggle('intro-done', p >= 0.78);
+  };
+
+  const state = { p: 0 };
+  render(0);
+  const tween = gsap.to(state, {
+    p: 1,
+    ease: 'none',
+    onUpdate: () => render(state.p),
+    scrollTrigger: {
+      trigger: wrap,
+      start: 'top top',
+      end: () => `+=${Math.round(window.innerHeight * (window.innerWidth < 700 ? 1.5 : 1.9))}`,
+      pin: true,
+      scrub: 1.1,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+    },
+  });
+  introTrigger = tween.scrollTrigger;
+  return wrap;
+}
+
 /* ---------------------------------------------------------------- hero */
-function initHero() {
+function initHero(introWrap) {
   const hero = $('.hero');
   if (!hero) return;
   const tilt = $('[data-tilt]', hero);
@@ -158,7 +270,8 @@ function initHero() {
 
   // On scroll the copy lifts away and the dashboard tips back into depth.
   const tl = gsap.timeline({
-    scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6 },
+    // Inside the intro's pinned wrapper, positions are measured after the pin releases.
+    scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: 0.6, ...(introWrap ? { pinnedContainer: introWrap } : {}) },
   });
   if (copy) tl.to(copy, { y: -80, opacity: 0, ease: 'none' }, 0);
   if (tilt) tl.to(tilt, { y: -40, z: -120, opacity: 0.25, ease: 'none' }, 0);
@@ -366,7 +479,8 @@ function boot() {
   initMenu();
   initNav();
   initReveal();
-  initHero();
+  const introWrap = initIntro();
+  initHero(introWrap);
   initStatement();
   initServices();
   initProcess();

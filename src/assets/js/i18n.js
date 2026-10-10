@@ -22,6 +22,8 @@ const RO = {
   'lang.label': 'Limbă',
   'cta.contact': 'Contactează-ne',
 
+  'intro.cue': 'Derulează',
+
   'hero.eyebrow': 'Meta Ads <span>&times;</span> AI <span>&times;</span> Creștere',
   'hero.title': '<span class="line"><span>Scalează inteligent</span></span> <span class="line"><span>cu <em>Meta Ads.</em></span></span>',
   'hero.lead': 'Ajutăm brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și strategie orientată spre performanță.',

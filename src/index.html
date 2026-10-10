@@ -21,58 +21,84 @@
 <!-- @wp:main-start -->
 <main id="main">
 
-  <!-- ============================================================ HERO -->
-  <section class="hero" id="top" aria-labelledby="hero-title">
-    <div class="hero__bg" aria-hidden="true">
-      <svg class="trails" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
-        <defs>
-          <linearGradient id="trail-fade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#4d94ff" stop-opacity="0"/>
-            <stop offset=".45" stop-color="#4d94ff" stop-opacity=".22"/>
-            <stop offset="1" stop-color="#4d94ff" stop-opacity=".05"/>
-          </linearGradient>
-        </defs>
-        <g class="trails__base" stroke="url(#trail-fade)" fill="none" stroke-width="1">
-          <path d="M-40 760C380 720 760 600 1640 260"/>
-          <path d="M-40 842C460 822 980 702 1640 520"/>
-          <path d="M420 940C700 700 1080 520 1640 420"/>
-          <path d="M-40 430C300 470 520 600 760 940"/>
-        </g>
-        <g class="trails__comets" fill="none" stroke-linecap="round">
-          <path pathLength="1000" style="--dur:7.5s;--delay:-1.2s" d="M-40 760C380 720 760 600 1640 260"/>
-          <path pathLength="1000" style="--dur:9s;--delay:-5s" d="M-40 842C460 822 980 702 1640 520"/>
-          <path pathLength="1000" style="--dur:8.2s;--delay:-3.4s" d="M420 940C700 700 1080 520 1640 420"/>
-          <path pathLength="1000" style="--dur:10s;--delay:-7s" d="M-40 430C300 470 520 600 760 940"/>
-        </g>
-      </svg>
-      <div class="hero__glow"></div>
-      <div class="hero__horizon"></div>
-    </div>
-
-    <div class="container hero__grid">
-      <div class="hero__copy" data-hero-copy>
-        <p class="hero__eyebrow"><span class="dash is-on" aria-hidden="true"></span><span data-i18n-html="hero.eyebrow">Meta Ads <span>&times;</span> AI <span>&times;</span> Growth</span></p>
-        <h1 class="hero__title" id="hero-title" data-i18n-html="hero.title"><span class="line"><span>Scale smarter</span></span> <span class="line"><span>with <em>Meta Ads.</em></span></span></h1>
-        <p class="hero__lead" data-i18n="hero.lead">We help eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and performance-focused strategy.</p>
-        <div class="hero__ctas">
-          <a class="btn btn--primary" href="contact.html" data-transition>
-            <span data-i18n="cta.contact">Contact us</span>
-            <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </a>
-          <a class="btn btn--ghost" href="#services">
-            <span data-i18n="hero.secondary">See our services</span>
-            <svg class="icon icon--down" aria-hidden="true"><use href="#i-arrow-right"/></svg>
-          </a>
+  <!-- ============================================================ INTRO + HERO
+       The intro shows only the logo; scrolling flies the camera through it in 3D and opens onto the hero.
+       Without JavaScript, with reduced motion, or when arriving on a #section link, it is skipped. -->
+  <div class="intro-wrap" data-intro-wrap>
+    <div class="intro" data-intro aria-hidden="true">
+      <div class="intro__bg"></div>
+      <div class="intro__scene">
+        <div class="intro__tunnel">
+          <span class="intro__ring" style="--z:-300px;--s:1.35"></span>
+          <span class="intro__ring" style="--z:-850px;--s:1.5"></span>
+          <span class="intro__ring" style="--z:-1400px;--s:1.4"></span>
+          <span class="intro__ring" style="--z:-1950px;--s:1.55"></span>
+          <span class="intro__ring" style="--z:-2500px;--s:1.45"></span>
+          <span class="intro__ring" style="--z:-3050px;--s:1.6"></span>
+          <span class="intro__ring" style="--z:-3600px;--s:1.5"></span>
+          <span class="intro__ring" style="--z:-4150px;--s:1.6"></span>
+        </div>
+        <div class="intro__logo">
+          <!-- @include intro-logo -->
         </div>
       </div>
+      <div class="intro__streaks" data-intro-streaks></div>
+      <div class="intro__bloom" data-intro-bloom></div>
+      <p class="intro__cue" data-intro-cue><span data-i18n="intro.cue">Scroll</span><span class="intro__cue-line"></span></p>
+    </div>
 
-      <div class="hero__visual" data-hero-visual>
-        <div class="hero__tilt" data-tilt>
-          <!-- @picture name="hero-dashboard" eager sizes="(min-width: 1024px) 60vw, 100vw" class="hero__img" alt="Scalium Meta Ads dashboard with total revenue, ROAS and active ad campaigns" alt-key="hero.alt" -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__bg" aria-hidden="true">
+        <svg class="trails" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <defs>
+            <linearGradient id="trail-fade" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#4d94ff" stop-opacity="0"/>
+              <stop offset=".45" stop-color="#4d94ff" stop-opacity=".22"/>
+              <stop offset="1" stop-color="#4d94ff" stop-opacity=".05"/>
+            </linearGradient>
+          </defs>
+          <g class="trails__base" stroke="url(#trail-fade)" fill="none" stroke-width="1">
+            <path d="M-40 760C380 720 760 600 1640 260"/>
+            <path d="M-40 842C460 822 980 702 1640 520"/>
+            <path d="M420 940C700 700 1080 520 1640 420"/>
+            <path d="M-40 430C300 470 520 600 760 940"/>
+          </g>
+          <g class="trails__comets" fill="none" stroke-linecap="round">
+            <path pathLength="1000" style="--dur:7.5s;--delay:-1.2s" d="M-40 760C380 720 760 600 1640 260"/>
+            <path pathLength="1000" style="--dur:9s;--delay:-5s" d="M-40 842C460 822 980 702 1640 520"/>
+            <path pathLength="1000" style="--dur:8.2s;--delay:-3.4s" d="M420 940C700 700 1080 520 1640 420"/>
+            <path pathLength="1000" style="--dur:10s;--delay:-7s" d="M-40 430C300 470 520 600 760 940"/>
+          </g>
+        </svg>
+        <div class="hero__glow"></div>
+        <div class="hero__horizon"></div>
+      </div>
+
+      <div class="container hero__grid">
+        <div class="hero__copy" data-hero-copy>
+          <p class="hero__eyebrow"><span class="dash is-on" aria-hidden="true"></span><span data-i18n-html="hero.eyebrow">Meta Ads <span>&times;</span> AI <span>&times;</span> Growth</span></p>
+          <h1 class="hero__title" id="hero-title" data-i18n-html="hero.title"><span class="line"><span>Scale smarter</span></span> <span class="line"><span>with <em>Meta Ads.</em></span></span></h1>
+          <p class="hero__lead" data-i18n="hero.lead">We help eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and performance-focused strategy.</p>
+          <div class="hero__ctas">
+            <a class="btn btn--primary" href="contact.html" data-transition>
+              <span data-i18n="cta.contact">Contact us</span>
+              <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+            </a>
+            <a class="btn btn--ghost" href="#services">
+              <span data-i18n="hero.secondary">See our services</span>
+              <svg class="icon icon--down" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hero__visual" data-hero-visual>
+          <div class="hero__tilt" data-tilt>
+            <!-- @picture name="hero-dashboard" eager sizes="(min-width: 1024px) 60vw, 100vw" class="hero__img" alt="Scalium Meta Ads dashboard with total revenue, ROAS and active ad campaigns" alt-key="hero.alt" -->
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- ============================================================ STATEMENT -->
   <section class="statement" aria-labelledby="statement-text">

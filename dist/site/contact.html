@@ -21,6 +21,10 @@ h.classList.add('is-entering');
 setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
 }
 sessionStorage.removeItem('scalium-wipe');
+/* The logo intro only plays from the top of the home page. If the animation script never
+arrives, drop it after a few seconds so the hero is never left covered. */
+if (location.hash) h.classList.add('intro-skip');
+setTimeout(function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); }, 3500);
 } catch (e) {}
 })(document);
 </script>
