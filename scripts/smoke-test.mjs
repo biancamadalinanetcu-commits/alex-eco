@@ -17,6 +17,11 @@ const server = http.createServer(async (req, res) => {
 const browser = await chromium.launch().catch(() => chromium.launch({ executablePath: '/opt/pw-browsers/chromium' }));
 const results = [];
 const check = (name, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'}  ${name}${extra ? `  (${extra})` : ''}`);
+// The home page opens on the logo intro; the menu appears once it has opened, as for a real visitor.
+const openIntro = async (p) => {
+  await p.evaluate(() => { const s = document.querySelector('.pin-spacer'); window.scrollTo(0, s ? s.offsetHeight - innerHeight : 0); });
+  await p.waitForTimeout(1800);
+};
 
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US' });
 const page = await ctx.newPage();
@@ -25,6 +30,8 @@ page.on('pageerror', (e) => errors.push(e.message));
 const base = 'http://localhost:4175/';
 
 await page.goto(base, { waitUntil: 'networkidle' });
+check('opens on the logo intro', await page.evaluate(() => !!document.querySelector('.intro') && getComputedStyle(document.querySelector('.intro')).display !== 'none'));
+await openIntro(page);
 check('starts in English', (await page.textContent('h1')).includes('Scale smarter'));
 
 await page.click('.nav .lang [data-lang="ro"]');
@@ -34,6 +41,7 @@ check('RO translates the title', (await page.title()).includes('Agenție'));
 check('both switches stay in sync', (await page.getAttribute('.footer .lang [data-lang="ro"]', 'aria-pressed')) === 'true');
 
 await page.reload({ waitUntil: 'networkidle' });
+await openIntro(page);
 check('language persists after reload', (await page.textContent('h1')).includes('Scalează'));
 
 await page.click('.hero .btn--ghost');
@@ -46,8 +54,7 @@ await page.waitForTimeout(1500);
 const processTop = await page.evaluate(() => document.getElementById('process').getBoundingClientRect().top);
 check('nav "Process" scrolls to process', Math.abs(processTop) < 90, `top=${Math.round(processTop)}`);
 
-await page.evaluate(() => window.scrollTo(0, 0));
-await page.waitForTimeout(400);
+await openIntro(page);
 await page.click('.hero .btn--primary');
 await page.waitForURL('**/contact.html', { timeout: 4000 }).catch(() => {});
 check('hero "Contact us" opens the contact page', page.url().endsWith('contact.html'));
@@ -76,12 +83,14 @@ await page.click('.footer .lang [data-lang="en"]');
 check('footer switch returns to English', (await page.textContent('h1')).includes('Scale smarter'));
 await page.click('[data-to-top]');
 await page.waitForTimeout(1800);
-check('"Back to top" scrolls up', (await page.evaluate(() => window.scrollY)) < 5);
+// With the logo intro, "top" is the opened hero (the end of the intro), not the closed logo at y=0.
+check('"Back to top" returns to the hero', Math.abs(await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().top)) < 5);
 
 // mobile menu
 const m = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const mp = await m.newPage();
 await mp.goto(base, { waitUntil: 'networkidle' });
+await openIntro(mp);
 await mp.click('[data-menu-toggle]');
 await mp.waitForTimeout(600);
 check('mobile menu opens', await mp.evaluate(() => document.querySelector('[data-menu]').classList.contains('is-open')));

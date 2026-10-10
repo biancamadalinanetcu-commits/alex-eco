@@ -31,7 +31,7 @@ const WORD_VB = [280, 662, 694, 164];
 const pct = (v, o, s) => (((v - o) / s) * 100).toFixed(2) + '%';
 const piece = (cls, vb, fill, g, extra = '') =>
   `<span class="${cls}" style="--ox:${pct((g.x0 + g.x1) / 2, vb[0], vb[2])};--oy:${pct((g.y0 + g.y1) / 2, vb[1], vb[3])}${extra}">` +
-  `<svg viewBox="${vb.join(' ')}" focusable="false"><path fill="${fill}" d="${g.d}"/></svg></span>`;
+  `<svg viewBox="${vb.join(' ')}" focusable="false"><path fill="${fill}" fill-rule="evenodd" d="${g.d}"/></svg></span>`;
 
 const mark = subpaths(markD);
 const arrow = mark.reduce((a, b) => (a.y0 < b.y0 ? a : b));

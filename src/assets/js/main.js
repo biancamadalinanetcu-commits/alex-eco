@@ -235,9 +235,13 @@ function initIntro() {
       scrub: 1.1,
       anticipatePin: 1,
       invalidateOnRefresh: true,
+      // A reload or back-navigation can restore the page mid-way or below the intro without a
+      // scroll event, so sync the scene to wherever the page actually is.
+      onRefresh: (self) => { state.p = self.progress; render(self.progress); },
     },
   });
   introTrigger = tween.scrollTrigger;
+  render(introTrigger.progress);
   return wrap;
 }
 

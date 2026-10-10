@@ -42,12 +42,12 @@ const wordD = pathOf(await trace(await intensity(lightness, (y) => y >= SPLIT_Y)
 
 await mkdir('src/assets/img', { recursive: true });
 // Full lock-up (mark above wordmark), mark only, and horizontal lock-up for the header
-const full = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="280 410 695 415"><path fill="#0a6aff" d="${markD}"/><path fill="#fff" d="${wordD}"/></svg>`;
-const mark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="466 410 320 235"><path fill="#0a6aff" d="${markD}"/></svg>`;
+const full = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="280 410 695 415"><path fill="#0a6aff" fill-rule="evenodd" d="${markD}"/><path fill="#fff" fill-rule="evenodd" d="${wordD}"/></svg>`;
+const mark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="466 410 320 235"><path fill="#0a6aff" fill-rule="evenodd" d="${markD}"/></svg>`;
 await writeFile('src/assets/img/logo-stacked.svg', full);
 await writeFile('src/assets/img/logo-mark.svg', mark);
 console.log('mark', markD.length, 'word', wordD.length);
 
 // Horizontal lock-up (mark left of wordmark) used in the header, as in the brand key visuals.
-const horizontal = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-62 630 1036 212"><path fill="#0a6aff" transform="translate(-493.2 251.3) scale(.92)" d="${markD}"/><path fill="#fff" d="${wordD}"/></svg>`;
+const horizontal = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-62 630 1036 212"><path fill="#0a6aff" fill-rule="evenodd" transform="translate(-493.2 251.3) scale(.92)" d="${markD}"/><path fill="#fff" fill-rule="evenodd" d="${wordD}"/></svg>`;
 await writeFile('src/assets/img/logo-horizontal.svg', horizontal);
