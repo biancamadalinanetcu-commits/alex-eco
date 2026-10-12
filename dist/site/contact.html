@@ -25,8 +25,11 @@ sessionStorage.removeItem('scalium-wipe');
 If the animation script failed (it has run by the time the page has loaded), drop the
 intro so the hero is never left covered. A slow connection only delays it. */
 if (/^#(top|main|services|process|results|contact-cta)$/.test(location.hash)) h.classList.add('intro-skip');
-/* a reload starts at the top, so the logo intro plays again from the beginning */
-else if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+/* Back/forward returns to where the visitor was. (A reload of the home page starts at the top so the
+intro replays: main.js marks the page for that when it is left.) */
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+window.__scaliumBack = !!nav && nav.type === 'back_forward';
+if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
 window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
 } catch (e) {}
 })(document);
@@ -131,33 +134,33 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <fieldset class="field field--choice" data-field="service">
 <legend class="field__label"><span data-i18n="form.service">What do you need?</span> <span class="field__hint" data-i18n="form.serviceHint">Choose one or more.</span></legend>
 <div class="chips">
-<label class="chip"><input type="checkbox" name="service" value="Meta Ads scaling"><span data-i18n="svc1.short">Meta Ads scaling</span></label>
-<label class="chip"><input type="checkbox" name="service" value="Marketing management"><span data-i18n="svc2.short">Marketing management</span></label>
-<label class="chip"><input type="checkbox" name="service" value="Growth marketing"><span data-i18n="svc3.short">Growth marketing</span></label>
-<label class="chip"><input type="checkbox" name="service" value="Not sure yet"><span data-i18n="form.notSure">Not sure yet</span></label>
+<label class="chip"><input type="checkbox" name="service[]" value="Meta Ads scaling"><span data-i18n="svc1.short">Meta Ads scaling</span></label>
+<label class="chip"><input type="checkbox" name="service[]" value="Marketing management"><span data-i18n="svc2.short">Marketing management</span></label>
+<label class="chip"><input type="checkbox" name="service[]" value="Growth marketing"><span data-i18n="svc3.short">Growth marketing</span></label>
+<label class="chip"><input type="checkbox" name="service[]" value="Not sure yet"><span data-i18n="form.notSure">Not sure yet</span></label>
 </div>
 <p class="field__error" id="err-service" data-error-for="service" data-i18n="form.err.service" hidden>Choose at least one service.</p>
 </fieldset>
 <div class="field">
 <label class="field__label" for="f-name" data-i18n="form.name">Name</label>
-<input class="field__input" id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="err-name">
+<input class="field__input" id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required>
 <p class="field__error" id="err-name" data-error-for="name" data-i18n="form.err.name" hidden>Please enter your name.</p>
 </div>
 <div class="form__pair">
 <div class="field">
 <label class="field__label" for="f-email" data-i18n="form.email">Email</label>
-<input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" placeholder="you@brand.com" required aria-describedby="err-email">
+<input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" placeholder="you@brand.com" required>
 <p class="field__error" id="err-email" data-error-for="email" data-i18n="form.err.email" hidden>Please enter a valid email address.</p>
 </div>
 <div class="field">
 <label class="field__label" for="f-phone" data-i18n="form.phone">Phone number</label>
-<input class="field__input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" placeholder="+40 7XX XXX XXX" required aria-describedby="err-phone">
+<input class="field__input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" placeholder="+40 7XX XXX XXX" required>
 <p class="field__error" id="err-phone" data-error-for="phone" data-i18n="form.err.phone" hidden>Please enter a valid phone number.</p>
 </div>
 </div>
 <div class="field">
 <label class="field__label" for="f-message"><span data-i18n="form.message">Project details</span> <span class="field__hint" data-i18n="form.optional">(optional)</span></label>
-<textarea class="field__input field__input--area" id="f-message" name="message" rows="4" maxlength="3000" placeholder="Your brand, your goals and your monthly ad budget." data-i18n-attr="placeholder:form.messagePh"></textarea>
+<textarea class="field__input field__input--area" id="f-message" data-lenis-prevent name="message" rows="4" maxlength="3000" placeholder="Your brand, your goals and your monthly ad budget." data-i18n-attr="placeholder:form.messagePh"></textarea>
 </div>
 <div class="form__foot">
 <button class="btn btn--primary form__submit" type="submit">

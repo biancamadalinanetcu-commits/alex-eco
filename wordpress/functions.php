@@ -87,6 +87,20 @@ add_action(
 	}
 );
 
+/**
+ * Result of a contact form sent without JavaScript (the handler redirects back with ?sent=1 or ?sent=0).
+ *
+ * @return string 'sent', 'failed' or ''.
+ */
+function scalium_form_result() {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display-only flag set by our own redirect.
+	$sent = isset( $_GET['sent'] ) ? sanitize_key( wp_unslash( $_GET['sent'] ) ) : '';
+	if ( '1' === $sent ) {
+		return 'sent';
+	}
+	return '0' === $sent ? 'failed' : '';
+}
+
 function scalium_sanitize_digits( $value ) {
 	return preg_replace( '/\D+/', '', (string) $value );
 }

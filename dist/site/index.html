@@ -25,8 +25,11 @@ sessionStorage.removeItem('scalium-wipe');
 If the animation script failed (it has run by the time the page has loaded), drop the
 intro so the hero is never left covered. A slow connection only delays it. */
 if (/^#(top|main|services|process|results|contact-cta)$/.test(location.hash)) h.classList.add('intro-skip');
-/* a reload starts at the top, so the logo intro plays again from the beginning */
-else if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+/* Back/forward returns to where the visitor was. (A reload of the home page starts at the top so the
+intro replays: main.js marks the page for that when it is left.) */
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+window.__scaliumBack = !!nav && nav.type === 'back_forward';
+if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
 window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
 } catch (e) {}
 })(document);
@@ -201,7 +204,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <div class="shift" data-shift aria-hidden="true">
 <div class="shift__stage" data-shift-stage>
 <div class="shift__space">
-<div class="shift__floor" data-shift-floor></div>
+<div class="shift__ground"><div class="shift__floor" data-shift-floor></div></div>
 <div class="shift__gate"></div>
 <div class="shift__gate"></div>
 <div class="shift__gate"></div>

@@ -168,10 +168,14 @@ function initIntro() {
     return null;
   }
   window.__scaliumIntro = true;
-  // A reload lands back on the closed logo, so the intro always plays from the start
-  // (the head script already turned off the browser's own scroll restoration).
-  ScrollTrigger.clearScrollMemory('manual');
-  window.scrollTo(0, 0);
+  // A reload lands back on the closed logo, so the intro plays from the start. The browser reads the
+  // restoration mode when the page is left, so set it then; back/forward keeps the visitor's place
+  // (the head script switches it back to 'auto' for those) and onRefresh syncs the scene there.
+  if ('scrollRestoration' in history) window.addEventListener('pagehide', () => { history.scrollRestoration = 'manual'; });
+  if (!window.__scaliumBack) {
+    ScrollTrigger.clearScrollMemory('manual');
+    window.scrollTo(0, 0);
+  }
 
   const heroLayers = $$('.hero__grid, .hero__bg', wrap);
   const bg = $('.intro__bg', intro);
@@ -399,12 +403,12 @@ function initShift() {
   // the statement tips back into the floor as the passage opens
   const text = $('.statement .container');
   if (text) {
+    // the perspective stays fixed; tweening it from 0 would snap the text into its final slant at once
+    gsap.set(text, { transformPerspective: 1100, transformOrigin: '50% 100%' });
     gsap.to(text, {
       rotationX: 34,
       z: -160,
       opacity: 0.08,
-      transformOrigin: '50% 100%',
-      transformPerspective: 1100,
       ease: 'none',
       scrollTrigger: { trigger: shift, start: 'top 55%', end: 'top top', scrub: lenis ? 0.3 : 0.6 },
     });
@@ -650,7 +654,7 @@ function initContactForm() {
   const status = (which) => $$('[data-status]', form).forEach((el) => { el.hidden = el.dataset.status !== which; });
 
   const rules = {
-    service: () => $$('input[name="service"]:checked', form).length > 0,
+    service: () => $$('input[name="service[]"]:checked', form).length > 0,
     name: () => form.elements.name.value.trim().length >= 2,
     email: () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.elements.email.value.trim()),
     phone: () => {
@@ -660,12 +664,16 @@ function initContactForm() {
   };
   const control = (name) => (name === 'service' ? $('[data-field="service"]', form) : form.elements[name]);
   const touched = new Set();
+  // The error text is linked to its field only while it is showing, so screen readers announce it then.
   const check = (name) => {
     const ok = rules[name]();
     $(`[data-error-for="${name}"]`, form).hidden = ok;
     const el = control(name);
     el.classList.toggle('is-invalid', !ok);
-    if (name !== 'service') el.setAttribute('aria-invalid', String(!ok));
+    if (ok) el.removeAttribute('aria-describedby');
+    else el.setAttribute('aria-describedby', `err-${name}`);
+    const inputs = name === 'service' ? $$('input[name="service[]"]', form) : [el];
+    inputs.forEach((i) => i.setAttribute('aria-invalid', String(!ok)));
     return ok;
   };
 
@@ -685,7 +693,7 @@ function initContactForm() {
     const invalid = Object.keys(rules).filter((name) => !check(name));
     Object.keys(rules).forEach((name) => touched.add(name));
     if (invalid.length) {
-      const first = invalid[0] === 'service' ? $('input[name="service"]', form) : form.elements[invalid[0]];
+      const first = invalid[0] === 'service' ? $('input[name="service[]"]', form) : form.elements[invalid[0]];
       first.focus();
       return;
     }
@@ -703,7 +711,7 @@ function initContactForm() {
 
     const fd = new FormData(form);
     const data = new URLSearchParams();
-    data.set('service', fd.getAll('service').join(', '));
+    data.set('service', fd.getAll('service[]').join(', '));
     ['name', 'email', 'phone', 'message', 'language'].forEach((k) => data.set(k, String(fd.get(k) || '').trim()));
     data.set('_subject', `${fd.get('_subject')}: ${data.get('name')}`);
     data.set('_template', String(fd.get('_template')));
@@ -733,6 +741,8 @@ function initContactForm() {
       clearTimeout(timer);
       form.classList.remove('is-sending');
       submit.disabled = false;
+      // disabling the button while sending dropped keyboard focus; give it back so "try again" is one key away
+      if (!body.hidden && (!document.activeElement || document.activeElement === document.body)) submit.focus({ preventScroll: true });
     }
   });
 

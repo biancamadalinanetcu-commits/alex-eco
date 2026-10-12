@@ -33,6 +33,9 @@ const STATIC_TOKENS = {
   ...config,
   form_action: `https://formsubmit.co/${formsubmitId}`,
   form_endpoint: `https://formsubmit.co/ajax/${formsubmitId}`,
+  form_sent_body: '',
+  form_sent_done: ' hidden',
+  form_sent_fail: ' hidden',
 };
 // WordPress reads the same values from the Customizer (defaults come from config.json),
 // and the form posts to the theme's own handler, which emails the request and keeps a copy in wp-admin.
@@ -45,6 +48,10 @@ const WP_TOKENS = {
   tiktok: "<?php echo esc_url( scalium_setting( 'tiktok' ) ); ?>",
   form_action: WP_FORM_URL,
   form_endpoint: WP_FORM_URL,
+  // Without JavaScript the WordPress handler redirects back with ?sent=1 or ?sent=0: show the result.
+  form_sent_body: "<?php echo scalium_form_result() === 'sent' ? ' hidden' : ''; ?>",
+  form_sent_done: "<?php echo scalium_form_result() === 'sent' ? '' : ' hidden'; ?>",
+  form_sent_fail: "<?php echo scalium_form_result() === 'failed' ? '' : ' hidden'; ?>",
 };
 const fillTokens = (html, tokens) => html.replace(/\{\{(\w+)\}\}/g, (m, key) => {
   if (!(key in tokens)) throw new Error(`Unknown config token ${m}`);

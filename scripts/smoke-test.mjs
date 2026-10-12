@@ -165,6 +165,63 @@ await slow.waitForTimeout(800);
 check('reload starts again on the logo intro', await slow.evaluate(() => scrollY === 0 && window.__scaliumIntro === true));
 await slow.close();
 
+// review fixes: back navigation keeps the place, reduced motion hides the passage, the statement tilts
+// smoothly, the long message field scrolls under the mouse, errors are linked only while shown
+const nav = await ctx.newPage();
+await nav.goto(base, { waitUntil: 'networkidle' });
+await openIntro(nav);
+await nav.evaluate(() => window.scrollTo(0, 5200));
+await nav.waitForTimeout(1200);
+const placeBefore = await nav.evaluate(() => Math.round(scrollY));
+await nav.goto(base + 'contact.html', { waitUntil: 'networkidle' });
+await nav.goBack({ waitUntil: 'networkidle' });
+await nav.waitForTimeout(1500);
+const placeAfter = await nav.evaluate(() => Math.round(scrollY));
+check('back button returns to the same place on the home page', Math.abs(placeAfter - placeBefore) < 60, `${placeBefore} -> ${placeAfter}`);
+await nav.reload({ waitUntil: 'networkidle' });
+await nav.waitForTimeout(800);
+check('reload still replays the logo intro', await nav.evaluate(() => scrollY === 0));
+
+const tilt = await nav.evaluate(async () => {
+  const shift = document.querySelector('[data-shift]');
+  const text = document.querySelector('.statement .container');
+  const startY = shift.getBoundingClientRect().top + scrollY - innerHeight * 0.55;
+  window.scrollTo(0, startY + 12);
+  await new Promise((r) => setTimeout(r, 1200));
+  return text.getBoundingClientRect().width / text.offsetWidth;
+});
+check('statement starts tilting smoothly (no jump)', tilt > 0.97, tilt.toFixed(3));
+await nav.close();
+
+const rm = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+const rmp = await rm.newPage();
+await rmp.goto(base, { waitUntil: 'networkidle' });
+check('reduced motion: no empty passage gap', await rmp.evaluate(() => getComputedStyle(document.querySelector('[data-shift]')).display === 'none'));
+await rm.close();
+
+const fp = await ctx.newPage();
+await fp.goto(base + 'contact.html', { waitUntil: 'networkidle' });
+check('field errors are not announced before an error', await fp.evaluate(() => !document.querySelector('#f-name').hasAttribute('aria-describedby')));
+await fp.click('.form__submit');
+check('errors are linked to their fields once shown', await fp.evaluate(() => document.querySelector('#f-email').getAttribute('aria-describedby') === 'err-email'
+  && document.querySelector('[data-field="service"]').getAttribute('aria-describedby') === 'err-service'
+  && document.querySelector('input[name="service[]"]').getAttribute('aria-invalid') === 'true'));
+await fp.fill('#f-message', Array.from({ length: 40 }, (_, i) => `line ${i + 1}`).join('\n'));
+await fp.evaluate(() => { document.querySelector('#f-message').scrollTop = 0; });
+const box = await fp.locator('#f-message').boundingBox();
+await fp.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+for (let i = 0; i < 3; i++) { await fp.mouse.wheel(0, 100); await fp.waitForTimeout(150); }
+check('long message scrolls inside its field', await fp.evaluate(() => document.querySelector('#f-message').scrollTop > 100));
+await fp.route('https://formsubmit.co/**', (route) => route.fulfill({ status: 500, body: '{}' }));
+await fp.click('.chip:has(input[value="Growth marketing"])');
+await fp.fill('#f-name', 'Ana Test');
+await fp.fill('#f-email', 'ana@brand.ro');
+await fp.fill('#f-phone', '0722 123 456');
+await fp.click('.form__submit');
+await fp.waitForTimeout(800);
+check('after a failed send, focus returns to the button', await fp.evaluate(() => document.activeElement && document.activeElement.classList.contains('form__submit')));
+await fp.close();
+
 // mobile menu
 const m = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const mp = await m.newPage();

@@ -51,7 +51,7 @@
         <!-- Request form. The static site sends it through FormSubmit; the WordPress theme handles it itself
              (email + a copy under "Contact requests" in wp-admin). -->
         <form class="form" id="contact-form" action="{{form_action}}" method="POST" novalidate data-contact-form data-endpoint="{{form_endpoint}}">
-          <div class="form__body" data-form-body>
+          <div class="form__body" data-form-body{{form_sent_body}}>
             <h2 class="form__title" data-i18n="form.title">Tell us about your brand</h2>
             <input type="hidden" name="_subject" value="New request from the Scalium website">
             <input type="hidden" name="_template" value="table">
@@ -63,36 +63,36 @@
             <fieldset class="field field--choice" data-field="service">
               <legend class="field__label"><span data-i18n="form.service">What do you need?</span> <span class="field__hint" data-i18n="form.serviceHint">Choose one or more.</span></legend>
               <div class="chips">
-                <label class="chip"><input type="checkbox" name="service" value="Meta Ads scaling"><span data-i18n="svc1.short">Meta Ads scaling</span></label>
-                <label class="chip"><input type="checkbox" name="service" value="Marketing management"><span data-i18n="svc2.short">Marketing management</span></label>
-                <label class="chip"><input type="checkbox" name="service" value="Growth marketing"><span data-i18n="svc3.short">Growth marketing</span></label>
-                <label class="chip"><input type="checkbox" name="service" value="Not sure yet"><span data-i18n="form.notSure">Not sure yet</span></label>
+                <label class="chip"><input type="checkbox" name="service[]" value="Meta Ads scaling"><span data-i18n="svc1.short">Meta Ads scaling</span></label>
+                <label class="chip"><input type="checkbox" name="service[]" value="Marketing management"><span data-i18n="svc2.short">Marketing management</span></label>
+                <label class="chip"><input type="checkbox" name="service[]" value="Growth marketing"><span data-i18n="svc3.short">Growth marketing</span></label>
+                <label class="chip"><input type="checkbox" name="service[]" value="Not sure yet"><span data-i18n="form.notSure">Not sure yet</span></label>
               </div>
               <p class="field__error" id="err-service" data-error-for="service" data-i18n="form.err.service" hidden>Choose at least one service.</p>
             </fieldset>
 
             <div class="field">
               <label class="field__label" for="f-name" data-i18n="form.name">Name</label>
-              <input class="field__input" id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required aria-describedby="err-name">
+              <input class="field__input" id="f-name" name="name" type="text" autocomplete="name" maxlength="120" required>
               <p class="field__error" id="err-name" data-error-for="name" data-i18n="form.err.name" hidden>Please enter your name.</p>
             </div>
 
             <div class="form__pair">
               <div class="field">
                 <label class="field__label" for="f-email" data-i18n="form.email">Email</label>
-                <input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" placeholder="you@brand.com" required aria-describedby="err-email">
+                <input class="field__input" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" placeholder="you@brand.com" required>
                 <p class="field__error" id="err-email" data-error-for="email" data-i18n="form.err.email" hidden>Please enter a valid email address.</p>
               </div>
               <div class="field">
                 <label class="field__label" for="f-phone" data-i18n="form.phone">Phone number</label>
-                <input class="field__input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" placeholder="+40 7XX XXX XXX" required aria-describedby="err-phone">
+                <input class="field__input" id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40" placeholder="+40 7XX XXX XXX" required>
                 <p class="field__error" id="err-phone" data-error-for="phone" data-i18n="form.err.phone" hidden>Please enter a valid phone number.</p>
               </div>
             </div>
 
             <div class="field">
               <label class="field__label" for="f-message"><span data-i18n="form.message">Project details</span> <span class="field__hint" data-i18n="form.optional">(optional)</span></label>
-              <textarea class="field__input field__input--area" id="f-message" name="message" rows="4" maxlength="3000" placeholder="Your brand, your goals and your monthly ad budget." data-i18n-attr="placeholder:form.messagePh"></textarea>
+              <textarea class="field__input field__input--area" id="f-message" data-lenis-prevent name="message" rows="4" maxlength="3000" placeholder="Your brand, your goals and your monthly ad budget." data-i18n-attr="placeholder:form.messagePh"></textarea>
             </div>
 
             <div class="form__foot">
@@ -104,11 +104,11 @@
             </div>
             <p class="form__status" role="status" aria-live="polite" data-form-status>
               <span data-status="sending" data-i18n="form.sending" hidden>Sending your request...</span>
-              <span data-status="fail" hidden><span data-i18n="form.fail">Your request could not be sent. Please try again, or message us on WhatsApp.</span></span>
+              <span data-status="fail"{{form_sent_fail}}><span data-i18n="form.fail">Your request could not be sent. Please try again, or message us on WhatsApp.</span></span>
             </p>
           </div>
 
-          <div class="form__done" data-form-done hidden>
+          <div class="form__done" data-form-done{{form_sent_done}}>
             <svg class="icon form__done-icon" aria-hidden="true"><use href="#i-check-circle"/></svg>
             <h2 class="form__title" tabindex="-1" data-i18n="form.okTitle">Request sent.</h2>
             <p class="form__done-text" data-i18n="form.okText">Thank you. We will get back to you soon with more information and pricing.</p>

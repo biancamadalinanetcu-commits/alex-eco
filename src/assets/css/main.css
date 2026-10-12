@@ -442,7 +442,7 @@ html.intro-skip .intro { display: none; }
   /* the menu appears once the logo has opened */
   html.js:not(.intro-skip):not(.intro-done) body:has(.intro) .nav { opacity: 0; visibility: hidden; transform: translateY(-14px); }
 }
-@media (prefers-reduced-motion: reduce) { .js .intro, .js .shift { display: none; } }
+@media (prefers-reduced-motion: reduce) { .js .intro { display: none; } }
 @keyframes intro-blade { from { opacity: 0; transform: translate(-16%, 20%); } }
 @keyframes intro-arrow { from { opacity: 0; transform: translateY(26%); } }
 @keyframes intro-letter { from { opacity: 0; transform: translateY(45%); } }
@@ -576,6 +576,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 /* ------------------------------------------------------------ passage: statement into services (see initShift) */
 .shift { display: none; }
 .js .shift { display: block; position: relative; height: 160vh; margin-top: -8vh; }
+@media (prefers-reduced-motion: reduce) { .js .shift { display: none; } }
 .shift__stage {
   --open: 0;
   position: sticky; top: 0;
@@ -591,8 +592,17 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
   opacity: var(--open);
 }
 .shift__space { position: absolute; inset: 0; transform-style: preserve-3d; }
+/* the floor lives in its own clipped box below the horizon (same vanishing point as the stage),
+   so its far edge never shows above the glowing line while it streams toward you */
+.shift__ground {
+  position: absolute; left: 0; right: 0; top: 56%; bottom: 0;
+  overflow: hidden;
+  perspective: 720px;
+  perspective-origin: 50% -10vh;
+  perspective-origin: 50% -10svh;
+}
 .shift__floor {
-  position: absolute; left: 50%; top: 56%;
+  position: absolute; left: 50%; top: 0;
   width: 3600px; height: 2400px; margin-left: -1800px;
   transform-origin: 50% 0;
   background:
@@ -995,7 +1005,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .form__done-icon { width: 52px; height: 52px; margin-bottom: 22px; color: var(--blue-hi); }
 .form__done-text { margin-top: 14px; max-width: 40ch; color: var(--text-2); }
 .form__done .btn { margin-top: 28px; }
-.form__done > * { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease-out), transform .9s var(--ease-out); }
+.js .form__done > * { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease-out), transform .9s var(--ease-out); }
 .form__done.is-in > * { opacity: 1; transform: none; }
 .form__done.is-in > :nth-child(2) { transition-delay: .07s; }
 .form__done.is-in > :nth-child(3) { transition-delay: .14s; }
