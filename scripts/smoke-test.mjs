@@ -78,6 +78,13 @@ await page.goto(base, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.getElementById('contact-cta').scrollIntoView());
 await page.waitForTimeout(1200);
 const ctaHref = await page.getAttribute('.cta .btn--primary', 'href');
+check('sphere picture is gone', (await page.locator('img[src*="cta-orb"], source[srcset*="cta-orb"]').count()) === 0);
+const clip = await page.evaluate(async () => {
+  const v = document.querySelector('.cta [data-loop-video]');
+  for (let i = 0; i < 30 && (!v.currentSrc || v.paused); i++) await new Promise((r) => setTimeout(r, 100));
+  return { src: v.currentSrc, playing: !v.paused, muted: v.muted };
+});
+check('closing 3D clip loads and plays muted when reached', /cta-arrow\.(webm|mp4)$/.test(clip.src) && clip.playing && clip.muted, JSON.stringify(clip));
 check('final CTA points to the contact page', ctaHref === 'contact.html');
 await page.click('.footer .lang [data-lang="en"]');
 check('footer switch returns to English', (await page.textContent('h1')).includes('Scale smarter'));
@@ -125,7 +132,7 @@ check('failed send shows a fallback message', await cp.locator('[data-status="fa
 
 await cp.click('.form__submit');
 await cp.waitForSelector('[data-form-done]:not([hidden])', { timeout: 4000 }).catch(() => {});
-check('form sends to scalium.buissines@gmail.com', !!sent && sent.url === 'https://formsubmit.co/ajax/scalium.buissines@gmail.com', sent && sent.url);
+check('form sends to scalium.buisiness@gmail.com', !!sent && sent.url === 'https://formsubmit.co/ajax/scalium.buisiness@gmail.com', sent && sent.url);
 check('request carries service, email and phone', !!sent && sent.body.get('service') === 'Meta Ads scaling, Growth marketing'
   && sent.body.get('email') === 'ana@brand.ro' && sent.body.get('phone') === '0722 123 456' && sent.body.get('name') === 'Ana Test',
   sent && sent.body.toString());

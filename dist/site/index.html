@@ -362,7 +362,11 @@ setTimeout(function () { if (!window.__scaliumIntro) h.classList.add('intro-skip
 </div>
 </div>
 <div class="cta__media" data-cta-media aria-hidden="true">
-<picture><source type="image/avif" srcset="assets/img/cta-orb-800.avif 800w, assets/img/cta-orb-1280.avif 1280w, assets/img/cta-orb-1672.avif 1672w" sizes="100vw"><img class="cta__img" src="assets/img/cta-orb-1280.webp" srcset="assets/img/cta-orb-800.webp 800w, assets/img/cta-orb-1280.webp 1280w, assets/img/cta-orb-1672.webp 1672w" sizes="100vw" width="1672" height="609" alt="" loading="lazy" decoding="async"></picture>
+<video class="loop-video" data-loop-video muted loop playsinline disablepictureinpicture preload="none" tabindex="-1" width="1600" height="700"
+data-poster="assets/video/cta-arrow-poster.webp" data-poster-sm="assets/video/cta-arrow-sm-poster.webp">
+<source data-src="assets/video/cta-arrow.webm" data-src-sm="assets/video/cta-arrow-sm.webm" type="video/webm">
+<source data-src="assets/video/cta-arrow.mp4" data-src-sm="assets/video/cta-arrow-sm.mp4" type="video/mp4">
+</video>
 </div>
 </section>
 </main>

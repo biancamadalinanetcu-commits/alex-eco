@@ -389,13 +389,14 @@ function initStage() {
   if (!frame || reduceMotion) return;
   const mm = gsap.matchMedia();
   mm.add(DESKTOP, () => {
-    gsap.fromTo(frame, { clipPath: 'inset(16% 12% 16% 12% round 28px)', scale: 0.94 }, {
+    gsap.fromTo(frame, { clipPath: 'inset(16% 12% 16% 12% round 28px)', scale: 0.94, rotationX: 22, transformPerspective: 1600, transformOrigin: '50% 100%' }, {
       clipPath: 'inset(0% 0% 0% 0% round 28px)',
       scale: 1,
+      rotationX: 0,
       ease: 'none',
       scrollTrigger: { trigger: '.services__layout', start: 'top 95%', end: 'top 30%', scrub: 0.6 },
     });
-    return () => gsap.set(frame, { clearProps: 'clipPath,transform' });
+    return () => gsap.set(frame, { clearProps: 'clipPath,transform,transformOrigin' });
   });
 }
 
@@ -466,14 +467,22 @@ function initProcess() {
 
     // The beam sits at 62% of the viewport and slides to the right edge as the pin completes,
     // so the last stage lights up before the section releases.
+    // Cards ahead of the beam stand turned away on their hinge (the node on the line) and swing
+    // flat to face the visitor as the beam reaches them, like pages of a timeline opening in 3D.
     const update = (t = 0) => {
       const x = Number(gsap.getProperty(track, 'x')) || 0;
+      const vw = window.innerWidth;
       const lineW = stepsWrap.offsetWidth;
-      const focus = -x + window.innerWidth * (0.62 + 0.38 * t) - stepsWrap.offsetLeft;
+      const focus = -x + vw * (0.62 + 0.38 * t) - stepsWrap.offsetLeft;
       const p = gsap.utils.clamp(0, 1, focus / lineW);
       gsap.set(fill, { scaleX: p });
       gsap.set(head, { x: p * lineW });
-      steps.forEach((s) => s.classList.toggle('is-lit', s.offsetLeft <= focus));
+      steps.forEach((s) => {
+        s.classList.toggle('is-lit', s.offsetLeft <= focus);
+        const ahead = gsap.utils.clamp(0, 1, (s.offsetLeft - focus) / (vw * 0.42));
+        const eased = ahead * ahead * (3 - 2 * ahead);
+        s.style.transform = eased > 0.001 ? `perspective(1100px) rotateY(${(58 * eased).toFixed(2)}deg)` : '';
+      });
     };
 
     let tween = null; // assigned below; ScrollTrigger may refresh while the tween is being created
@@ -497,6 +506,7 @@ function initProcess() {
     return () => {
       section.classList.remove('is-horizontal', 'is-active');
       gsap.set([track, fill, head], { clearProps: 'all' });
+      steps.forEach((s) => { s.style.transform = ''; });
     };
   });
 
@@ -517,9 +527,11 @@ function initProcess() {
 function initResults() {
   const media = $('[data-zoom] picture');
   if (media && !reduceMotion) {
-    gsap.fromTo(media, { scale: 0.84, opacity: 0.35 }, {
+    // The dashboard starts tipped back like a screen lying down and rises upright as it zooms in.
+    gsap.fromTo(media, { scale: 0.84, opacity: 0.35, rotationX: 30, transformPerspective: 1500, transformOrigin: '50% 100%' }, {
       scale: 1,
       opacity: 1,
+      rotationX: 0,
       ease: 'none',
       scrollTrigger: { trigger: '[data-zoom]', start: 'top 96%', end: 'top 28%', scrub: 0.6 },
     });
@@ -545,13 +557,40 @@ function initResults() {
   counters.forEach((el) => io.observe(el));
 }
 
+/* ---------------------------------------------------------------- looping 3D clips
+   The file is only fetched when the clip comes near the screen, and it only plays while visible.
+   Phones get a smaller cut; reduced motion and data saver keep the still frame. */
+function initLoopVideos() {
+  const videos = $$('[data-loop-video]');
+  if (!videos.length) return;
+  const small = matchMedia('(max-width: 700px)').matches;
+  const still = reduceMotion || !!(navigator.connection && navigator.connection.saveData);
+  videos.forEach((v) => {
+    let loaded = false;
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
+      v.poster = small ? v.dataset.posterSm : v.dataset.poster;
+      if (still) return;
+      $$('source', v).forEach((s) => { s.src = small ? s.dataset.srcSm : s.dataset.src; });
+      v.load();
+    };
+    const play = () => { if (!still) v.play().catch(() => { /* autoplay refused: the poster stays */ }); };
+    if (!('IntersectionObserver' in window)) { load(); play(); return; }
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { load(); play(); } else if (!v.paused) v.pause();
+    }, { rootMargin: '300px 0px' }).observe(v);
+  });
+}
+
 /* ---------------------------------------------------------------- closing scene */
 function initCta() {
-  const media = $('[data-cta-media] picture');
+  const media = $('[data-cta-media] video');
   if (!media || reduceMotion) return;
-  gsap.fromTo(media, { scale: 1.2, yPercent: 10 }, {
+  gsap.fromTo(media, { scale: 1.2, yPercent: 10, rotationX: 26, transformPerspective: 1300, transformOrigin: '50% 100%' }, {
     scale: 1,
     yPercent: 0,
+    rotationX: 0,
     ease: 'none',
     scrollTrigger: { trigger: '.cta', start: 'top 85%', end: 'bottom bottom', scrub: 0.6 },
   });
@@ -682,6 +721,7 @@ function boot() {
   initProcess();
   initResults();
   initCta();
+  initLoopVideos();
   initContactForm();
 
   // Copy length changes with the language, so pinned distances must be measured again.

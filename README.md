@@ -50,11 +50,14 @@ Anything typed into the **Contact** page in WordPress (Pages → Contact), such 
 4. **Process**: Create, Launch, Analyze, Automate, Scale. On desktop it scrolls sideways
    while a blue beam fills the timeline.
 5. **Results**: the performance dashboard zooms into place and the figures count up.
-6. **Closing call to action**: "Growing together." with the **Contact us for more information and pricing** button.
+6. **Closing call to action**: "Growing together." with the **Contact us for more information and pricing** button,
+   above a looping 3D clip of the Scalium arrow in brushed metal with a glowing blue seam (also at the bottom of
+   the contact page). It loads only when the visitor scrolls near it.
 
 Scrolling glides with a little inertia on mouse and trackpad (Lenis; phones keep their native scrolling).
-Section headings rise word by word, images open like a curtain, the process cards light up as the beam
-reaches them and the results figures arrive one after another.
+Motion is 3D wherever it helps: headings stand up word by word, the services screen and the results dashboard
+rise from lying back, the process cards swing open on their hinge as the beam reaches them, the figures flip up
+one after another and the contact form tilts into place.
 
 "Dashing" blue accents run through the whole page: light that runs along hairlines as sections appear, a streak
 across buttons on hover, the scroll-progress line under the menu, and a blue-edged wipe between pages.
@@ -99,6 +102,9 @@ Asset pipeline (only needed when the brand files change):
 - `npm run logo` traces `brand/5.jpg` into the vector logos in `src/assets/img/`.
 - `npm run images` crops the key visuals and writes responsive AVIF/WebP files, favicons and the OG image.
 - `npm run fonts` subsets Mona Sans and Martian Mono (needs `pip install fonttools brotli`).
+- `npm run video` renders the closing 3D clip (`scripts/video/scene.html`, three.js) frame by frame and encodes it
+  with ffmpeg into `src/assets/video/` (WebM + MP4, desktop and phone cuts, posters). `--preview <dir>` writes
+  four stills instead.
 
 Typefaces: Mona Sans (headlines in its semi-expanded width) and Martian Mono for small technical labels,
 both self-hosted under the SIL Open Font License. Icons: Phosphor. Animation: GSAP + ScrollTrigger, smooth scrolling: Lenis.

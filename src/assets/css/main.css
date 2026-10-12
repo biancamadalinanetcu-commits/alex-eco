@@ -328,8 +328,8 @@ em { font-style: normal; }
 .js [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* headings: every word rises out of its own mask (split by JS, see initHeadings) */
-.wm { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em 0 .14em; margin: -.08em 0 -.14em; }
-.wm > span { display: inline-block; transform: translateY(112%); transition: transform 1.15s var(--ease-out); transition-delay: calc(.1s + var(--wi) * .045s); }
+.wm { display: inline-block; overflow: hidden; vertical-align: top; padding: .08em 0 .14em; margin: -.08em 0 -.14em; perspective: 600px; }
+.wm > span { display: inline-block; transform: translateY(100%) rotateX(75deg); transform-origin: 50% 100%; transition: transform 1.25s var(--ease-out); transition-delay: calc(.1s + var(--wi) * .045s); }
 .is-in .wm > span { transform: none; }
 
 /* media opens like a curtain while the picture settles from a slight zoom */
@@ -547,6 +547,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 @keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes visual-in { from { opacity: 0; transform: translateY(30px) scale(.97); filter: blur(8px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes rise-3d { from { opacity: 0; transform: perspective(1400px) rotateX(24deg) translateY(56px); } to { opacity: 1; transform: none; } }
 @keyframes ignite { from { color: var(--text); } to { color: var(--blue-text); } }
 
 /* ------------------------------------------------------------ statement */
@@ -568,6 +569,8 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 }
 .outcome { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 18px 12px; font-size: clamp(1.05rem, 1.5vw, 1.35rem); font-weight: 500; letter-spacing: -.02em; }
 .outcome .dash { grid-column: 1 / -1; }
+.js .outcome[data-reveal] { transform: perspective(800px) rotateX(55deg) translateY(24px); transform-origin: 50% 100%; }
+.js .outcome[data-reveal].is-in { transform: none; }
 .outcome .icon { color: var(--blue-hi); width: 22px; height: 22px; }
 
 /* ------------------------------------------------------------ services */
@@ -674,9 +677,11 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
   transition: border-color .5s;
 }
 .step.is-lit .step__card { border-color: rgba(93, 157, 255, .35); }
-/* cards wait slightly dimmed and offset, then lift into place as the beam reaches them */
-.js .step__card { transition: border-color .5s, opacity .7s var(--ease-out), transform .9s var(--ease-out); }
-.js .step:not(.is-lit) .step__card { opacity: .75; transform: translateY(18px); }
+/* cards wait slightly dimmed and tipped back, then swing upright as the beam reaches them.
+   On desktop the whole stage also turns on its hinge (the node), driven by scroll in JS. */
+.js .step__card { transform-origin: 50% 0; transition: border-color .5s, opacity .7s var(--ease-out), transform 1s var(--ease-out); }
+.js .step:not(.is-lit) .step__card { opacity: .75; transform: perspective(900px) rotateX(-38deg) translateY(14px); }
+.js .process.is-horizontal .step:not(.is-lit) .step__card { transform: translateY(18px); }
 .js .process.is-horizontal .step:nth-child(even):not(.is-lit) .step__card { transform: translateY(-18px); }
 .step__title { display: flex; align-items: center; gap: 12px; font: 600 12.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .step__title .icon { width: 20px; height: 20px; color: var(--blue-hi); }
@@ -702,7 +707,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .process.is-horizontal .process__emblem { max-width: 340px; }
 .process.is-horizontal .process__steps { flex: 0 0 auto; }
 .process.is-horizontal .steps { display: flex; gap: 0; }
-.process.is-horizontal .step { flex: 0 0 auto; width: 320px; height: min(78vh, 660px); padding: 0; }
+.process.is-horizontal .step { flex: 0 0 auto; width: 320px; height: min(78vh, 660px); padding: 0; transform-origin: 0 50%; will-change: transform; }
 .process.is-horizontal .step__node { top: 50%; left: 0; margin: -6.5px 0 0 -6.5px; }
 .process.is-horizontal .step::before { content: ""; position: absolute; left: 0; width: 1px; height: 44px; background: linear-gradient(var(--line-2), var(--line)); }
 .process.is-horizontal .step:nth-child(odd)::before { bottom: 50%; }
@@ -748,7 +753,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .stat dt .icon { width: 18px; height: 18px; color: var(--blue-hi); }
 .footnote { margin-top: 36px; font-size: 13px; color: var(--text-3); }
 /* the four figures arrive one after another */
-.js .stats .stat { opacity: 0; transform: translateY(22px); transition: opacity .9s var(--ease-out), transform 1.1s var(--ease-out); }
+.js .stats .stat { opacity: 0; transform: perspective(800px) rotateX(70deg) translateY(12px); transform-origin: 50% 100%; transition: opacity .9s var(--ease-out), transform 1.2s var(--ease-out); }
 .js .stats.is-in .stat { opacity: 1; transform: none; }
 .js .stats .stat:nth-child(2) { transition-delay: .08s; }
 .js .stats .stat:nth-child(3) { transition-delay: .16s; }
@@ -761,12 +766,19 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .cta__sub { margin-top: 22px; color: var(--text-2); font-size: clamp(1.05rem, 1.5vw, 1.3rem); }
 .cta__action { margin-top: 44px; }
 .cta__media { position: relative; z-index: 1; margin-top: clamp(-120px, -6vw, -40px); }
-.cta__img {
-  width: 100%;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 72%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 26%, #000 72%, transparent 100%);
+/* the closing 3D clip; its edges dissolve into the page */
+.loop-video {
+  display: block;
+  width: 100%; height: auto;
+  aspect-ratio: 16 / 7;
+  object-fit: cover;
+  background: var(--bg);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
+  mask-composite: intersect;
 }
-.cta__media picture { transform-origin: 50% 40%; will-change: transform; }
+.cta__media video { transform-origin: 50% 100%; will-change: transform; }
 
 /* ------------------------------------------------------------ footer */
 .footer { padding-bottom: 36px; }
@@ -819,11 +831,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 /* ------------------------------------------------------------ contact page */
 .contact__hero { position: relative; padding: calc(var(--nav-h) + clamp(48px, 8vw, 110px)) 0 0; overflow: hidden; }
 .contact__bg { position: relative; z-index: 0; margin-top: clamp(-90px, -5vw, -24px); pointer-events: none; }
-.contact__img {
-  width: 100%;
-  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 30%, #000 74%, transparent 100%);
-  mask-image: linear-gradient(180deg, transparent 0, #000 30%, #000 74%, transparent 100%);
-}
+
 .contact__inner { position: relative; z-index: 1; }
 .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-2); font-size: 14px; transition: color .3s; }
 .back-link .icon { transition: transform .5s var(--ease-out); }
@@ -940,7 +948,7 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 
 @media (prefers-reduced-motion: no-preference) {
   .contact__aside { animation: fade-up 1s var(--ease-out) .45s both; }
-  .contact__grid .form { animation: fade-up 1.1s var(--ease-out) .55s both; }
+  .contact__grid .form { transform-origin: 50% 100%; animation: rise-3d 1.4s var(--ease-out) .55s both; }
 }
 
 /* ------------------------------------------------------------ page transition wipe */
@@ -1007,6 +1015,10 @@ html.is-entering.is-entered .wipe { transform: translateX(101%); transition: tra
   .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
 }
 
+@media (max-width: 700px) {
+  .loop-video { aspect-ratio: 12 / 7; }
+}
+
 @media (max-width: 560px) {
   body { font-size: 16px; }
   .lang { --w: 36px; height: 34px; }
@@ -1027,7 +1039,7 @@ html.is-entering.is-entered .wipe { transform: translateX(101%); transition: tra
   .trails__comets { display: none; }
   .js [data-reveal] { opacity: 1; transform: none; }
   .js .service { opacity: 1; }
-  .js [data-reveal-media], .js [data-reveal-media] img, .js .stats .stat, .js .step .step__card { clip-path: none; opacity: 1; transform: none; }
+  .js [data-reveal-media], .js [data-reveal-media] img, .js .stats .stat, .js .step .step__card, .js .outcome[data-reveal] { clip-path: none; opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
