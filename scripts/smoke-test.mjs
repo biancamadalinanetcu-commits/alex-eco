@@ -79,12 +79,24 @@ await page.evaluate(() => document.getElementById('contact-cta').scrollIntoView(
 await page.waitForTimeout(1200);
 const ctaHref = await page.getAttribute('.cta .btn--primary', 'href');
 check('sphere picture is gone', (await page.locator('img[src*="cta-orb"], source[srcset*="cta-orb"]').count()) === 0);
-const clip = await page.evaluate(async () => {
-  const v = document.querySelector('.cta [data-loop-video]');
-  for (let i = 0; i < 30 && (!v.currentSrc || v.paused); i++) await new Promise((r) => setTimeout(r, 100));
-  return { src: v.currentSrc, playing: !v.paused, muted: v.muted };
+// the arrow turns with scroll: the canvas shows a different angle at two scroll positions
+const sample = () => page.evaluate(() => {
+  const c = document.querySelector('.cta [data-turn] canvas');
+  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  let sum = 0;
+  for (let i = 0; i < d.length; i += 97) sum += d[i];
+  return { ready: c.parentElement.classList.contains('is-ready'), sum };
 });
-check('closing 3D clip loads and plays muted when reached', /cta-arrow\.(webm|mp4)$/.test(clip.src) && clip.playing && clip.muted, JSON.stringify(clip));
+const turnTop = await page.evaluate(() => document.querySelector('.cta [data-turn]').getBoundingClientRect().top + scrollY);
+await page.evaluate((y) => window.scrollTo(0, y - innerHeight + 120), turnTop);
+await page.waitForTimeout(2500);
+const early = await sample();
+await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+await page.waitForTimeout(1500);
+const late = await sample();
+check('closing arrow turns as you scroll', early.ready && late.ready && Math.abs(early.sum - late.sum) > 1000, JSON.stringify({ early, late }));
+await page.evaluate(() => document.getElementById('contact-cta').scrollIntoView());
+await page.waitForTimeout(800);
 check('final CTA points to the contact page', ctaHref === 'contact.html');
 await page.click('.footer .lang [data-lang="en"]');
 check('footer switch returns to English', (await page.textContent('h1')).includes('Scale smarter'));

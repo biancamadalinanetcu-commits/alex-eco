@@ -365,11 +365,13 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </div>
 </div>
 <div class="cta__media" data-cta-media aria-hidden="true">
-<video class="loop-video" data-loop-video muted loop playsinline disablepictureinpicture preload="none" tabindex="-1" width="1600" height="700"
-data-poster="assets/video/cta-arrow-poster.webp" data-poster-sm="assets/video/cta-arrow-sm-poster.webp">
-<source data-src="assets/video/cta-arrow.webm" data-src-sm="assets/video/cta-arrow-sm.webm" type="video/webm">
-<source data-src="assets/video/cta-arrow.mp4" data-src-sm="assets/video/cta-arrow-sm.mp4" type="video/mp4">
-</video>
+<div class="turn" data-turn data-frames="60" data-src="assets/arrow/d/" data-src-sm="assets/arrow/m/">
+<picture>
+<source media="(max-width: 700px)" srcset="assets/arrow/m/still.webp" width="960" height="560">
+<img class="turn__still" src="assets/arrow/d/still.webp" alt="" width="1600" height="700" loading="lazy" decoding="async">
+</picture>
+<canvas class="turn__canvas"></canvas>
+</div>
 </div>
 </section>
 </main>

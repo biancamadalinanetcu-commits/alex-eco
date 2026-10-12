@@ -766,19 +766,18 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .cta__sub { margin-top: 22px; color: var(--text-2); font-size: clamp(1.05rem, 1.5vw, 1.3rem); }
 .cta__action { margin-top: 44px; }
 .cta__media { position: relative; z-index: 1; margin-top: clamp(-120px, -6vw, -40px); }
-/* the closing 3D clip; its edges dissolve into the page */
-.loop-video {
-  display: block;
-  width: 100%; height: auto;
+/* the closing 3D arrow (turned by scroll, see initTurns); its edges dissolve into the page */
+.turn {
+  position: relative;
   aspect-ratio: 16 / 7;
-  object-fit: cover;
-  background: var(--bg);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
   mask-composite: intersect;
 }
-.cta__media video { transform-origin: 50% 100%; will-change: transform; }
+.turn__still, .turn__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.turn__still { object-fit: cover; }
+.cta__media .turn { will-change: transform; }
 
 /* ------------------------------------------------------------ footer */
 .footer { padding-bottom: 36px; }
@@ -1016,7 +1015,7 @@ html.is-entering.is-entered .wipe { transform: translateX(101%); transition: tra
 }
 
 @media (max-width: 700px) {
-  .loop-video { aspect-ratio: 12 / 7; }
+  .turn { aspect-ratio: 12 / 7; }
 }
 
 @media (max-width: 560px) {

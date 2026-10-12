@@ -192,6 +192,22 @@ window.renderFrame = (t) => {
   pool.material.opacity = 0.75 + 0.25 * pulse;
   composer.render();
 };
+// Scroll turn: p = 0 shows the mark from the side, dim; p = 1 faces the visitor with the seam fully lit.
+// The site draws the frame that matches how far the closing section has scrolled into view.
+window.renderTurn = (p) => {
+  const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2; // ease in-out
+  pivot.rotation.y = -1.42 + 0.8 * e;
+  mirrorPivot.rotation.y = pivot.rotation.y;
+  const r = 1120 - 140 * e;
+  camera.position.set(0, height * (0.42 + 0.13 * e), r);
+  camera.lookAt(0, height * 0.42, 0);
+  sweep.target.position.set(260 - 480 * e, height * 0.6, 0);
+  const lit = 0.3 + 0.7 * e;
+  glow.color.setRGB(0.2 * lit, 0.55 * lit, 3.2 * lit);
+  blueBase.intensity = 7e3 * lit;
+  pool.material.opacity = lit;
+  composer.render();
+};
 window.renderFrame(0);
 window.ready = true;
 </script>

@@ -561,40 +561,95 @@ function initResults() {
   counters.forEach((el) => io.observe(el));
 }
 
-/* ---------------------------------------------------------------- looping 3D clips
-   The file is only fetched when the clip comes near the screen, and it only plays while visible.
-   Phones get a smaller cut; reduced motion and data saver keep the still frame. */
-function initLoopVideos() {
-  const videos = $$('[data-loop-video]');
-  if (!videos.length) return;
+/* ---------------------------------------------------------------- the arrow turns as you scroll
+   Stills of the 3D arrow at different angles are drawn on a canvas and the scroll position picks the
+   frame, so the arrow swings round to face the visitor (the technique of Apple's product pages).
+   Frames load only when the section comes near; until then (and for reduced motion) the still shows. */
+function initTurns() {
+  const turns = $$('[data-turn]');
+  if (!turns.length || reduceMotion) return;
   const small = matchMedia('(max-width: 700px)').matches;
-  const still = reduceMotion || !!(navigator.connection && navigator.connection.saveData);
-  videos.forEach((v) => {
-    let loaded = false;
-    const load = () => {
-      if (loaded) return;
-      loaded = true;
-      v.poster = small ? v.dataset.posterSm : v.dataset.poster;
-      if (still) return;
-      $$('source', v).forEach((s) => { s.src = small ? s.dataset.srcSm : s.dataset.src; });
-      v.load();
+
+  turns.forEach((el) => {
+    const canvas = $('canvas', el);
+    const ctx = canvas.getContext('2d');
+    const count = Number(el.dataset.frames) || 60;
+    const base = small ? el.dataset.srcSm : el.dataset.src;
+    const frames = new Array(count).fill(null);
+    let target = 0;
+    let drawn = -1;
+
+    const draw = () => {
+      // the wanted frame, or the closest one already loaded
+      let idx = -1;
+      for (let d = 0; d < count && idx < 0; d++) {
+        if (frames[target - d]) idx = target - d;
+        else if (frames[target + d]) idx = target + d;
+      }
+      if (idx < 0 || idx === drawn) return;
+      const img = frames[idx];
+      const s = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const w = img.naturalWidth * s;
+      const h = img.naturalHeight * s;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
+      drawn = idx;
+      el.classList.add('is-ready');
     };
-    const play = () => { if (!still) v.play().catch(() => { /* autoplay refused: the poster stays */ }); };
-    if (!('IntersectionObserver' in window)) { load(); play(); return; }
-    new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { load(); play(); } else if (!v.paused) v.pause();
-    }, { rootMargin: '300px 0px' }).observe(v);
+    const fit = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(el.clientWidth * dpr);
+      canvas.height = Math.round(el.clientHeight * dpr);
+      drawn = -1;
+      draw();
+    };
+
+    let loading = false;
+    const load = () => {
+      if (loading) return;
+      loading = true;
+      fit();
+      // coarse frames first, so scrolling already turns the arrow while the rest arrive
+      const order = [];
+      [12, 6, 3, 1].forEach((step) => { for (let i = 0; i < count; i += step) if (!order.includes(i)) order.push(i); });
+      if (!order.includes(count - 1)) order.splice(1, 0, count - 1);
+      let next = 0;
+      const pump = () => {
+        if (next >= order.length) return;
+        const i = order[next++];
+        const img = new Image();
+        img.decoding = 'async';
+        img.onload = () => { frames[i] = img; draw(); pump(); };
+        img.onerror = pump;
+        img.src = `${base}${String(i).padStart(2, '0')}.webp`;
+      };
+      for (let k = 0; k < 4; k++) pump(); // four downloads at a time
+    };
+
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { load(); io.disconnect(); } }, { rootMargin: '900px 0px' });
+      io.observe(el);
+    } else load();
+    window.addEventListener('resize', () => { if (loading) fit(); });
+
+    const state = { p: 0 };
+    gsap.to(state, {
+      p: 1,
+      ease: 'none',
+      onUpdate: () => { target = Math.round(state.p * (count - 1)); draw(); },
+      // from when the arrow comes into view until the section's bottom edge is on screen (clamped so short pages still finish)
+      scrollTrigger: { trigger: el, start: 'clamp(top 80%)', end: 'clamp(bottom bottom)', scrub: lenis ? 0.3 : 0.6 },
+    });
   });
 }
 
 /* ---------------------------------------------------------------- closing scene */
 function initCta() {
-  const media = $('[data-cta-media] video');
+  const media = $('[data-cta-media] .turn');
   if (!media || reduceMotion) return;
-  gsap.fromTo(media, { scale: 1.2, yPercent: 10, rotationX: 26, transformPerspective: 1300, transformOrigin: '50% 100%' }, {
+  gsap.fromTo(media, { scale: 1.12, yPercent: 8, transformOrigin: '50% 100%' }, {
     scale: 1,
     yPercent: 0,
-    rotationX: 0,
     ease: 'none',
     scrollTrigger: { trigger: '.cta', start: 'top 85%', end: 'bottom bottom', scrub: 0.6 },
   });
@@ -730,7 +785,7 @@ function boot() {
   safe(initProcess);
   safe(initResults);
   safe(initCta);
-  safe(initLoopVideos);
+  safe(initTurns);
   safe(initContactForm);
 
   // Copy length changes with the language, so pinned distances must be measured again.

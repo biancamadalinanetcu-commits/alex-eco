@@ -9,7 +9,7 @@
     "images": "node scripts/optimize-images.mjs",
     "logo": "node scripts/trace-logo.mjs",
     "fonts": "bash scripts/subset-fonts.sh",
-    "video": "node scripts/render-video.mjs",
+    "arrow": "node scripts/render-arrow.mjs",
     "test": "node scripts/smoke-test.mjs",
     "screenshots": "node scripts/screenshots.mjs shots"
   },
