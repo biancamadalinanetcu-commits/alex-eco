@@ -168,6 +168,10 @@ function initIntro() {
     return null;
   }
   window.__scaliumIntro = true;
+  // A reload lands back on the closed logo, so the intro always plays from the start
+  // (the head script already turned off the browser's own scroll restoration).
+  ScrollTrigger.clearScrollMemory('manual');
+  window.scrollTo(0, 0);
 
   const heroLayers = $$('.hero__grid, .hero__bg', wrap);
   const bg = $('.intro__bg', intro);
@@ -703,26 +707,31 @@ function initContactForm() {
 }
 
 /* ---------------------------------------------------------------- boot */
+// Each feature starts on its own: one failing (an old browser, a blocked API) never takes the others down.
+function safe(fn, ...args) {
+  try { return fn(...args); } catch (err) { console.error(err); return null; }
+}
+
 function boot() {
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 
-  initSmoothScroll();
-  initTransitions();
-  initAnchors();
-  initMenu();
-  initNav();
-  initHeadings();
-  initReveal();
-  const introWrap = initIntro();
-  initHero(introWrap);
-  initStatement();
-  initStage();
-  initServices();
-  initProcess();
-  initResults();
-  initCta();
-  initLoopVideos();
-  initContactForm();
+  safe(initSmoothScroll);
+  const introWrap = safe(initIntro); // first, so nothing else can keep the logo intro from starting
+  safe(initTransitions);
+  safe(initAnchors);
+  safe(initMenu);
+  safe(initNav);
+  safe(initHeadings);
+  safe(initReveal);
+  safe(initHero, introWrap);
+  safe(initStatement);
+  safe(initStage);
+  safe(initServices);
+  safe(initProcess);
+  safe(initResults);
+  safe(initCta);
+  safe(initLoopVideos);
+  safe(initContactForm);
 
   // Copy length changes with the language, so pinned distances must be measured again.
   // Done synchronously: a deferred refresh would cancel a smooth scroll the visitor starts right after.

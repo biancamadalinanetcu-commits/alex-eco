@@ -18,10 +18,13 @@
         setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
       }
       sessionStorage.removeItem('scalium-wipe');
-      /* The logo intro only plays from the top of the home page. If the animation script never
-         arrives, drop it after a few seconds so the hero is never left covered. */
-      if (location.hash) h.classList.add('intro-skip');
-      setTimeout(function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); }, 3500);
+      /* The logo intro plays from the top of the home page; a link to one of its sections skips it.
+         If the animation script failed (it has run by the time the page has loaded), drop the
+         intro so the hero is never left covered. A slow connection only delays it. */
+      if (/^#(top|main|services|process|results|contact-cta)$/.test(location.hash)) h.classList.add('intro-skip');
+      /* a reload starts at the top, so the logo intro plays again from the beginning */
+      else if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
     } catch (e) {}
   })(document);
 </script>

@@ -144,6 +144,19 @@ check('WhatsApp greeting follows the language', waRo.includes('Bun%C4%83'), waRo
 await cp.click('.nav .lang [data-lang="en"]');
 await cp.close();
 
+// the logo intro must survive a slow connection (the animation script arriving late)
+const slow = await ctx.newPage();
+await slow.route('**/assets/js/main.js', async (route) => { await new Promise((r) => setTimeout(r, 5000)); return route.continue(); });
+await slow.goto(base, { waitUntil: 'load', timeout: 20000 });
+await slow.waitForTimeout(800);
+check('logo intro survives a slow script', await slow.evaluate(() => !document.documentElement.classList.contains('intro-skip') && window.__scaliumIntro === true));
+await slow.evaluate(() => window.scrollTo(0, 900));
+await slow.waitForTimeout(1500);
+await slow.reload({ waitUntil: 'load', timeout: 20000 });
+await slow.waitForTimeout(800);
+check('reload starts again on the logo intro', await slow.evaluate(() => scrollY === 0 && window.__scaliumIntro === true));
+await slow.close();
+
 // mobile menu
 const m = await browser.newContext({ viewport: { width: 390, height: 844 } });
 const mp = await m.newPage();
