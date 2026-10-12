@@ -8,4 +8,6 @@ export const crops = [
   { name: 'svc-growth', src: 'brand/2.webp', left: 1096, top: 560, width: 548, height: 276, widths: [520, 760, 1040] },
   { name: 'process-emblem', src: 'brand/2.webp', left: 590, top: 318, width: 352, height: 232, widths: [420, 700] },
   { name: 'results-dashboard', src: 'brand/3.webp', left: 40, top: 480, width: 1214, height: 554, widths: [640, 1000, 1400] },
+  // the brushed-metal arrow from the closing key visual, without its baked-in headline
+  { name: 'cta-arrow', src: 'brand/7.webp', left: 742, top: 120, width: 930, height: 821, widths: [600, 930] },
 ];

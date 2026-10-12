@@ -346,6 +346,71 @@ function initStatement() {
   document.addEventListener('langchange', build);
 }
 
+/* ---------------------------------------------------------------- passage: statement into services
+   One scrubbed value p (0 to 1) drives a minimal 3D scene: a grid floor unfolds up to a glowing horizon
+   and streams toward you, thin frames rush past, the section name surfaces in the middle, and everything
+   folds away as the services arrive. Meanwhile the statement above tilts back into the floor. */
+function initShift() {
+  const shift = $('[data-shift]');
+  if (!shift || reduceMotion) return;
+  const stage = $('[data-shift-stage]', shift);
+  const floor = $('[data-shift-floor]', shift);
+  const horizon = $('[data-shift-horizon]', shift);
+  const label = $('[data-shift-label]', shift);
+  const gates = $$('.shift__gate', shift);
+  const clamp01 = (v) => Math.min(1, Math.max(0, v));
+  const smooth = (a, b, v) => { const t = clamp01((v - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const CELL = 120;
+
+  const render = (p) => {
+    // The stage is fully on screen (sticky) for p of about 0.38 to 0.62: it unfolds as it arrives
+    // and has folded away before it scrolls off, so nothing sits behind the services heading.
+    const open = smooth(0.14, 0.4, p) * (1 - smooth(0.58, 0.72, p));
+    const travel = p * CELL * 22;
+    floor.style.transform = `rotateX(${(90 - 15 * open).toFixed(2)}deg) translate3d(0, ${(-CELL + (travel % CELL)).toFixed(1)}px, 0)`;
+    floor.style.opacity = open.toFixed(3);
+    horizon.style.transform = `scaleX(${open.toFixed(3)})`;
+    stage.style.setProperty('--open', open.toFixed(3));
+    gates.forEach((g, i) => {
+      const z = -3000 + i * 850 + p * 3900;
+      g.style.transform = `translate3d(-50%, -50%, ${z.toFixed(0)}px)`;
+      g.style.opacity = (clamp01((z + 3000) / 1400) * (1 - clamp01((z - 150) / 450)) * open).toFixed(3);
+    });
+    const l = smooth(0.37, 0.46, p) * (1 - smooth(0.55, 0.63, p));
+    label.style.opacity = l.toFixed(3);
+    label.style.transform = `translate3d(-50%, -50%, ${(-420 + 560 * smooth(0.37, 0.63, p)).toFixed(0)}px)`;
+  };
+
+  const state = { p: 0 };
+  render(0);
+  gsap.to(state, {
+    p: 1,
+    ease: 'none',
+    onUpdate: () => render(state.p),
+    scrollTrigger: {
+      trigger: shift,
+      start: 'top bottom',
+      end: 'bottom top',
+      scrub: lenis ? 0.3 : 0.6,
+      onRefresh: (self) => { state.p = self.progress; render(self.progress); },
+    },
+  });
+
+  // the statement tips back into the floor as the passage opens
+  const text = $('.statement .container');
+  if (text) {
+    gsap.to(text, {
+      rotationX: 34,
+      z: -160,
+      opacity: 0.08,
+      transformOrigin: '50% 100%',
+      transformPerspective: 1100,
+      ease: 'none',
+      scrollTrigger: { trigger: shift, start: 'top 55%', end: 'top top', scrub: lenis ? 0.3 : 0.6 },
+    });
+  }
+}
+
 /* ---------------------------------------------------------------- headings rise word by word
    Each word sits in its own mask and slides up when the heading's section scrolls into view
    (the reveal observer adds .is-in). Screen readers get the plain sentence from aria-label. */
@@ -561,93 +626,11 @@ function initResults() {
   counters.forEach((el) => io.observe(el));
 }
 
-/* ---------------------------------------------------------------- the arrow turns as you scroll
-   Stills of the 3D arrow at different angles are drawn on a canvas and the scroll position picks the
-   frame, so the arrow swings round to face the visitor (the technique of Apple's product pages).
-   Frames load only when the section comes near; until then (and for reduced motion) the still shows. */
-function initTurns() {
-  const turns = $$('[data-turn]');
-  if (!turns.length || reduceMotion) return;
-  const small = matchMedia('(max-width: 700px)').matches;
-
-  turns.forEach((el) => {
-    const canvas = $('canvas', el);
-    const ctx = canvas.getContext('2d');
-    const count = Number(el.dataset.frames) || 60;
-    const base = small ? el.dataset.srcSm : el.dataset.src;
-    const frames = new Array(count).fill(null);
-    let target = 0;
-    let drawn = -1;
-
-    const draw = () => {
-      // the wanted frame, or the closest one already loaded
-      let idx = -1;
-      for (let d = 0; d < count && idx < 0; d++) {
-        if (frames[target - d]) idx = target - d;
-        else if (frames[target + d]) idx = target + d;
-      }
-      if (idx < 0 || idx === drawn) return;
-      const img = frames[idx];
-      const s = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-      const w = img.naturalWidth * s;
-      const h = img.naturalHeight * s;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, (canvas.width - w) / 2, (canvas.height - h) / 2, w, h);
-      drawn = idx;
-      el.classList.add('is-ready');
-    };
-    const fit = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(el.clientWidth * dpr);
-      canvas.height = Math.round(el.clientHeight * dpr);
-      drawn = -1;
-      draw();
-    };
-
-    let loading = false;
-    const load = () => {
-      if (loading) return;
-      loading = true;
-      fit();
-      // coarse frames first, so scrolling already turns the arrow while the rest arrive
-      const order = [];
-      [12, 6, 3, 1].forEach((step) => { for (let i = 0; i < count; i += step) if (!order.includes(i)) order.push(i); });
-      if (!order.includes(count - 1)) order.splice(1, 0, count - 1);
-      let next = 0;
-      const pump = () => {
-        if (next >= order.length) return;
-        const i = order[next++];
-        const img = new Image();
-        img.decoding = 'async';
-        img.onload = () => { frames[i] = img; draw(); pump(); };
-        img.onerror = pump;
-        img.src = `${base}${String(i).padStart(2, '0')}.webp`;
-      };
-      for (let k = 0; k < 4; k++) pump(); // four downloads at a time
-    };
-
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { load(); io.disconnect(); } }, { rootMargin: '900px 0px' });
-      io.observe(el);
-    } else load();
-    window.addEventListener('resize', () => { if (loading) fit(); });
-
-    const state = { p: 0 };
-    gsap.to(state, {
-      p: 1,
-      ease: 'none',
-      onUpdate: () => { target = Math.round(state.p * (count - 1)); draw(); },
-      // from when the arrow comes into view until the section's bottom edge is on screen (clamped so short pages still finish)
-      scrollTrigger: { trigger: el, start: 'clamp(top 80%)', end: 'clamp(bottom bottom)', scrub: lenis ? 0.3 : 0.6 },
-    });
-  });
-}
-
 /* ---------------------------------------------------------------- closing scene */
 function initCta() {
-  const media = $('[data-cta-media] .turn');
+  const media = $('[data-cta-media] picture');
   if (!media || reduceMotion) return;
-  gsap.fromTo(media, { scale: 1.12, yPercent: 8, transformOrigin: '50% 100%' }, {
+  gsap.fromTo(media, { scale: 1.1, yPercent: 8, transformOrigin: '50% 100%' }, {
     scale: 1,
     yPercent: 0,
     ease: 'none',
@@ -780,12 +763,12 @@ function boot() {
   safe(initReveal);
   safe(initHero, introWrap);
   safe(initStatement);
+  safe(initShift);
   safe(initStage);
   safe(initServices);
   safe(initProcess);
   safe(initResults);
   safe(initCta);
-  safe(initTurns);
   safe(initContactForm);
 
   // Copy length changes with the language, so pinned distances must be measured again.

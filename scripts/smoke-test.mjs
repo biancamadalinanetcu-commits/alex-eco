@@ -79,22 +79,18 @@ await page.evaluate(() => document.getElementById('contact-cta').scrollIntoView(
 await page.waitForTimeout(1200);
 const ctaHref = await page.getAttribute('.cta .btn--primary', 'href');
 check('sphere picture is gone', (await page.locator('img[src*="cta-orb"], source[srcset*="cta-orb"]').count()) === 0);
-// the arrow turns with scroll: the canvas shows a different angle at two scroll positions
-const sample = () => page.evaluate(() => {
-  const c = document.querySelector('.cta [data-turn] canvas');
-  const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
-  let sum = 0;
-  for (let i = 0; i < d.length; i += 97) sum += d[i];
-  return { ready: c.parentElement.classList.contains('is-ready'), sum };
-});
-const turnTop = await page.evaluate(() => document.querySelector('.cta [data-turn]').getBoundingClientRect().top + scrollY);
-await page.evaluate((y) => window.scrollTo(0, y - innerHeight + 120), turnTop);
-await page.waitForTimeout(2500);
-const early = await sample();
-await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+// the closing arrow photo replaces the sphere, and the 3D passage runs between the statement and the services
+await page.evaluate(() => document.querySelector('.cta__img').scrollIntoView());
 await page.waitForTimeout(1500);
-const late = await sample();
-check('closing arrow turns as you scroll', early.ready && late.ready && Math.abs(early.sum - late.sum) > 1000, JSON.stringify({ early, late }));
+check('closing arrow photo is shown', await page.evaluate(() => { const i = document.querySelector('.cta__img'); return /cta-arrow/.test(i.currentSrc) && i.naturalWidth > 0; }));
+const passage = await page.evaluate(async () => {
+  const s = document.querySelector('[data-shift]');
+  window.scrollTo(0, s.getBoundingClientRect().top + scrollY + s.offsetHeight * 0.15);
+  await new Promise((r) => setTimeout(r, 1500));
+  const op = (sel) => Number(getComputedStyle(document.querySelector(sel)).opacity);
+  return { floor: op('[data-shift-floor]'), gates: [...document.querySelectorAll('.shift__gate')].some((g) => Number(g.style.opacity) > 0.05) };
+});
+check('3D passage plays between the statement and the services', passage.floor > 0.5 && passage.gates, JSON.stringify(passage));
 await page.evaluate(() => document.getElementById('contact-cta').scrollIntoView());
 await page.waitForTimeout(800);
 check('final CTA points to the contact page', ctaHref === 'contact.html');

@@ -44,15 +44,16 @@ Anything typed into the **Contact** page in WordPress (Pages → Contact), such 
 
 1. **Hero**: "Scale smarter with Meta Ads", with the dashboard key visual, which tilts toward the cursor and
    sinks back as you scroll. Blue light trails run along the background curves.
-2. **Statement**: the positioning line lights up word by word as you read it.
+2. **Statement**: the positioning line lights up word by word as you read it. Scrolling on, it tips back into a
+   minimal 3D passage: a blue grid floor unfolds to a glowing horizon, thin frames rush past and "02 Services"
+   surfaces before the services arrive.
 3. **Services**: the three services (Meta Ads scaling, marketing management, growth marketing),
    each with deliverables. A sticky screen beside them swaps visuals as you scroll.
 4. **Process**: Create, Launch, Analyze, Automate, Scale. On desktop it scrolls sideways
    while a blue beam fills the timeline.
 5. **Results**: the performance dashboard zooms into place and the figures count up.
 6. **Closing call to action**: "Growing together." with the **Contact us for more information and pricing** button,
-   above the Scalium arrow in 3D (brushed metal, glowing blue seam), which turns to face the visitor as they
-   scroll (also at the bottom of the contact page). Its frames load only when the visitor scrolls near it.
+   above the brushed-metal Scalium arrow from the brand key visual (also at the bottom of the contact page).
 
 Scrolling glides with a little inertia on mouse and trackpad (Lenis; phones keep their native scrolling).
 Motion is 3D wherever it helps: headings stand up word by word, the services screen and the results dashboard
@@ -102,8 +103,6 @@ Asset pipeline (only needed when the brand files change):
 - `npm run logo` traces `brand/5.jpg` into the vector logos in `src/assets/img/`.
 - `npm run images` crops the key visuals and writes responsive AVIF/WebP files, favicons and the OG image.
 - `npm run fonts` subsets Mona Sans and Martian Mono (needs `pip install fonttools brotli`).
-- `npm run arrow` renders the closing 3D arrow (`scripts/video/scene.html`, three.js) at 60 angles into
-  `src/assets/arrow/` (desktop `d/` and phone `m/` frames plus a still). `--preview <dir>` writes four stills.
 
 Typefaces: Mona Sans (headlines in its semi-expanded width) and Martian Mono for small technical labels,
 both self-hosted under the SIL Open Font License. Icons: Phosphor. Animation: GSAP + ScrollTrigger, smooth scrolling: Lenis.

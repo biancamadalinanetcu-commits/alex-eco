@@ -124,6 +124,24 @@
     </div>
   </section>
 
+  <!-- ============================================================ PASSAGE
+       A short 3D passage from the statement into the services: a grid floor unfolds to a glowing horizon
+       and thin frames rush past as you scroll (driven by initShift). Decorative; hidden without JS or
+       with reduced motion. -->
+  <div class="shift" data-shift aria-hidden="true">
+    <div class="shift__stage" data-shift-stage>
+      <div class="shift__space">
+        <div class="shift__floor" data-shift-floor></div>
+        <div class="shift__gate"></div>
+        <div class="shift__gate"></div>
+        <div class="shift__gate"></div>
+        <div class="shift__gate"></div>
+        <p class="shift__label" data-shift-label><span class="shift__index">02</span><span data-i18n="nav.services">Services</span></p>
+      </div>
+      <div class="shift__horizon" data-shift-horizon></div>
+    </div>
+  </div>
+
   <!-- ============================================================ SERVICES -->
   <section class="services" id="services" aria-labelledby="services-title">
     <div class="container">
@@ -306,7 +324,7 @@
       </div>
     </div>
     <div class="cta__media" data-cta-media aria-hidden="true">
-      <!-- @include arrow-turn -->
+      <!-- @picture name="cta-arrow" sizes="(min-width: 1000px) 930px, 92vw" class="cta__img" alt="" -->
     </div>
   </section>
 

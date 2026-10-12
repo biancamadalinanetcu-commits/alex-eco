@@ -442,7 +442,7 @@ html.intro-skip .intro { display: none; }
   /* the menu appears once the logo has opened */
   html.js:not(.intro-skip):not(.intro-done) body:has(.intro) .nav { opacity: 0; visibility: hidden; transform: translateY(-14px); }
 }
-@media (prefers-reduced-motion: reduce) { .js .intro { display: none; } }
+@media (prefers-reduced-motion: reduce) { .js .intro, .js .shift { display: none; } }
 @keyframes intro-blade { from { opacity: 0; transform: translate(-16%, 20%); } }
 @keyframes intro-arrow { from { opacity: 0; transform: translateY(26%); } }
 @keyframes intro-letter { from { opacity: 0; transform: translateY(45%); } }
@@ -572,6 +572,64 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .js .outcome[data-reveal] { transform: perspective(800px) rotateX(55deg) translateY(24px); transform-origin: 50% 100%; }
 .js .outcome[data-reveal].is-in { transform: none; }
 .outcome .icon { color: var(--blue-hi); width: 22px; height: 22px; }
+
+/* ------------------------------------------------------------ passage: statement into services (see initShift) */
+.shift { display: none; }
+.js .shift { display: block; position: relative; height: 160vh; margin-top: -8vh; }
+.shift__stage {
+  --open: 0;
+  position: sticky; top: 0;
+  height: 100vh; height: 100svh;
+  overflow: hidden;
+  perspective: 720px;
+  perspective-origin: 50% 46%;
+  pointer-events: none;
+}
+.shift__stage::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(46% 30% at 50% 56%, rgba(10, 106, 255, .2), transparent 72%);
+  opacity: var(--open);
+}
+.shift__space { position: absolute; inset: 0; transform-style: preserve-3d; }
+.shift__floor {
+  position: absolute; left: 50%; top: 56%;
+  width: 3600px; height: 2400px; margin-left: -1800px;
+  transform-origin: 50% 0;
+  background:
+    linear-gradient(rgba(93, 157, 255, .32) 1px, transparent 1px) 0 0 / 100% 120px,
+    linear-gradient(90deg, rgba(93, 157, 255, .24) 1px, transparent 1px) 50% 0 / 120px 100%;
+  -webkit-mask-image: radial-gradient(42% 46% at 50% 0, #000 30%, transparent 100%);
+  mask-image: radial-gradient(42% 46% at 50% 0, #000 30%, transparent 100%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.shift__gate {
+  position: absolute; left: 50%; top: 46%;
+  width: min(68vw, 900px); aspect-ratio: 16 / 9;
+  border: 1px solid rgba(93, 157, 255, .5);
+  border-radius: var(--r-lg);
+  box-shadow: 0 0 30px -10px rgba(10, 106, 255, .8), inset 0 0 30px -14px rgba(10, 106, 255, .8);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.shift__horizon {
+  position: absolute; left: 0; right: 0; top: 56%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue-hi) 28%, #fff 50%, var(--blue-hi) 72%, transparent);
+  box-shadow: 0 0 22px 2px rgba(10, 106, 255, .55);
+  transform: scaleX(0);
+}
+.shift__label {
+  position: absolute; left: 50%; top: 46%;
+  display: flex; align-items: center; gap: 14px;
+  white-space: nowrap;
+  font: 500 clamp(12px, 1.1vw, 14px)/1 var(--mono);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--text);
+  opacity: 0;
+}
+.shift__index { color: var(--blue-hi); letter-spacing: .12em; }
 
 /* ------------------------------------------------------------ services */
 .services { padding: clamp(40px, 6vw, 80px) 0 clamp(80px, 10vw, 140px); }
@@ -766,18 +824,16 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 .cta__sub { margin-top: 22px; color: var(--text-2); font-size: clamp(1.05rem, 1.5vw, 1.3rem); }
 .cta__action { margin-top: 44px; }
 .cta__media { position: relative; z-index: 1; margin-top: clamp(-120px, -6vw, -40px); }
-/* the closing 3D arrow (turned by scroll, see initTurns); its edges dissolve into the page */
-.turn {
-  position: relative;
-  aspect-ratio: 16 / 7;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
+.cta__media picture, .contact__bg picture { display: block; width: min(930px, 92vw); margin-inline: auto; }
+/* the closing arrow: every edge dissolves into the black page */
+.cta__img, .contact__img {
+  width: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(180deg, transparent 0, #000 18%, #000 76%, transparent 100%);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent 0, #000 22%, #000 74%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent, #000 16%, #000 84%, transparent), linear-gradient(180deg, transparent 0, #000 18%, #000 76%, transparent 100%);
   mask-composite: intersect;
 }
-.turn__still, .turn__canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.turn__still { object-fit: cover; }
-.cta__media .turn { will-change: transform; }
+.cta__media picture { will-change: transform; }
 
 /* ------------------------------------------------------------ footer */
 .footer { padding-bottom: 36px; }
@@ -1012,10 +1068,6 @@ html.is-entering.is-entered .wipe { transform: translateX(101%); transition: tra
   .contact__aside { position: static; }
   .stat:nth-child(3) { border-left: 0; }
   .stat:nth-child(n + 3) { border-top: 1px solid var(--line); }
-}
-
-@media (max-width: 700px) {
-  .turn { aspect-ratio: 12 / 7; }
 }
 
 @media (max-width: 560px) {

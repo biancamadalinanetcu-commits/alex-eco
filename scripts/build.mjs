@@ -133,7 +133,6 @@ async function buildAssets() {
 
   await cp(`${SRC}/assets/fonts`, `${SITE}/assets/fonts`, { recursive: true });
   await cp(`${SRC}/assets/img`, `${SITE}/assets/img`, { recursive: true });
-  await cp(`${SRC}/assets/arrow`, `${SITE}/assets/arrow`, { recursive: true });
 }
 
 // ---------------------------------------------------------------- wordpress theme
