@@ -82,9 +82,60 @@ check('final CTA points to the contact page', ctaHref === 'contact.html');
 await page.click('.footer .lang [data-lang="en"]');
 check('footer switch returns to English', (await page.textContent('h1')).includes('Scale smarter'));
 await page.click('[data-to-top]');
-await page.waitForTimeout(1800);
+await page.waitForTimeout(2600);
 // With the logo intro, "top" is the opened hero (the end of the intro), not the closed logo at y=0.
 check('"Back to top" returns to the hero', Math.abs(await page.evaluate(() => document.querySelector('.hero').getBoundingClientRect().top)) < 5);
+
+// contact page: WhatsApp, social links and the request form (the email service is mocked, nothing is sent)
+const cp = await ctx.newPage();
+cp.on('pageerror', (e) => errors.push(e.message));
+let sent = null;
+let failNext = false;
+await cp.route('https://formsubmit.co/**', async (route) => {
+  if (failNext) { failNext = false; return route.fulfill({ status: 500, body: '{}' }); }
+  sent = { url: route.request().url(), body: new URLSearchParams(route.request().postData() || '') };
+  return route.fulfill({ status: 200, contentType: 'application/json', body: '{"success":"true"}' });
+});
+await cp.goto(base + 'contact.html', { waitUntil: 'networkidle' });
+const wa = await cp.getAttribute('.btn--wa', 'href');
+check('WhatsApp button opens a chat with +40792535738', wa.startsWith('https://wa.me/40792535738?text=Hi%20Scalium'), wa);
+check('social links: Instagram and TikTok in footer', (await cp.locator('.footer .social__link').count()) === 2
+  && (await cp.getAttribute('.footer .social__link[aria-label="Instagram"]', 'href')).includes('instagram.com')
+  && (await cp.getAttribute('.footer .social__link[aria-label="TikTok"]', 'href')).includes('tiktok.com'));
+
+await cp.click('.form__submit');
+const visibleErrors = await cp.$$eval('[data-error-for]', (els) => els.filter((e) => !e.hidden).map((e) => e.dataset.errorFor).join(','));
+check('empty form shows all four errors', visibleErrors === 'service,name,email,phone', visibleErrors);
+check('empty form is not sent', sent === null);
+
+await cp.click('.chip:has(input[value="Meta Ads scaling"])');
+await cp.click('.chip:has(input[value="Growth marketing"])');
+await cp.fill('#f-name', 'Ana Test');
+await cp.fill('#f-email', 'not-an-email');
+await cp.fill('#f-phone', '0722 123 456');
+await cp.click('.form__submit');
+check('invalid email is caught', !(await cp.locator('[data-error-for="email"]').isHidden()) && sent === null);
+await cp.fill('#f-email', 'ana@brand.ro');
+await cp.fill('#f-message', 'Monthly budget 5000 EUR');
+
+failNext = true;
+await cp.click('.form__submit');
+await cp.waitForTimeout(600);
+check('failed send shows a fallback message', await cp.locator('[data-status="fail"]').isVisible());
+
+await cp.click('.form__submit');
+await cp.waitForSelector('[data-form-done]:not([hidden])', { timeout: 4000 }).catch(() => {});
+check('form sends to scalium.buissines@gmail.com', !!sent && sent.url === 'https://formsubmit.co/ajax/scalium.buissines@gmail.com', sent && sent.url);
+check('request carries service, email and phone', !!sent && sent.body.get('service') === 'Meta Ads scaling, Growth marketing'
+  && sent.body.get('email') === 'ana@brand.ro' && sent.body.get('phone') === '0722 123 456' && sent.body.get('name') === 'Ana Test',
+  sent && sent.body.toString());
+check('success message replaces the form', await cp.locator('[data-form-done]').isVisible());
+
+await cp.click('.nav .lang [data-lang="ro"]');
+const waRo = await cp.getAttribute('.btn--wa', 'href');
+check('WhatsApp greeting follows the language', waRo.includes('Bun%C4%83'), waRo);
+await cp.click('.nav .lang [data-lang="en"]');
+await cp.close();
 
 // mobile menu
 const m = await browser.newContext({ viewport: { width: 390, height: 844 } });

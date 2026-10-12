@@ -8,8 +8,8 @@ and as a plain static site, both built from the same source.
 |---|---|
 | **WordPress theme** | `dist/scalium-wordpress-theme.zip` |
 | **Static site** | `dist/site/` (open `index.html`, or upload the folder to any host) |
-| **Lighthouse (mobile)** | Performance 100, Accessibility 100, Best Practices 100, SEO 100 |
-| **First visit weight** | about 190 KB total (HTML, CSS, JS, fonts, hero image) |
+| **Lighthouse (mobile)** | Performance 97 (home) / 99 (contact), Accessibility 100, Best Practices 100, SEO 100 |
+| **First visit weight** | about 200 KB total (HTML, CSS, JS, fonts, hero image) |
 
 ## Install on WordPress
 
@@ -21,9 +21,24 @@ and as a plain static site, both built from the same source.
 On WordPress.com, uploading a theme needs a paid plan (Personal or higher). Any self-hosted
 WordPress 6.3+ works.
 
-### Filling in the contact page
-The contact page is intentionally blank for now. Edit the **Contact** page in WordPress
-(Pages → Contact) and whatever you add there (text, a form block, pricing) appears under the heading.
+### Contact page, form, WhatsApp and social links
+The contact page has a **WhatsApp** button (opens a chat with a ready-made greeting in the visitor's language),
+the email address, the **Instagram** and **TikTok** buttons (also in the footer of every page) and a
+**request form**: services needed, name, email, phone and optional project details.
+
+All of these values live in one place:
+
+- **WordPress**: Appearance → Customize → **Scalium contact** (recipient email, WhatsApp number, Instagram and
+  TikTok links). Every request is emailed to that address and also saved under **Contact requests** in wp-admin,
+  so nothing is lost if the host cannot send email. For reliable delivery on a self-hosted WordPress, install an
+  SMTP plugin (for example WP Mail SMTP).
+- **Static site**: `src/config.json`, then `npm run build`. The form is sent through
+  [FormSubmit](https://formsubmit.co) (no server needed). The very first request triggers an email to the
+  address in `config.json` with an **Activate Form** link: click it once and every later request is delivered.
+  FormSubmit then offers a private alias; put it in `config.json` as `"formsubmit": "..."` to keep the address
+  out of the page source.
+
+Anything typed into the **Contact** page in WordPress (Pages → Contact), such as pricing, appears under the form.
 
 ## What's on the page
 
@@ -37,6 +52,10 @@ The contact page is intentionally blank for now. Edit the **Contact** page in Wo
 5. **Results**: the performance dashboard zooms into place and the figures count up.
 6. **Closing call to action**: "Growing together." with the **Contact us for more information and pricing** button.
 
+Scrolling glides with a little inertia on mouse and trackpad (Lenis; phones keep their native scrolling).
+Section headings rise word by word, images open like a curtain, the process cards light up as the beam
+reaches them and the results figures arrive one after another.
+
 "Dashing" blue accents run through the whole page: light that runs along hairlines as sections appear, a streak
 across buttons on hover, the scroll-progress line under the menu, and a blue-edged wipe between pages.
 
@@ -47,7 +66,8 @@ vertical version.
 - **Results figures** (+42% ROAS, +68% leads, +53% revenue, −37% CAC) come from the brand key visuals and are
   labeled "Illustrative figures". Replace them with real client results in `src/index.html` (search for
   `data-count`).
-- Add the contact details to the Contact page.
+- Put the real **Instagram** and **TikTok** profile links in (they point to the platforms' home pages for now).
+- Static site only: activate FormSubmit with the first test request (see above).
 
 ## Editing content
 
@@ -61,7 +81,7 @@ After editing, rebuild:
 ```bash
 npm install
 npm run build    # writes dist/site and dist/scalium-wordpress-theme.zip
-npm test         # clicks through every button, the language switch and the menu in a real browser
+npm test         # clicks through every button, the language switch, the menu and the contact form in a real browser
 ```
 
 ## Project layout
@@ -81,4 +101,4 @@ Asset pipeline (only needed when the brand files change):
 - `npm run fonts` subsets Mona Sans and Martian Mono (needs `pip install fonttools brotli`).
 
 Typefaces: Mona Sans (headlines in its semi-expanded width) and Martian Mono for small technical labels,
-both self-hosted under the SIL Open Font License. Icons: Phosphor. Animation: GSAP + ScrollTrigger.
+both self-hosted under the SIL Open Font License. Icons: Phosphor. Animation: GSAP + ScrollTrigger, smooth scrolling: Lenis.

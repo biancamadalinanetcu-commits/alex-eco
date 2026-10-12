@@ -6,6 +6,8 @@
 //   <!-- @include name -->                       inlines src/partials/name.html
 //   <!-- @picture name="..." sizes="..." ... -->  expands to a responsive AVIF/WebP <picture>
 //   <!-- @icons -->                              inlines the SVG icon sprite (Phosphor icons)
+//   {{key}}                                      a value from src/config.json (email, WhatsApp, social links).
+//                                                In WordPress these become Customizer settings.
 import { build } from 'esbuild';
 import { readFile, writeFile, mkdir, rm, cp, readdir, stat } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -19,7 +21,35 @@ const SITE = `${DIST}/site`;
 const THEME_DIR = `${DIST}/wordpress/scalium`;
 
 const ICONS = ['arrow-right', 'arrow-up-right', 'arrow-left', 'arrow-up', 'sparkle', 'paper-plane-tilt', 'chart-bar',
-  'gear-six', 'trend-up', 'check', 'list', 'x', 'lightning', 'users-three', 'target'];
+  'gear-six', 'trend-up', 'check', 'list', 'x', 'lightning', 'users-three', 'target',
+  'whatsapp-logo', 'instagram-logo', 'tiktok-logo', 'envelope-simple', 'check-circle'];
+
+// Contact details and social links live in one place.
+const config = JSON.parse(await readFile(`${SRC}/config.json`, 'utf8'));
+// The static site sends the form through FormSubmit (no server needed). After the one-time
+// activation, "formsubmit" in config.json can be set to the private alias FormSubmit gives you.
+const formsubmitId = config.formsubmit || config.email;
+const STATIC_TOKENS = {
+  ...config,
+  form_action: `https://formsubmit.co/${formsubmitId}`,
+  form_endpoint: `https://formsubmit.co/ajax/${formsubmitId}`,
+};
+// WordPress reads the same values from the Customizer (defaults come from config.json),
+// and the form posts to the theme's own handler, which emails the request and keeps a copy in wp-admin.
+const WP_FORM_URL = "<?php echo esc_url( admin_url( 'admin-post.php?action=scalium_contact' ) ); ?>";
+const WP_TOKENS = {
+  email: "<?php echo esc_attr( scalium_setting( 'email' ) ); ?>",
+  whatsapp: "<?php echo esc_attr( scalium_setting( 'whatsapp' ) ); ?>",
+  whatsapp_display: "<?php echo esc_html( scalium_setting( 'whatsapp_display' ) ); ?>",
+  instagram: "<?php echo esc_url( scalium_setting( 'instagram' ) ); ?>",
+  tiktok: "<?php echo esc_url( scalium_setting( 'tiktok' ) ); ?>",
+  form_action: WP_FORM_URL,
+  form_endpoint: WP_FORM_URL,
+};
+const fillTokens = (html, tokens) => html.replace(/\{\{(\w+)\}\}/g, (m, key) => {
+  if (!(key in tokens)) throw new Error(`Unknown config token ${m}`);
+  return tokens[key];
+});
 
 await rm(DIST, { recursive: true, force: true });
 await mkdir(`${SITE}/assets`, { recursive: true });
@@ -112,7 +142,7 @@ async function buildAssets() {
 const PHP_ASSET = '<?php echo esc_url( SCALIUM_URI ); ?>/assets/';
 
 function toPhp(html) {
-  return html
+  return fillTokens(html, WP_TOKENS)
     .replace(/(["\s,])assets\//g, `$1${PHP_ASSET}`)
     .replace(/href="index\.html#([\w-]+)"/g, (_, id) => `href="<?php echo esc_url( home_url( '/#${id}' ) ); ?>"`)
     .replace(/href="index\.html"/g, `href="<?php echo esc_url( home_url( '/' ) ); ?>"`)
@@ -160,6 +190,10 @@ async function buildTheme(pages) {
   await writeFile(`${THEME_DIR}/page-contact.php`, `<?php get_header(); ?>\n${contactMain}\n<?php get_footer();\n`);
   await writeFile(`${THEME_DIR}/index.php`, await readFile('wordpress/index.php', 'utf8'));
   await writeFile(`${THEME_DIR}/functions.php`, await readFile('wordpress/functions.php', 'utf8'));
+  // Customizer defaults, generated from src/config.json so both builds share one source.
+  const phpStr = (v) => `'${String(v).replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`;
+  const phpArray = Object.entries(config).map(([k, v]) => `\t${phpStr(k)} => ${phpStr(v)},`).join('\n');
+  await writeFile(`${THEME_DIR}/config.php`, `<?php\n// Generated from src/config.json by scripts/build.mjs. Change values in Appearance > Customize > Scalium contact.\nreturn array(\n${phpArray}\n);\n`);
   await writeFile(`${THEME_DIR}/style.css`, await readFile('wordpress/style.css', 'utf8'));
   await cp('wordpress/screenshot.png', `${THEME_DIR}/screenshot.png`);
 
@@ -174,7 +208,7 @@ const pages = {};
 for (const file of (await readdir(SRC)).filter((f) => f.endsWith('.html'))) {
   pages[file] = await renderPage(file, sprite);
   // Static output: WP markers are not needed, strip them.
-  const staticHtml = pages[file]
+  const staticHtml = fillTokens(pages[file], STATIC_TOKENS)
     .replace(/<!-- @wp:[\w-]+ -->\n?/g, '');
   await writeFile(`${SITE}/${file}`, staticHtml);
 }

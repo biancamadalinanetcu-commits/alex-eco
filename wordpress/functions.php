@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SCALIUM_VERSION', '1.0.0' );
+define( 'SCALIUM_VERSION', '1.1.0' );
 define( 'SCALIUM_URI', get_template_directory_uri() );
 
 /**
@@ -32,6 +32,176 @@ function scalium_page_key() {
 	}
 	return is_page( 'contact' ) ? 'contact' : 'page';
 }
+
+/**
+ * Contact details and social links: Appearance > Customize > Scalium contact.
+ * Empty fields fall back to the defaults in config.php (generated from src/config.json).
+ *
+ * @param string $key email, whatsapp, whatsapp_display, instagram or tiktok.
+ */
+function scalium_setting( $key ) {
+	static $defaults = null;
+	if ( null === $defaults ) {
+		$defaults = require __DIR__ . '/config.php';
+	}
+	$value = trim( (string) get_theme_mod( 'scalium_' . $key, '' ) );
+	return '' !== $value ? $value : ( isset( $defaults[ $key ] ) ? $defaults[ $key ] : '' );
+}
+
+add_action(
+	'customize_register',
+	function ( $wp_customize ) {
+		$wp_customize->add_section(
+			'scalium_contact',
+			array(
+				'title'       => 'Scalium contact',
+				'description' => 'Where contact requests are sent, the WhatsApp number and the social profiles. Leave a field empty to use the default.',
+				'priority'    => 30,
+			)
+		);
+		$fields = array(
+			'email'            => array( 'Email that receives contact requests', 'sanitize_email', 'email' ),
+			'whatsapp'         => array( 'WhatsApp number, digits only with country code (e.g. 40792535738)', 'scalium_sanitize_digits', 'text' ),
+			'whatsapp_display' => array( 'WhatsApp number as shown on the page', 'sanitize_text_field', 'text' ),
+			'instagram'        => array( 'Instagram profile URL', 'esc_url_raw', 'url' ),
+			'tiktok'           => array( 'TikTok profile URL', 'esc_url_raw', 'url' ),
+		);
+		foreach ( $fields as $key => $field ) {
+			$wp_customize->add_setting(
+				'scalium_' . $key,
+				array(
+					'default'           => '',
+					'sanitize_callback' => $field[1],
+				)
+			);
+			$wp_customize->add_control(
+				'scalium_' . $key,
+				array(
+					'label'       => $field[0],
+					'section'     => 'scalium_contact',
+					'type'        => $field[2],
+					'input_attrs' => array( 'placeholder' => scalium_setting( $key ) ),
+				)
+			);
+		}
+	}
+);
+
+function scalium_sanitize_digits( $value ) {
+	return preg_replace( '/\D+/', '', (string) $value );
+}
+
+/**
+ * Contact requests are also stored in wp-admin (Contact requests), so a request is never lost
+ * if the host cannot send email.
+ */
+add_action(
+	'init',
+	function () {
+		register_post_type(
+			'scalium_request',
+			array(
+				'labels'          => array(
+					'name'          => 'Contact requests',
+					'singular_name' => 'Contact request',
+					'menu_name'     => 'Contact requests',
+				),
+				'public'          => false,
+				'show_ui'         => true,
+				'show_in_menu'    => true,
+				'menu_position'   => 25,
+				'menu_icon'       => 'dashicons-email-alt',
+				'supports'        => array( 'title', 'editor' ),
+				'capability_type' => 'post',
+				'capabilities'    => array( 'create_posts' => 'do_not_allow' ),
+				'map_meta_cap'    => true,
+			)
+		);
+	}
+);
+
+/**
+ * Handles the contact form (admin-post.php?action=scalium_contact).
+ * The page sends it in the background and expects JSON; without JavaScript the visitor is
+ * redirected back to the contact page.
+ */
+function scalium_handle_contact() {
+	$wants_json = isset( $_SERVER['HTTP_ACCEPT'] ) && false !== strpos( sanitize_text_field( wp_unslash( $_SERVER['HTTP_ACCEPT'] ) ), 'application/json' );
+	$respond    = function ( $ok, $status = 200 ) use ( $wants_json ) {
+		if ( $wants_json ) {
+			wp_send_json( array( 'success' => $ok ), $status );
+		}
+		wp_safe_redirect( add_query_arg( 'sent', $ok ? '1' : '0', scalium_contact_url() ) . '#contact-form' );
+		exit;
+	};
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- public form; cached pages make nonces unreliable, so it relies on the honeypot and a rate limit.
+	// Bots fill the hidden field: let them think it worked.
+	if ( ! empty( $_POST['_honey'] ) ) {
+		$respond( true );
+	}
+
+	// At most 5 requests per 10 minutes from the same address.
+	$ip    = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$limit = 'scalium_rl_' . md5( $ip );
+	$count = (int) get_transient( $limit );
+	if ( $count >= 5 ) {
+		$respond( false, 429 );
+	}
+	set_transient( $limit, $count + 1, 10 * MINUTE_IN_SECONDS );
+
+	$field = function ( $key, $multiline = false ) {
+		if ( ! isset( $_POST[ $key ] ) ) {
+			return '';
+		}
+		$value = wp_unslash( $_POST[ $key ] );
+		if ( is_array( $value ) ) {
+			$value = implode( ', ', $value );
+		}
+		$value = $multiline ? sanitize_textarea_field( $value ) : sanitize_text_field( $value );
+		return mb_substr( $value, 0, $multiline ? 3000 : 200 );
+	};
+	$request = array(
+		'Service'  => $field( 'service' ),
+		'Name'     => $field( 'name' ),
+		'Email'    => sanitize_email( $field( 'email' ) ),
+		'Phone'    => $field( 'phone' ),
+		'Message'  => $field( 'message', true ),
+		'Language' => $field( 'language' ),
+	);
+	// phpcs:enable
+
+	if ( '' === $request['Name'] || ! is_email( $request['Email'] ) || '' === $request['Phone'] ) {
+		$respond( false, 400 );
+	}
+
+	$lines = array();
+	foreach ( $request as $label => $value ) {
+		$lines[] = $label . ': ' . ( '' !== $value ? $value : '-' );
+	}
+	$text = implode( "\n", $lines );
+
+	wp_insert_post(
+		array(
+			'post_type'    => 'scalium_request',
+			'post_status'  => 'private',
+			'post_title'   => $request['Name'] . ( $request['Service'] ? ' - ' . $request['Service'] : '' ),
+			'post_content' => esc_html( $text ),
+		)
+	);
+
+	wp_mail(
+		scalium_setting( 'email' ),
+		'New request from the Scalium website: ' . $request['Name'],
+		$text . "\n\n" . 'Sent from ' . scalium_contact_url(),
+		array( 'Reply-To: ' . str_replace( array( ',', ';', '"', '<', '>' ), '', $request['Name'] ) . ' <' . $request['Email'] . '>' )
+	);
+
+	// The request is saved in wp-admin even if the host cannot send email.
+	$respond( true );
+}
+add_action( 'admin_post_nopriv_scalium_contact', 'scalium_handle_contact' );
+add_action( 'admin_post_scalium_contact', 'scalium_handle_contact' );
 
 add_action(
 	'after_setup_theme',

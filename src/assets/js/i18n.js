@@ -94,6 +94,34 @@ const RO = {
   'contact.back': 'Înapoi la pagina principală',
   'contact.title': '<span class="line"><span>Hai să vorbim despre</span></span> <span class="line"><span><em>creșterea ta.</em></span></span>',
   'contact.lead': 'Mai multe informații și prețuri pentru Meta Ads, marketing și growth marketing.',
+  'contact.direct': 'Preferi să vorbim acum?',
+  'contact.directText': 'Scrie-ne pe WhatsApp și vorbește direct cu echipa noastră.',
+  'contact.wa': 'Scrie-ne pe WhatsApp',
+  'contact.waText': 'Bună, Scalium! Aș dori mai multe informații și prețuri.',
+  'contact.follow': 'Urmărește-ne',
+  'social.label': 'Rețele sociale',
+
+  'form.title': 'Spune-ne despre brandul tău',
+  'form.service': 'De ce ai nevoie?',
+  'form.serviceHint': 'Alege unul sau mai multe.',
+  'form.notSure': 'Încă nu știu',
+  'form.name': 'Nume',
+  'form.email': 'Email',
+  'form.phone': 'Număr de telefon',
+  'form.message': 'Detalii despre proiect',
+  'form.optional': '(opțional)',
+  'form.messagePh': 'Brandul tău, obiectivele și bugetul lunar de reclame.',
+  'form.submit': 'Trimite cererea',
+  'form.privacy': 'Folosim datele tale doar ca să îți răspundem la cerere.',
+  'form.sending': 'Se trimite cererea...',
+  'form.fail': 'Cererea nu a putut fi trimisă. Încearcă din nou sau scrie-ne pe WhatsApp.',
+  'form.err.service': 'Alege cel puțin un serviciu.',
+  'form.err.name': 'Te rugăm să îți scrii numele.',
+  'form.err.email': 'Te rugăm să scrii o adresă de email validă.',
+  'form.err.phone': 'Te rugăm să scrii un număr de telefon valid.',
+  'form.okTitle': 'Cerere trimisă.',
+  'form.okText': 'Mulțumim. Revenim în curând cu mai multe informații și prețuri.',
+  'form.again': 'Trimite altă cerere',
 };
 
 const STORAGE_KEY = 'scalium-lang';
@@ -141,6 +169,13 @@ function apply(lang) {
       if (v != null) el.setAttribute(attr, v);
     });
   });
+
+  // WhatsApp links open a chat with a greeting in the visitor's language.
+  document.querySelectorAll('[data-wa][data-wa-text]').forEach((a) => {
+    a.href = `https://wa.me/${a.dataset.wa}?text=${encodeURIComponent(a.dataset.waText)}`;
+  });
+  const formLang = document.querySelector('[data-form-lang]');
+  if (formLang) formLang.value = current === 'ro' ? 'Romanian' : 'English';
 
   const title = t(`meta.${page}.title`, current);
   if (title) document.title = title;

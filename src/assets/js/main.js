@@ -3,6 +3,7 @@
 // own everything tied to scroll position. Every effect has a reduced-motion path.
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -17,9 +18,31 @@ const navHeight = () => $('[data-nav]')?.offsetHeight || 0;
 const normPath = (p) => p.replace(/index\.html$/, '').replace(/\/+$/, '');
 const isSamePage = (url) => url.origin === location.origin && normPath(url.pathname) === normPath(location.pathname);
 
-function scrollToEl(el, behavior = reduceMotion ? 'auto' : 'smooth') {
+/* ---------------------------------------------------------------- smooth scroll
+   Wheel and trackpad scrolling glide with a little inertia (Lenis), and every scroll-driven
+   animation reads that same smoothed position, so pins and scrubs move as one. Touch keeps the
+   phone's native scrolling; reduced motion keeps the browser's. */
+let lenis = null;
+function initSmoothScroll() {
+  if (reduceMotion || !finePointer) return;
+  lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.95, anchors: false, autoRaf: false });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+}
+
+function scrollToY(top, immediate = reduceMotion) {
+  if (lenis) {
+    const distance = Math.abs(top - window.scrollY);
+    lenis.scrollTo(top, { immediate, force: true, duration: Math.min(1.8, 0.8 + distance / 6000) });
+  } else {
+    window.scrollTo({ top, behavior: immediate ? 'auto' : 'smooth' });
+  }
+}
+
+function scrollToEl(el, immediate = reduceMotion) {
   const top = el === document.body ? 0 : el.getBoundingClientRect().top + window.scrollY - navHeight() + 1;
-  window.scrollTo({ top, behavior });
+  scrollToY(top, immediate);
 }
 
 /* ---------------------------------------------------------------- page transition */
@@ -65,7 +88,7 @@ function initAnchors() {
 
   $('[data-to-top]')?.addEventListener('click', () => {
     // With the logo intro, "top" means the opened hero, not the closed logo.
-    window.scrollTo({ top: introTrigger ? introTrigger.end : 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    scrollToY(introTrigger ? introTrigger.end : 0);
     $('[data-home-link]')?.focus({ preventScroll: true });
   });
 }
@@ -99,10 +122,12 @@ function setMenu(open) {
     menu.hidden = false;
     requestAnimationFrame(() => menu.classList.add('is-open'));
     root.style.overflow = 'hidden';
+    lenis?.stop();
     $('[data-nav]')?.classList.add('is-scrolled');
   } else {
     menu.classList.remove('is-open');
     root.style.overflow = '';
+    lenis?.start();
     setTimeout(() => { if (!menuOpen) menu.hidden = true; }, 400);
   }
 }
@@ -117,7 +142,7 @@ function initMenu() {
 
 /* ---------------------------------------------------------------- reveal + dash lines */
 function initReveal() {
-  const items = $$('[data-reveal], [data-dash]');
+  const items = $$('[data-reveal], [data-reveal-media], [data-dash]');
   const show = (el) => el.classList.add(el.hasAttribute('data-dash') ? 'is-on' : 'is-in');
   if (reduceMotion || !('IntersectionObserver' in window)) { items.forEach(show); return; }
   const io = new IntersectionObserver((entries) => {
@@ -232,7 +257,8 @@ function initIntro() {
       start: 'top top',
       end: () => `+=${Math.round(window.innerHeight * (window.innerWidth < 700 ? 1.5 : 1.9))}`,
       pin: true,
-      scrub: 1.1,
+      // Lenis already smooths the scroll itself, so less scrub lag keeps the same glide without delay.
+      scrub: lenis ? 0.7 : 1.1,
       anticipatePin: 1,
       invalidateOnRefresh: true,
       // A reload or back-navigation can restore the page mid-way or below the intro without a
@@ -314,6 +340,63 @@ function initStatement() {
   };
   build();
   document.addEventListener('langchange', build);
+}
+
+/* ---------------------------------------------------------------- headings rise word by word
+   Each word sits in its own mask and slides up when the heading's section scrolls into view
+   (the reveal observer adds .is-in). Screen readers get the plain sentence from aria-label. */
+function splitHeading(el) {
+  const label = el.textContent.replace(/\s+/g, ' ').trim();
+  let n = 0;
+  const wrapText = (node) => {
+    const frag = document.createDocumentFragment();
+    node.textContent.split(/(\s+)/).forEach((part) => {
+      if (!part) return;
+      if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+      const mask = document.createElement('span');
+      mask.className = 'wm';
+      const inner = document.createElement('span');
+      inner.textContent = part;
+      inner.style.setProperty('--wi', String(n++));
+      mask.appendChild(inner);
+      frag.appendChild(mask);
+    });
+    node.replaceWith(frag);
+  };
+  const walk = (parent) => {
+    Array.from(parent.childNodes).forEach((node) => {
+      if (node.nodeType === 3) wrapText(node);
+      else if (node.nodeType === 1 && !node.classList.contains('wm')) walk(node);
+    });
+  };
+  walk(el);
+  el.setAttribute('aria-label', label);
+  $$('.wm', el).forEach((w) => w.setAttribute('aria-hidden', 'true'));
+}
+
+function initHeadings() {
+  const headings = $$('[data-split]');
+  if (!headings.length || reduceMotion) return;
+  const run = () => headings.forEach(splitHeading);
+  run();
+  // The language switch rewrites the text, so split the new words again.
+  document.addEventListener('langchange', run);
+}
+
+/* ---------------------------------------------------------------- services: the stage opens like a curtain */
+function initStage() {
+  const frame = $('.stage__frame');
+  if (!frame || reduceMotion) return;
+  const mm = gsap.matchMedia();
+  mm.add(DESKTOP, () => {
+    gsap.fromTo(frame, { clipPath: 'inset(16% 12% 16% 12% round 28px)', scale: 0.94 }, {
+      clipPath: 'inset(0% 0% 0% 0% round 28px)',
+      scale: 1,
+      ease: 'none',
+      scrollTrigger: { trigger: '.services__layout', start: 'top 95%', end: 'top 30%', scrub: 0.6 },
+    });
+    return () => gsap.set(frame, { clearProps: 'clipPath,transform' });
+  });
 }
 
 /* ---------------------------------------------------------------- services: sticky stage follows the active service */
@@ -403,7 +486,7 @@ function initProcess() {
         start: 'top top',
         end: () => `+=${distance()}`,
         pin: true,
-        scrub: 0.8,
+        scrub: lenis ? 0.5 : 0.8,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onToggle: (self) => section.classList.toggle('is-active', self.isActive),
@@ -474,22 +557,132 @@ function initCta() {
   });
 }
 
+/* ---------------------------------------------------------------- contact form
+   Validates in the browser, sends in the background and shows the result in place.
+   Static site: FormSubmit emails the request. WordPress: the theme's own handler does. */
+function initContactForm() {
+  const form = $('[data-contact-form]');
+  if (!form) return;
+  const body = $('[data-form-body]', form);
+  const done = $('[data-form-done]', form);
+  const submit = $('.form__submit', form);
+  const status = (which) => $$('[data-status]', form).forEach((el) => { el.hidden = el.dataset.status !== which; });
+
+  const rules = {
+    service: () => $$('input[name="service"]:checked', form).length > 0,
+    name: () => form.elements.name.value.trim().length >= 2,
+    email: () => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.elements.email.value.trim()),
+    phone: () => {
+      const v = form.elements.phone.value.trim();
+      return /^[+\d\s().\/-]+$/.test(v) && v.replace(/\D/g, '').length >= 7;
+    },
+  };
+  const control = (name) => (name === 'service' ? $('[data-field="service"]', form) : form.elements[name]);
+  const touched = new Set();
+  const check = (name) => {
+    const ok = rules[name]();
+    $(`[data-error-for="${name}"]`, form).hidden = ok;
+    const el = control(name);
+    el.classList.toggle('is-invalid', !ok);
+    if (name !== 'service') el.setAttribute('aria-invalid', String(!ok));
+    return ok;
+  };
+
+  // Errors appear once a field has been left, and clear as soon as it is fixed.
+  form.addEventListener('focusout', (e) => {
+    const name = e.target.name;
+    if (name in rules && name !== 'service' && e.target.value.trim()) { touched.add(name); check(name); }
+  });
+  form.addEventListener('input', (e) => {
+    const name = e.target.name;
+    if (name in rules && touched.has(name)) check(name);
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (form.classList.contains('is-sending')) return;
+    const invalid = Object.keys(rules).filter((name) => !check(name));
+    Object.keys(rules).forEach((name) => touched.add(name));
+    if (invalid.length) {
+      const first = invalid[0] === 'service' ? $('input[name="service"]', form) : form.elements[invalid[0]];
+      first.focus();
+      return;
+    }
+
+    const showDone = () => {
+      body.hidden = true;
+      done.hidden = false;
+      requestAnimationFrame(() => done.classList.add('is-in'));
+      $('.form__title', done).focus({ preventScroll: true });
+      const top = form.getBoundingClientRect().top;
+      if (top < navHeight() || top > window.innerHeight * 0.6) scrollToEl(form);
+    };
+    // Bots fill the hidden field; let them think it worked.
+    if (form.elements._honey.value) { showDone(); return; }
+
+    const fd = new FormData(form);
+    const data = new URLSearchParams();
+    data.set('service', fd.getAll('service').join(', '));
+    ['name', 'email', 'phone', 'message', 'language'].forEach((k) => data.set(k, String(fd.get(k) || '').trim()));
+    data.set('_subject', `${fd.get('_subject')}: ${data.get('name')}`);
+    data.set('_template', String(fd.get('_template')));
+    data.set('_honey', '');
+
+    form.classList.add('is-sending');
+    submit.disabled = true;
+    status('sending');
+    const abort = new AbortController();
+    const timer = setTimeout(() => abort.abort(), 20000);
+    try {
+      const res = await fetch(form.dataset.endpoint || form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+        signal: abort.signal,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.success === false || json.success === 'false') throw new Error(json.message || `HTTP ${res.status}`);
+      status(null);
+      form.reset();
+      touched.clear();
+      showDone();
+    } catch (err) {
+      status('fail');
+    } finally {
+      clearTimeout(timer);
+      form.classList.remove('is-sending');
+      submit.disabled = false;
+    }
+  });
+
+  $('[data-form-again]', form)?.addEventListener('click', () => {
+    done.classList.remove('is-in');
+    done.hidden = true;
+    body.hidden = false;
+    form.elements.name.focus();
+  });
+}
+
 /* ---------------------------------------------------------------- boot */
 function boot() {
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 
+  initSmoothScroll();
   initTransitions();
   initAnchors();
   initMenu();
   initNav();
+  initHeadings();
   initReveal();
   const introWrap = initIntro();
   initHero(introWrap);
   initStatement();
+  initStage();
   initServices();
   initProcess();
   initResults();
   initCta();
+  initContactForm();
 
   // Copy length changes with the language, so pinned distances must be measured again.
   // Done synchronously: a deferred refresh would cancel a smooth scroll the visitor starts right after.
@@ -500,7 +693,7 @@ function boot() {
     // Arriving on index.html#section from another page: re-aim once pin spacers exist.
     if (location.hash) {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      if (target) scrollToEl(target, 'auto');
+      if (target) scrollToEl(target, true);
     }
   };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(settle);
