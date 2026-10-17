@@ -314,6 +314,21 @@ add_filter(
 	}
 );
 
+// Language versions: the theme serves Romanian at ?lang=ro (the text switches in the browser).
+add_action(
+	'wp_head',
+	function () {
+		if ( ! is_front_page() && ! is_page( 'contact' ) ) {
+			return;
+		}
+		$base = is_front_page() ? home_url( '/' ) : get_permalink();
+		printf( '<link rel="alternate" hreflang="en" href="%s">' . "\n", esc_url( $base ) );
+		printf( '<link rel="alternate" hreflang="ro" href="%s">' . "\n", esc_url( add_query_arg( 'lang', 'ro', $base ) ) );
+		printf( '<link rel="alternate" hreflang="x-default" href="%s">' . "\n", esc_url( $base ) );
+	},
+	2
+);
+
 // Basic SEO tags. Skipped automatically when an SEO plugin is active, so nothing is duplicated.
 add_action(
 	'wp_head',
@@ -325,6 +340,14 @@ add_action(
 			? 'Contact Scalium for more information and pricing on Meta Ads, marketing and growth marketing.'
 			: 'Scalium helps eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and growth marketing.';
 		$image = SCALIUM_URI . '/assets/img/og-image.jpg';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- language flag in the address, display only.
+		$is_ro = isset( $_GET['lang'] ) && 'ro' === sanitize_key( wp_unslash( $_GET['lang'] ) );
+		$base  = is_front_page() ? home_url( '/' ) : get_permalink();
+		$self  = $is_ro ? add_query_arg( 'lang', 'ro', $base ) : $base;
+		if ( is_front_page() ) {
+			// WordPress prints a canonical link for pages and posts itself, but not for the front page.
+			printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $self ) );
+		}
 
 		printf( '<meta name="description" content="%s">' . "\n", esc_attr( $desc ) );
 		printf( '<meta property="og:type" content="website">' . "\n" );
@@ -332,16 +355,33 @@ add_action(
 		printf( '<meta property="og:title" content="%s">' . "\n", esc_attr( wp_get_document_title() ) );
 		printf( '<meta property="og:description" content="%s">' . "\n", esc_attr( $desc ) );
 		printf( '<meta property="og:image" content="%s">' . "\n", esc_url( $image ) );
+		printf( '<meta property="og:url" content="%s">' . "\n", esc_url( $self ) );
+		printf( '<meta property="og:locale" content="%s">' . "\n", $is_ro ? 'ro_RO' : 'en_US' );
 		printf( '<meta name="twitter:card" content="summary_large_image">' . "\n" );
 
 		if ( is_front_page() ) {
-			$data = array(
+			$phone = '+' . scalium_setting( 'whatsapp' );
+			$data  = array(
 				'@context'      => 'https://schema.org',
 				'@type'         => 'ProfessionalService',
+				'@id'           => home_url( '/#business' ),
 				'name'          => 'Scalium',
 				'url'           => home_url( '/' ),
+				'logo'          => SCALIUM_URI . '/assets/img/apple-touch-icon.png',
+				'image'         => $image,
 				'description'   => 'Meta Ads, marketing and growth marketing agency for eCommerce brands.',
+				'email'         => scalium_setting( 'email' ),
+				'telephone'     => $phone,
 				'knowsLanguage' => array( 'en', 'ro' ),
+				'areaServed'    => array( 'RO', 'Worldwide' ),
+				'sameAs'        => array( scalium_setting( 'instagram' ), scalium_setting( 'tiktok' ) ),
+				'contactPoint'  => array(
+					'@type'             => 'ContactPoint',
+					'contactType'       => 'sales',
+					'email'             => scalium_setting( 'email' ),
+					'telephone'         => $phone,
+					'availableLanguage' => array( 'English', 'Romanian' ),
+				),
 				'serviceType'   => array( 'Meta Ads management', 'Marketing management', 'Growth marketing' ),
 			);
 			echo '<script type="application/ld+json">' . wp_json_encode( $data ) . '</script>' . "\n";

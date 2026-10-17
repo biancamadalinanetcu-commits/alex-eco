@@ -1,147 +1,31 @@
 // Bilingual layer (English / Romanian).
-// English lives in the HTML itself, so search engines and no-JS visitors get real content.
-// On start-up the English strings are captured from the DOM; only Romanian needs a dictionary.
+// English is written in the HTML; Romanian lives in i18n-ro.js. The build pre-renders both languages
+// (/ and /ro/ on the static site) so search engines index each one, extracts the English strings into
+// i18n-en.js, and this script switches instantly between them, keeping the address in step.
 // Markup hooks:
 //   data-i18n="key"            replaces textContent
 //   data-i18n-html="key"       replaces innerHTML (for headings with inline markup)
 //   data-i18n-attr="attr:key"  replaces attributes, several separated by ";"
 
-const RO = {
-  'meta.home.title': 'Scalium | Agenție de Meta Ads și Growth Marketing',
-  'meta.home.desc': 'Scalium ajută brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și growth marketing.',
-  'meta.contact.title': 'Contact | Scalium',
-  'meta.contact.desc': 'Contactează Scalium pentru mai multe informații și prețuri despre Meta Ads, marketing și growth marketing.',
-
-  skip: 'Sari la conținut',
-  'nav.label': 'Principal',
-  'nav.mobile': 'Meniu mobil',
-  'nav.services': 'Servicii',
-  'nav.process': 'Proces',
-  'nav.results': 'Rezultate',
-  'nav.menu': 'Meniu',
-  'lang.label': 'Limbă',
-  'cta.contact': 'Contactează-ne',
-
-  'intro.cue': 'Derulează',
-
-  'hero.eyebrow': 'Meta Ads <span>&times;</span> AI <span>&times;</span> Creștere',
-  'hero.title': '<span class="line"><span>Scalează inteligent</span></span> <span class="line"><span>cu <em>Meta Ads.</em></span></span>',
-  'hero.lead': 'Ajutăm brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și strategie orientată spre performanță.',
-  'hero.secondary': 'Vezi serviciile',
-  'hero.alt': 'Dashboard Scalium pentru Meta Ads cu venituri totale, ROAS și campanii active',
-
-  'statement.text': 'Majoritatea brandurilor nu au o problemă de trafic. Au o problemă de scalare. Noi construim sistemul care transformă bugetul de reclame în venituri predictibile.',
-  'outcome.1': 'Venituri mai mari',
-  'outcome.2': 'CAC mai mic',
-  'outcome.3': 'Creștere pe termen lung',
-
-  'services.title': 'Trei servicii. Un singur obiectiv: creștere profitabilă.',
-  'services.lead': 'Alege unul sau combină-le pe toate trei. Aceeași echipă, aceleași date și același obiectiv în spatele fiecăruia.',
-
-  'svc1.title': 'Scalarea brandului cu Meta Ads',
-  'svc1.short': 'Scalare cu Meta Ads',
-  'svc1.text': 'Campanii pe Facebook și Instagram construite să crească bugetul fără să piardă din eficiență. Structurăm contul, găsim audiențele care cumpără și scalăm bugetele pe baza semnalelor care contează.',
-  'svc1.d1': 'Structură de campanii full-funnel',
-  'svc1.d2': 'Cercetare și targetare de audiențe',
-  'svc1.d3': 'Scalarea bugetului și strategie de licitare',
-  'svc1.d4': 'Campanii Advantage+ și de catalog',
-
-  'svc2.title': 'Marketing gestionat de noi',
-  'svc2.short': 'Administrare marketing',
-  'svc2.text': 'Ne ocupăm de marketingul tău zi de zi: producția și testarea creativelor, lansări, raportare și optimizare. Ai o echipă senior fără să construiești una internă.',
-  'svc2.d1': 'Strategie și producție de creative',
-  'svc2.d2': 'Testare continuă a creativelor',
-  'svc2.d3': 'Lansări de campanii și promoții',
-  'svc2.d4': 'Rapoarte săptămânale clare',
-
-  'svc3.title': 'Growth marketing',
-  'svc3.short': 'Growth marketing',
-  'svc3.text': 'Creșterea vine din tot funnel-ul, nu dintr-un singur canal. Testăm oferte, landing page-uri și fluxuri de retenție, reparăm tracking-ul și folosim datele ca să găsim următoarea etapă de creștere.',
-  'svc3.d1': 'Optimizarea ratei de conversie',
-  'svc3.d2': 'Tracking cu Pixel, CAPI și GA4',
-  'svc3.d3': 'Experimente de ofertă și funnel',
-  'svc3.d4': 'Strategie de retenție și LTV',
-
-  'process.title': 'De la prima reclamă la scalare predictibilă.',
-  'process.lead': 'Cinci etape, un singur ciclu. Fiecare ciclu îl alimentează pe următorul cu date mai bune.',
-  'step1.title': 'Creare',
-  'step1.text': 'Creative construite pe cercetare și produse rapid cu AI, gata de testat din prima zi.',
-  'step2.title': 'Lansare',
-  'step2.text': 'Campaniile pornesc pe Facebook și Instagram cu un plan clar de testare.',
-  'step3.title': 'Analiză',
-  'step3.text': 'Citim cifrele care contează și le transformăm în decizii, nu doar în rapoarte.',
-  'step4.title': 'Automatizare',
-  'step4.text': 'Reguli și optimizare asistată de AI țin bugetele la lucru non-stop.',
-  'step5.title': 'Scalare',
-  'step5.text': 'Reclamele și audiențele câștigătoare primesc mai mult buget, iar creșterea rămâne profitabilă pe măsură ce investiția crește.',
-
-  'results.title': 'Creștere <em>bazată pe date.</em>',
-  'results.lead': 'Fiecare decizie e susținută de cifre. Acestea sunt metricile pentru care răspundem.',
-  'results.alt': 'Dashboard de performanță cu buget de reclame, conversii și un grafic de venituri în creștere',
-  'results.note': 'Cifre ilustrative. Rezultatele depind de brand, ofertă și buget.',
-  'stat.leads': 'Lead-uri',
-  'stat.revenue': 'Venituri',
-
-  'cta.title': 'Creștem împreună.',
-  'cta.sub': 'Meta Ads. Marketing. Growth Marketing.',
-  'cta.button': 'Contactează-ne pentru informații și prețuri',
-
-  'footer.tag': 'Automatizăm azi. Creștem mâine.',
-  'footer.company': 'Companie',
-  'footer.rights': 'Toate drepturile rezervate.',
-  'footer.top': 'Înapoi sus',
-
-  'contact.back': 'Înapoi la pagina principală',
-  'contact.title': '<span class="line"><span>Hai să vorbim despre</span></span> <span class="line"><span><em>creșterea ta.</em></span></span>',
-  'contact.lead': 'Mai multe informații și prețuri pentru Meta Ads, marketing și growth marketing.',
-  'contact.direct': 'Preferi să vorbim acum?',
-  'contact.directText': 'Scrie-ne pe WhatsApp și vorbește direct cu echipa noastră.',
-  'contact.wa': 'Scrie-ne pe WhatsApp',
-  'contact.waText': 'Bună, Scalium! Aș dori mai multe informații și prețuri.',
-  'contact.follow': 'Urmărește-ne',
-  'social.label': 'Rețele sociale',
-
-  'form.title': 'Spune-ne despre brandul tău',
-  'form.service': 'De ce ai nevoie?',
-  'form.serviceHint': 'Alege unul sau mai multe.',
-  'form.notSure': 'Încă nu știu',
-  'form.name': 'Nume',
-  'form.email': 'Email',
-  'form.phone': 'Număr de telefon',
-  'form.message': 'Detalii despre proiect',
-  'form.optional': '(opțional)',
-  'form.messagePh': 'Brandul tău, obiectivele și bugetul lunar de reclame.',
-  'form.submit': 'Trimite cererea',
-  'form.privacy': 'Folosim datele tale doar ca să îți răspundem la cerere.',
-  'form.sending': 'Se trimite cererea...',
-  'form.fail': 'Cererea nu a putut fi trimisă. Încearcă din nou sau scrie-ne pe WhatsApp.',
-  'form.err.service': 'Alege cel puțin un serviciu.',
-  'form.err.name': 'Te rugăm să îți scrii numele.',
-  'form.err.email': 'Te rugăm să scrii o adresă de email validă.',
-  'form.err.phone': 'Te rugăm să scrii un număr de telefon valid.',
-  'form.okTitle': 'Cerere trimisă.',
-  'form.okText': 'Mulțumim. Revenim în curând cu mai multe informații și prețuri.',
-  'form.again': 'Trimite altă cerere',
-};
+import { RO } from './i18n-ro.js';
+import { EN as EN_STRINGS } from './i18n-en.js';
 
 const STORAGE_KEY = 'scalium-lang';
 const root = document.documentElement;
 const page = document.body.getAttribute('data-page') || 'home';
-const EN = {};
-let current = 'en';
+const EN = { ...EN_STRINGS };
+let current = root.getAttribute('lang') === 'ro' ? 'ro' : 'en';
 
-function capture() {
-  document.querySelectorAll('[data-i18n]').forEach((el) => { EN[el.dataset.i18n] ??= el.textContent.trim(); });
-  document.querySelectorAll('[data-i18n-html]').forEach((el) => { EN[el.dataset.i18nHtml] ??= el.innerHTML.trim(); });
-  document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
-    el.dataset.i18nAttr.split(';').forEach((pair) => {
-      const [attr, key] = pair.split(':');
-      EN[key] ??= el.getAttribute(attr) || '';
-    });
-  });
-  EN[`meta.${page}.title`] = document.title;
-  const desc = document.querySelector('meta[name="description"]');
-  EN[`meta.${page}.desc`] = desc ? desc.content : '';
+// Keep the language in the address (?lang=) when it differs from the page's own, so a reload or a
+// shared link shows the same language. The path never changes: relative links and images would break.
+const pageLang = root.getAttribute('data-page-lang') === 'ro' ? 'ro' : 'en';
+function syncUrl(lang) {
+  try {
+    const url = new URL(location.href);
+    if (lang === pageLang) url.searchParams.delete('lang');
+    else url.searchParams.set('lang', lang);
+    if (url.href !== location.href) history.replaceState(history.state, '', url.href);
+  } catch (e) { /* sandboxed frame */ }
 }
 
 function t(key, lang) {
@@ -196,11 +80,13 @@ function set(lang, { persist = true } = {}) {
   if (persist) { try { localStorage.setItem(STORAGE_KEY, next); } catch (e) { /* private mode */ } }
   if (next === current) return;
   apply(next);
+  syncUrl(next);
   document.dispatchEvent(new CustomEvent('langchange', { detail: { lang: next } }));
 }
 
-capture();
-apply(root.getAttribute('data-lang') === 'ro' ? 'ro' : 'en');
+const initial = root.getAttribute('data-lang') === 'ro' ? 'ro' : 'en';
+apply(initial);
+syncUrl(initial);
 
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.lang [data-lang]');

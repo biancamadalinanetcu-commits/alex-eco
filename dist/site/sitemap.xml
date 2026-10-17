@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://scalium.ro/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://scalium.ro/"/>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://scalium.ro/ro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://scalium.ro/"/>
+  </url>
+  <url>
+    <loc>https://scalium.ro/ro/</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://scalium.ro/"/>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://scalium.ro/ro/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://scalium.ro/"/>
+  </url>
+  <url>
+    <loc>https://scalium.ro/contact.html</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://scalium.ro/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://scalium.ro/ro/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://scalium.ro/contact.html"/>
+  </url>
+  <url>
+    <loc>https://scalium.ro/ro/contact.html</loc>
+    <lastmod>2026-10-17</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://scalium.ro/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="ro" href="https://scalium.ro/ro/contact.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://scalium.ro/contact.html"/>
+  </url>
+</urlset>

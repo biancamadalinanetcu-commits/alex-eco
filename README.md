@@ -73,6 +73,22 @@ vertical version.
 - Put the real **Instagram** and **TikTok** profile links in (they point to the platforms' home pages for now).
 - Static site only: activate FormSubmit with the first test request (see above).
 
+## SEO
+
+- **Two indexable languages.** The static site has real Romanian pages under `/ro/` (pre-rendered at build
+  time from `src/assets/js/i18n-ro.js`), so Google indexes both languages. Each page names its canonical address
+  and links its twin with `hreflang`. Switching language in the browser stays instant; `?lang=ro|en` keeps the
+  choice in the address. In WordPress the Romanian version is `?lang=ro`, announced with the same `hreflang` links.
+- **Sitemap and robots.** `dist/site/sitemap.xml` (both languages) and `dist/site/robots.txt` are generated. WordPress
+  has its own sitemap at `/wp-sitemap.xml` (or the one from Yoast/Rank Math), which its robots.txt already lists.
+- **Structured data.** Business details for Google (ProfessionalService: services, email, phone, Instagram/TikTok,
+  logo), Open Graph and Twitter cards with absolute image links, `robots` meta allowing large previews.
+- **Set the domain.** Put the real address in `src/config.json` as `site_url` (now `https://scalium.ro`) and rebuild;
+  canonical links, hreflang, the sitemap and social previews all use it. WordPress uses its own Site Address.
+
+After launch: add the site to Google Search Console and submit the sitemap, create a Google Business Profile,
+and install Google Analytics (GA4).
+
 ## Editing content
 
 - English copy lives directly in `src/index.html` and `src/contact.html`.

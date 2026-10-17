@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="ro" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020305">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<script>
+/* Runs before first paint: marks JS as available, restores the chosen language
+and starts the page-transition wipe when arriving from another Scalium page. */
+(function (d) {
+var h = d.documentElement;
+h.className = h.className.replace('no-js', 'js');
+try {
+var q = new URLSearchParams(location.search).get('lang');
+var stored = null;
+try { stored = localStorage.getItem('scalium-lang'); } catch (e) {}
+/* the /ro/ pages are Romanian by address; elsewhere the visitor's choice, then the browser */
+h.setAttribute('data-page-lang', h.lang === 'ro' ? 'ro' : 'en');
+var l = q || (h.lang === 'ro' ? 'ro' : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
+l = l === 'ro' ? 'ro' : 'en';
+h.lang = l;
+h.setAttribute('data-lang', l);
+if (sessionStorage.getItem('scalium-wipe') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+h.classList.add('is-entering');
+setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
+}
+sessionStorage.removeItem('scalium-wipe');
+/* The logo intro plays from the top of the home page; a link to one of its sections skips it.
+If the animation script failed (it has run by the time the page has loaded), drop the
+intro so the hero is never left covered. A slow connection only delays it. */
+if (/^#(top|main|services|process|results|contact-cta)$/.test(location.hash)) h.classList.add('intro-skip');
+/* Back/forward returns to where the visitor was. (A reload of the home page starts at the top so the
+intro replays: main.js marks the page for that when it is left.) */
+var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+window.__scaliumBack = !!nav && nav.type === 'back_forward';
+if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
+window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
+} catch (e) {}
+})(document);
+</script>
+<link rel="preload" href="../assets/fonts/mona-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/mona-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/img/logo-mark.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/css/main.css">
+<script src="../assets/js/main.js" defer></script>
+<title>Scalium | Agenție de Meta Ads și Growth Marketing</title>
+<link rel="canonical" href="https://scalium.ro/ro/">
+<link rel="alternate" hreflang="en" href="https://scalium.ro/">
+<link rel="alternate" hreflang="ro" href="https://scalium.ro/ro/">
+<link rel="alternate" hreflang="x-default" href="https://scalium.ro/">
+<meta property="og:url" content="https://scalium.ro/ro/">
+<meta property="og:locale" content="ro_RO">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="description" content="Scalium ajută brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și growth marketing.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Scalium">
+<meta property="og:title" content="Scalium | Agenție de Meta Ads și Growth Marketing">
+<meta property="og:description" content="Scalium ajută brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și growth marketing.">
+<meta property="og:image" content="https://scalium.ro/assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://scalium.ro/#business","name":"Scalium","url":"https://scalium.ro/","logo":"https://scalium.ro/assets/img/apple-touch-icon.png","image":"https://scalium.ro/assets/img/og-image.jpg","description":"Meta Ads, marketing and growth marketing agency for eCommerce brands.","email":"scalium.buisiness@gmail.com","telephone":"+40792535738","knowsLanguage":["en","ro"],"areaServed":["RO","Worldwide"],"sameAs":["https://www.instagram.com/","https://www.tiktok.com/"],"contactPoint":{"@type":"ContactPoint","contactType":"sales","email":"scalium.buisiness@gmail.com","telephone":"+40792535738","availableLanguage":["English","Romanian"]},"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Brand scaling with Meta Ads"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Marketing management"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Growth marketing"}}]}</script>
+</head>
+<body class="site" data-page="home">
+<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-arrow-right" viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></symbol><symbol id="i-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></symbol><symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol><symbol id="i-arrow-up" viewBox="0 0 256 256"><path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/></symbol><symbol id="i-sparkle" viewBox="0 0 256 256"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></symbol><symbol id="i-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="i-chart-bar" viewBox="0 0 256 256"><path d="M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"/></symbol><symbol id="i-gear-six" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"/></symbol><symbol id="i-trend-up" viewBox="0 0 256 256"><path d="M240,56v64a8,8,0,0,1-16,0V75.31l-82.34,82.35a8,8,0,0,1-11.32,0L96,123.31,29.66,189.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0L136,140.69,212.69,64H168a8,8,0,0,1,0-16h64A8,8,0,0,1,240,56Z"/></symbol><symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="i-list" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></symbol><symbol id="i-x" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></symbol><symbol id="i-lightning" viewBox="0 0 256 256"><path d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"/></symbol><symbol id="i-users-three" viewBox="0 0 256 256"><path d="M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1-7.37-4.89,8,8,0,0,1,0-6.22A8,8,0,0,1,192,112a24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4ZM190.92,212a8,8,0,1,1-13.84,8,57,57,0,0,0-98.16,0,8,8,0,1,1-13.84-8,72.06,72.06,0,0,1,33.74-29.92,48,48,0,1,1,58.36,0A72.06,72.06,0,0,1,190.92,212ZM128,176a32,32,0,1,0-32-32A32,32,0,0,0,128,176ZM72,120a8,8,0,0,0-8-8A24,24,0,1,1,87.24,82a8,8,0,1,0,15.5-4A40,40,0,1,0,37,117.51,67.94,67.94,0,0,0,9.6,139.19a8,8,0,1,0,12.8,9.61A51.6,51.6,0,0,1,64,128,8,8,0,0,0,72,120Z"/></symbol><symbol id="i-target" viewBox="0 0 256 256"><path d="M221.87,83.16A104.1,104.1,0,1,1,195.67,49l22.67-22.68a8,8,0,0,1,11.32,11.32l-96,96a8,8,0,0,1-11.32-11.32l27.72-27.72a40,40,0,1,0,17.87,31.09,8,8,0,1,1,16-.9,56,56,0,1,1-22.38-41.65L184.3,60.39a87.88,87.88,0,1,0,23.13,29.67,8,8,0,0,1,14.44-6.9Z"/></symbol><symbol id="i-whatsapp-logo" viewBox="0 0 256 256"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></symbol><symbol id="i-instagram-logo" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"/></symbol><symbol id="i-tiktok-logo" viewBox="0 0 256 256"><path d="M224,72a48.05,48.05,0,0,1-48-48,8,8,0,0,0-8-8H128a8,8,0,0,0-8,8V156a20,20,0,1,1-28.57-18.08A8,8,0,0,0,96,130.69V88a8,8,0,0,0-9.4-7.88C50.91,86.48,24,119.1,24,156a76,76,0,0,0,152,0V116.29A103.25,103.25,0,0,0,224,128a8,8,0,0,0,8-8V80A8,8,0,0,0,224,72Zm-8,39.64a87.19,87.19,0,0,1-43.33-16.15A8,8,0,0,0,160,102v54a60,60,0,0,1-120,0c0-25.9,16.64-49.13,40-57.6v27.67A36,36,0,1,0,136,156V32h24.5A64.14,64.14,0,0,0,216,87.5Z"/></symbol><symbol id="i-envelope-simple" viewBox="0 0 256 256"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></symbol><symbol id="i-check-circle" viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></symbol></svg>
+<div class="wipe" aria-hidden="true"><span class="wipe__edge"></span></div>
+<a class="skip-link" href="#main" data-i18n="skip">Sari la conținut</a>
+<header class="nav" data-nav>
+<div class="nav__inner">
+<a class="nav__logo" href="index.html" aria-label="Scalium" data-home-link>
+<img src="../assets/img/logo-horizontal.svg" alt="Scalium" width="137" height="28">
+</a>
+<nav class="nav__links" aria-label="Principal" data-i18n-attr="aria-label:nav.label">
+<a class="link" href="index.html#services" data-i18n="nav.services">Servicii</a>
+<a class="link" href="index.html#process" data-i18n="nav.process">Proces</a>
+<a class="link" href="index.html#results" data-i18n="nav.results">Rezultate</a>
+</nav>
+<div class="nav__actions">
+<a class="btn btn--primary btn--sm nav__cta" href="contact.html" data-transition>
+<span data-i18n="cta.contact">Contactează-ne</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+<div class="lang" role="group" aria-label="Limbă" data-i18n-attr="aria-label:lang.label">
+<button type="button" class="lang__opt" data-lang="en" aria-pressed="true" lang="en">EN</button>
+<button type="button" class="lang__opt" data-lang="ro" aria-pressed="false" lang="ro">RO</button>
+<span class="lang__thumb" aria-hidden="true"></span>
+</div>
+<button type="button" class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+<span class="sr-only" data-i18n="nav.menu">Meniu</span>
+<span class="nav__burger" aria-hidden="true"><span></span><span></span></span>
+</button>
+</div>
+</div>
+<div class="nav__progress" aria-hidden="true"><span data-scroll-progress></span></div>
+</header>
+<div class="menu" id="menu" data-menu hidden>
+<nav class="menu__links" aria-label="Meniu mobil" data-i18n-attr="aria-label:nav.mobile">
+<a href="index.html#services" style="--i:0"><span data-i18n="nav.services">Servicii</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="index.html#process" style="--i:1"><span data-i18n="nav.process">Proces</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="index.html#results" style="--i:2"><span data-i18n="nav.results">Rezultate</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+<a href="contact.html" style="--i:3" data-transition><span data-i18n="cta.contact">Contactează-ne</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+</nav>
+</div>
+<main id="main">
+<div class="intro-wrap" data-intro-wrap>
+<div class="intro" data-intro aria-hidden="true">
+<div class="intro__bg"></div>
+<div class="intro__scene">
+<div class="intro__tunnel">
+<span class="intro__ring" style="--z:-300px;--s:1.35"></span>
+<span class="intro__ring" style="--z:-850px;--s:1.5"></span>
+<span class="intro__ring" style="--z:-1400px;--s:1.4"></span>
+<span class="intro__ring" style="--z:-1950px;--s:1.55"></span>
+<span class="intro__ring" style="--z:-2500px;--s:1.45"></span>
+<span class="intro__ring" style="--z:-3050px;--s:1.6"></span>
+<span class="intro__ring" style="--z:-3600px;--s:1.5"></span>
+<span class="intro__ring" style="--z:-4150px;--s:1.6"></span>
+</div>
+<div class="intro__logo">
+<div class="intro__mark" data-intro-mark>
+<span class="intro__piece intro__blade" style="--ox:29.06%;--oy:77.06%"><svg viewBox="466 410 320 235" focusable="false"><path fill="#0a6aff" fill-rule="evenodd" d="M 601.1 542.2 L 570.1 542.4 567.6 543.3 C 566.3 543.8,563.9 544.8,562.5 545.6 L 559.9 546.9 557 549.8 C 552.5 554.5,512.3 594.6,501.1 605.6 C 474.4 631.9,471 635.3,470.7 636.3 C 470.2 637.9,471.4 639.3,473.6 639.7 C 475.9 640.1,545.4 640.1,546.9 639.7 C 550.6 638.6,553.5 637.3,555.3 635.9 C 557.6 634.2,635 556.9,644.3 547 C 647.5 543.7,647.8 543.1,647.2 542.5 C 646.7 542.1,637.1 542.1,601.1 542.2"/></svg></span>
+<span class="intro__piece intro__arrow" style="--ox:72.73%;--oy:47.77%"><svg viewBox="466 410 320 235" focusable="false"><path fill="#0a6aff" fill-rule="evenodd" d="M 697.1 416.6 C 696.7 416.8,695.7 417.6,694.9 418.5 C 692.7 420.8,672 441.1,670 442.9 C 669.1 443.7,667.9 444.9,667.4 445.5 C 666.8 446.1,664.9 447.9,663.1 449.6 C 660.1 452.4,648.4 463.7,636.5 475.4 C 633.5 478.3,630.2 481.5,629 482.5 C 626.3 484.9,615.6 495.5,615.1 496.3 C 614.7 497.1,614.8 497.6,615.7 498 C 616.1 498.2,623.3 498.3,641.9 498.3 L 667.5 498.3 668 498.9 L 668.5 499.6 668.5 561.4 C 668.5 628.8,668.4 624.3,669.9 625 C 670.3 625.1,670.7 625.2,670.9 625 C 671.3 624.8,679 617.4,690.4 606.3 C 698.2 598.6,713.7 583.5,718.2 579.1 C 719.9 577.5,721.8 575.7,722.4 575.1 C 723.9 573.6,725.8 570.6,726.3 568.8 C 726.6 567.9,727.1 566.5,727.5 565.6 L 728.1 564.1 728.2 532.1 C 728.2 514.5,728.3 499.9,728.4 499.6 C 728.7 498.2,727.9 498.3,755.2 498.3 C 782.8 498.3,782.3 498.3,782.3 496.9 C 782.3 496.2,776.7 490.6,770.7 485.3 C 768.8 483.6,765.4 480.4,763.4 478.4 C 758.9 473.9,736.9 452.5,732.9 448.8 C 731.3 447.3,727.1 443.1,723.3 439.4 C 719.6 435.8,716.2 432.5,715.8 432.2 C 715.4 431.8,711.7 428.2,707.7 424.2 C 699.4 415.9,699.2 415.7,697.1 416.6"/></svg></span>
+<span class="intro__sheen"></span>
+</div>
+<div class="intro__word">
+<span class="intro__letter" style="--ox:7.44%;--oy:63.51%;--i:0;--dx:-0.851"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 324.5 711 C 312.3 713.1,304.3 716.6,298 722.7 C 287.2 733,285.9 750.7,295.2 761.8 C 299.8 767.3,310.2 772.8,319.9 774.9 C 320.3 775,321.4 775.3,322.3 775.5 C 323.1 775.7,325 776.2,326.4 776.5 C 343.2 780.2,347.3 781.8,349.3 785.6 C 351.8 790.4,348.2 795.4,341.1 797.2 C 330.2 799.8,317 795.9,306.7 787.1 C 304.9 785.5,303.8 784.8,303.4 784.8 C 302.8 784.8,301.6 785.7,296.7 790 C 293.4 793,285.3 799.8,284.9 800.1 C 283.3 800.9,283.6 802.3,285.9 804.5 C 293.3 811.6,304.4 817.7,312.6 819.2 C 313.3 819.4,314.2 819.6,314.5 819.7 C 314.8 819.8,315.7 820,316.5 820.1 C 317.3 820.2,318.4 820.4,319.1 820.6 C 324.2 822,343.1 822,347.5 820.6 C 348.1 820.4,349.2 820.2,349.9 820.1 C 355.2 819.4,363.9 815.4,368.6 811.6 C 376.2 805.2,380 797,380 786.7 C 380 782,380 781.9,378.6 777.4 C 375.6 768,367.4 761,354.8 756.7 C 352.5 756,348.2 754.9,339.4 752.7 C 327.5 749.9,324.8 749,322.4 747.4 C 320.2 745.9,319 744,319 741.8 C 319 730.1,347.4 730.8,358.5 742.8 C 359.8 744.3,359.3 744.6,370.6 734.2 C 372.7 732.4,375.1 730.2,376.1 729.4 C 378.7 727.1,378.6 726.3,375 723.4 C 368 717.8,359.2 713.6,350.4 711.8 C 344.2 710.5,343.3 710.4,335.9 710.3 L 328.6 710.3 324.5 711"/></svg></span>
+<span class="intro__letter" style="--ox:22.53%;--oy:63.45%;--i:1;--dx:-0.549"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 436.9 710.4 C 425.2 711.9,419.8 713.7,411.4 718.5 C 398.8 725.7,389 738.6,386.2 751.9 C 386.1 752.6,385.8 753.7,385.6 754.4 C 385.4 755.1,385.2 756.4,385.1 757.3 C 385.1 758.1,384.9 760.4,384.7 762.3 C 384.4 766.2,384.8 773.4,385.4 776.8 C 385.6 777.8,385.9 779.1,386 779.8 C 386.4 782.3,388.1 786.6,390.1 790.9 C 394.4 799.6,401.4 807.5,409.7 812.9 C 413.5 815.4,424.1 820,426 820 C 426.2 820,427 820.2,427.8 820.4 C 429.2 820.8,432.8 821.3,437.9 821.8 C 442 822.2,451.4 821.5,454.3 820.6 C 454.9 820.4,455.9 820.2,456.5 820.1 C 457 820,458.5 819.6,459.7 819.2 C 460.9 818.8,462.4 818.3,463 818.1 C 464.3 817.7,469.4 815.1,471.7 813.7 C 478.2 809.8,488.3 799.7,488.3 797.2 C 488.3 796.3,487.7 795.7,484.3 793.4 C 483 792.4,480.6 790.8,479.1 789.8 C 477.7 788.7,475.3 787,473.9 786 C 470.2 783.3,466.7 781,466.2 781 C 465.8 781,464.7 782.1,463.4 783.9 C 461 787.3,452.5 793,449.9 793 C 449.7 793,448.9 793.2,448.2 793.5 L 446.9 794.1 441.6 794.1 L 436.4 794.1 434 793.3 C 427 790.8,422.1 787.3,418.7 782 C 417.2 779.9,415.3 775.8,415.3 775 C 415.3 774.9,415 774,414.7 773.2 L 414.1 771.6 414.1 765.9 L 414.1 760.1 414.7 758.3 C 418.9 745,429.4 737.6,443.1 738.1 C 452 738.4,458.1 741.6,464.8 749.2 C 466.3 750.9,466 751,472 746.6 C 474.7 744.7,477.9 742.3,479.3 741.4 C 486.4 736.6,488.3 735.1,488.3 734.2 C 488.3 732.1,479.3 723.2,472.8 718.8 C 469.6 716.6,461 713.1,455.8 711.9 C 450.4 710.6,440.9 709.9,436.9 710.4"/></svg></span>
+<span class="intro__letter" style="--ox:38.23%;--oy:63.84%;--i:2;--dx:-0.235"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 536.1 711.4 C 531.5 712.1,529.7 712.5,523.8 714.4 C 509.6 719.1,497.9 730.6,492.6 745 C 490.2 751.5,489.6 754.1,489 760.5 C 488.2 769.9,489.4 779.7,492.1 786.6 C 496.9 799,504.4 807.8,516.3 815.2 C 520.2 817.7,527.7 820.3,532.6 821 C 533.6 821.1,535 821.4,535.8 821.5 C 538.9 822.1,551 821.4,552.2 820.6 C 552.4 820.5,553.1 820.3,553.8 820.1 C 559.4 818.7,565.9 814.8,570.5 810.2 C 571.7 809,572.8 808,573 808 L 573.5 808 573.5 812.9 C 573.5 818.1,573.6 818.8,574.7 819.2 C 575.2 819.4,579.4 819.5,588.3 819.4 L 601.2 819.4 601.8 818.9 L 602.3 818.3 602.4 777.6 C 602.4 755.2,602.4 732,602.3 726 L 602.2 715.2 601.7 714.7 L 601.2 714.2 588 714.3 L 574.7 714.4 574.2 715.1 C 573.8 715.6,573.7 716.1,573.6 717.8 C 573.6 718.9,573.6 721,573.5 722.3 L 573.5 724.8 573 724.8 C 572.6 724.8,571.5 723.9,569.9 722.3 C 562.3 715,553.4 711.5,542 711.4 C 539.2 711.3,536.5 711.4,536.1 711.4 M 542.3 738.5 C 517.5 741.7,509.3 773,529.1 788.7 C 531.6 790.7,534.2 792,539 793.5 L 540.9 794.1 545.9 794.1 L 550.9 794.1 553.9 793 C 560.5 790.8,565.6 787,569.4 781.3 C 571.1 778.7,572 776.6,573.5 771.3 C 574.1 769.1,574.2 764.6,573.6 762 C 573.4 760.9,573.1 759.7,573 759.1 C 572.9 758.6,572.3 756.9,571.7 755.3 C 566.8 743.8,554.7 736.9,542.3 738.5"/></svg></span>
+<span class="intro__letter" style="--ox:50.19%;--oy:50.03%;--i:3;--dx:0.004"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 615 669.6 C 613.7 670.2,613.8 666.4,613.6 744.4 C 613.5 822.1,613.5 818.7,614.7 819.2 C 615.6 819.6,641.1 819.6,641.8 819.2 C 643.1 818.5,643 823.3,643 744.4 C 643 664.8,643.1 670.2,641.6 669.5 C 640.7 669.1,615.9 669.1,615 669.6"/></svg></span>
+<span class="intro__letter" style="--ox:56.37%;--oy:49.76%;--i:4;--dx:0.127"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 668.6 668 C 662.3 668.7,656.8 673.3,654.6 679.8 C 654.2 680.9,654.1 681.9,654.1 685.3 L 654.1 689.4 655.2 691.7 C 657.2 695.9,659.1 698,662.7 699.9 C 674.4 706.1,688.3 698,688.3 685 C 688.3 676,682.3 669.1,673.3 668 C 671 667.7,670.9 667.7,668.6 668 M 657.8 714.4 C 657.6 714.5,657.3 714.9,657.1 715.3 L 656.7 716.1 656.7 767 C 656.7 795,656.8 818.1,656.9 818.3 C 657.3 819.5,657.7 819.5,671.3 819.5 C 685.1 819.5,685.1 819.5,685.7 818.1 C 686 817.4,686.2 717.9,685.8 716.3 C 685.8 715.9,685.4 715.2,685.1 714.9 L 684.5 714.3 671.3 714.3 C 664.1 714.3,658 714.3,657.8 714.4"/></svg></span>
+<span class="intro__letter" style="--ox:67.59%;--oy:64.82%;--i:5;--dx:0.352"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 699.9 714.9 L 699.2 715.5 699.3 748.4 L 699.4 781.4 700 784 C 701 788.8,702.2 792.6,703.4 795.1 C 710.4 809,720 816.7,735.1 820.6 C 739.3 821.6,749.2 822.3,753.4 821.8 C 754.3 821.6,756.4 821.4,758 821.2 C 771.6 819.4,783.3 812.1,791 800.8 C 791.6 799.9,792.3 798.8,792.5 798.5 C 794.6 795.4,797.7 786.8,798.1 783 C 798.2 782.1,798.4 780.7,798.6 779.9 C 798.9 778.6,799 773.1,799 746.8 L 799 715.3 798.5 714.8 L 798 714.3 784.8 714.3 L 771.6 714.3 771 714.7 L 770.4 715.2 770.3 745.5 L 770.1 775.9 769.4 778.4 C 767.4 785.7,763.2 790.2,756 793 L 753.1 794.1 748.8 794.1 L 744.4 794.1 742.5 793.4 C 734.1 790.6,728.7 783.4,728.3 774.7 C 728.3 773,728.2 758.9,728.2 743.4 L 728.1 715.2 727.5 714.7 L 726.9 714.3 713.7 714.3 L 700.5 714.3 699.9 714.9"/></svg></span>
+<span class="intro__letter" style="--ox:87.90%;--oy:62.41%;--i:6;--dx:0.758"><svg viewBox="280 662 694 164" focusable="false"><path fill="#fff" fill-rule="evenodd" d="M 864.6 711.4 C 854.2 712.5,845.7 716.9,840.6 723.8 C 838.8 726.2,838.5 725.6,838.5 719.9 L 838.5 715.6 838 714.9 L 837.5 714.3 824.2 714.3 L 810.8 714.3 810.2 714.9 L 809.6 715.5 809.6 766.6 C 809.5 803.2,809.6 817.8,809.8 818.3 C 810.3 819.5,810.5 819.5,824.3 819.4 L 837.2 819.4 837.8 818.8 L 838.4 818.2 838.5 787.3 C 838.7 753.4,838.6 754.4,840.2 750.6 C 841.8 746.6,845.5 742.5,848.8 740.9 C 855.8 737.6,865 738.7,869.5 743.4 C 871.7 745.7,874.2 750.6,874.3 752.6 C 874.3 753,874.4 754,874.6 754.8 C 874.9 755.9,875 760.6,875 786.9 C 875 809.3,875.1 817.9,875.3 818.3 C 875.8 819.5,876.1 819.5,889.8 819.4 L 902.7 819.4 903.3 818.8 L 903.9 818.2 904 787.1 L 904.1 755.9 904.8 753.6 C 907.5 744.1,914.2 739,923.9 739 C 931.3 739,936.8 742.7,939.6 749.6 C 941.3 753.6,941.3 753.4,941.3 787.2 C 941.3 820.2,941.2 818.5,942.6 819.2 C 943.1 819.4,946.7 819.5,956.2 819.5 L 969 819.5 969.8 818.8 L 970.5 818 970.5 785.5 C 970.5 757.9,970.4 752.6,970.1 749.7 C 968.7 737.7,964.4 728.3,957.5 722 C 951.7 716.8,948.1 714.7,941.8 713 C 925.4 708.5,908.1 713.9,899 726.3 C 897.7 728.2,897.4 728.2,895.8 725.9 C 891.3 719.5,886 715.7,878.3 713.1 C 874.4 711.8,868.1 711,864.6 711.4"/></svg></span>
+</div>
+</div>
+</div>
+<div class="intro__streaks" data-intro-streaks></div>
+<div class="intro__bloom" data-intro-bloom></div>
+<p class="intro__cue" data-intro-cue><span data-i18n="intro.cue">Derulează</span><span class="intro__cue-line"></span></p>
+</div>
+<section class="hero" id="top" aria-labelledby="hero-title">
+<div class="hero__bg" aria-hidden="true">
+<svg class="trails" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" focusable="false">
+<defs>
+<linearGradient id="trail-fade" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#4d94ff" stop-opacity="0"/>
+<stop offset=".45" stop-color="#4d94ff" stop-opacity=".22"/>
+<stop offset="1" stop-color="#4d94ff" stop-opacity=".05"/>
+</linearGradient>
+</defs>
+<g class="trails__base" stroke="url(#trail-fade)" fill="none" stroke-width="1">
+<path d="M-40 760C380 720 760 600 1640 260"/>
+<path d="M-40 842C460 822 980 702 1640 520"/>
+<path d="M420 940C700 700 1080 520 1640 420"/>
+<path d="M-40 430C300 470 520 600 760 940"/>
+</g>
+<g class="trails__comets" fill="none" stroke-linecap="round">
+<path pathLength="1000" style="--dur:7.5s;--delay:-1.2s" d="M-40 760C380 720 760 600 1640 260"/>
+<path pathLength="1000" style="--dur:9s;--delay:-5s" d="M-40 842C460 822 980 702 1640 520"/>
+<path pathLength="1000" style="--dur:8.2s;--delay:-3.4s" d="M420 940C700 700 1080 520 1640 420"/>
+<path pathLength="1000" style="--dur:10s;--delay:-7s" d="M-40 430C300 470 520 600 760 940"/>
+</g>
+</svg>
+<div class="hero__glow"></div>
+<div class="hero__horizon"></div>
+</div>
+<div class="container hero__grid">
+<div class="hero__copy" data-hero-copy>
+<p class="hero__eyebrow"><span class="dash is-on" aria-hidden="true"></span><span data-i18n-html="hero.eyebrow">Meta Ads <span>&times;</span> AI <span>&times;</span> Creștere</span></p>
+<h1 class="hero__title" id="hero-title" data-i18n-html="hero.title"><span class="line"><span>Scalează inteligent</span></span> <span class="line"><span>cu <em>Meta Ads.</em></span></span></h1>
+<p class="hero__lead" data-i18n="hero.lead">Ajutăm brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și strategie orientată spre performanță.</p>
+<div class="hero__ctas">
+<a class="btn btn--primary" href="contact.html" data-transition>
+<span data-i18n="cta.contact">Contactează-ne</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+<a class="btn btn--ghost" href="#services">
+<span data-i18n="hero.secondary">Vezi serviciile</span>
+<svg class="icon icon--down" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+</div>
+</div>
+<div class="hero__visual" data-hero-visual>
+<div class="hero__tilt" data-tilt>
+<picture><source type="image/avif" srcset="../assets/img/hero-dashboard-560.avif 560w, ../assets/img/hero-dashboard-900.avif 900w, ../assets/img/hero-dashboard-1200.avif 1200w" sizes="(min-width: 1024px) 60vw, 100vw"><img class="hero__img" src="../assets/img/hero-dashboard-900.webp" srcset="../assets/img/hero-dashboard-560.webp 560w, ../assets/img/hero-dashboard-900.webp 900w, ../assets/img/hero-dashboard-1200.webp 1200w" sizes="(min-width: 1024px) 60vw, 100vw" width="972" height="750" alt="Dashboard Scalium pentru Meta Ads cu venituri totale, ROAS și campanii active" data-i18n-attr="alt:hero.alt" fetchpriority="high" loading="eager" decoding="async"></picture>
+</div>
+</div>
+</div>
+</section>
+</div>
+<section class="statement" aria-labelledby="statement-text">
+<div class="container">
+<p class="statement__text" id="statement-text" data-scrub-words data-i18n="statement.text">Majoritatea brandurilor nu au o problemă de trafic. Au o problemă de scalare. Noi construim sistemul care transformă bugetul de reclame în venituri predictibile.</p>
+<ul class="outcomes">
+<li class="outcome" data-reveal style="--d:0">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg>
+<span data-i18n="outcome.1">Venituri mai mari</span>
+</li>
+<li class="outcome" data-reveal style="--d:1">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-target"/></svg>
+<span data-i18n="outcome.2">CAC mai mic</span>
+</li>
+<li class="outcome" data-reveal style="--d:2">
+<span class="dash" data-dash aria-hidden="true"></span>
+<svg class="icon" aria-hidden="true"><use href="#i-lightning"/></svg>
+<span data-i18n="outcome.3">Creștere pe termen lung</span>
+</li>
+</ul>
+</div>
+</section>
+<div class="shift" data-shift aria-hidden="true">
+<div class="shift__stage" data-shift-stage>
+<div class="shift__space">
+<div class="shift__ground"><div class="shift__floor" data-shift-floor></div></div>
+<div class="shift__gate"></div>
+<div class="shift__gate"></div>
+<div class="shift__gate"></div>
+<div class="shift__gate"></div>
+<p class="shift__label" data-shift-label><span class="shift__index">02</span><span data-i18n="nav.services">Servicii</span></p>
+</div>
+<div class="shift__horizon" data-shift-horizon></div>
+</div>
+</div>
+<section class="services" id="services" aria-labelledby="services-title">
+<div class="container">
+<div class="section-head" data-reveal>
+<div class="dash" data-dash aria-hidden="true"></div>
+<h2 class="h2" id="services-title" data-split data-i18n="services.title">Trei servicii. Un singur obiectiv: creștere profitabilă.</h2>
+<p class="section-lead" data-i18n="services.lead">Alege unul sau combină-le pe toate trei. Aceeași echipă, aceleași date și același obiectiv în spatele fiecăruia.</p>
+</div>
+<div class="services__layout" data-services>
+<div class="services__list">
+<article class="service is-active" data-service="0" aria-labelledby="svc1-title">
+<div class="service__media" data-reveal-media>
+<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif 520w, ../assets/img/svc-meta-760.avif 760w, ../assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-meta-760.webp" srcset="../assets/img/svc-meta-520.webp 520w, ../assets/img/svc-meta-760.webp 760w, ../assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc1-title" data-i18n="svc1.title">Scalarea brandului cu Meta Ads</h3>
+<p class="service__text" data-i18n="svc1.text">Campanii pe Facebook și Instagram construite să crească bugetul fără să piardă din eficiență. Structurăm contul, găsim audiențele care cumpără și scalăm bugetele pe baza semnalelor care contează.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d1">Structură de campanii full-funnel</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d2">Cercetare și targetare de audiențe</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d3">Scalarea bugetului și strategie de licitare</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc1.d4">Campanii Advantage+ și de catalog</span></li>
+</ul>
+</article>
+<article class="service" data-service="1" aria-labelledby="svc2-title">
+<div class="service__media" data-reveal-media>
+<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif 520w, ../assets/img/svc-managed-760.avif 760w, ../assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-managed-760.webp" srcset="../assets/img/svc-managed-520.webp 520w, ../assets/img/svc-managed-760.webp 760w, ../assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 1px, 92vw" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc2-title" data-i18n="svc2.title">Marketing gestionat de noi</h3>
+<p class="service__text" data-i18n="svc2.text">Ne ocupăm de marketingul tău zi de zi: producția și testarea creativelor, lansări, raportare și optimizare. Ai o echipă senior fără să construiești una internă.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d1">Strategie și producție de creative</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d2">Testare continuă a creativelor</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d3">Lansări de campanii și promoții</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc2.d4">Rapoarte săptămânale clare</span></li>
+</ul>
+</article>
+<article class="service" data-service="2" aria-labelledby="svc3-title">
+<div class="service__media" data-reveal-media>
+<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif 520w, ../assets/img/svc-growth-760.avif 760w, ../assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-growth-760.webp" srcset="../assets/img/svc-growth-520.webp 520w, ../assets/img/svc-growth-760.webp 760w, ../assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<h3 class="service__title" id="svc3-title" data-i18n="svc3.title">Growth marketing</h3>
+<p class="service__text" data-i18n="svc3.text">Creșterea vine din tot funnel-ul, nu dintr-un singur canal. Testăm oferte, landing page-uri și fluxuri de retenție, reparăm tracking-ul și folosim datele ca să găsim următoarea etapă de creștere.</p>
+<ul class="service__list">
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d1">Optimizarea ratei de conversie</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d2">Tracking cu Pixel, CAPI și GA4</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d3">Experimente de ofertă și funnel</span></li>
+<li><svg class="icon" aria-hidden="true"><use href="#i-check"/></svg><span data-i18n="svc3.d4">Strategie de retenție și LTV</span></li>
+</ul>
+</article>
+</div>
+<div class="services__stage" aria-hidden="true">
+<div class="stage">
+<div class="stage__frame">
+<div class="stage__slide is-active" data-slide="0">
+<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif 520w, ../assets/img/svc-meta-760.avif 760w, ../assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-meta-760.webp" srcset="../assets/img/svc-meta-520.webp 520w, ../assets/img/svc-meta-760.webp 760w, ../assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<div class="stage__slide" data-slide="1">
+<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif 520w, ../assets/img/svc-managed-760.avif 760w, ../assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 40vw, 1px"><img src="../assets/img/svc-managed-760.webp" srcset="../assets/img/svc-managed-520.webp 520w, ../assets/img/svc-managed-760.webp 760w, ../assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 40vw, 1px" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<div class="stage__slide" data-slide="2">
+<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif 520w, ../assets/img/svc-growth-760.avif 760w, ../assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-growth-760.webp" srcset="../assets/img/svc-growth-520.webp 520w, ../assets/img/svc-growth-760.webp 760w, ../assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+</div>
+<span class="stage__scan" data-scan></span>
+</div>
+<div class="stage__progress"><span class="is-active"></span><span></span><span></span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="process" id="process" aria-labelledby="process-title">
+<div class="process__pin" data-process>
+<div class="process__track" data-process-track>
+<div class="process__intro" data-reveal>
+<div class="dash" data-dash aria-hidden="true"></div>
+<h2 class="h2" id="process-title" data-split data-i18n="process.title">De la prima reclamă la scalare predictibilă.</h2>
+<p class="section-lead" data-i18n="process.lead">Cinci etape, un singur ciclu. Fiecare ciclu îl alimentează pe următorul cu date mai bune.</p>
+<div class="process__emblem" data-reveal-media>
+<picture><source type="image/avif" srcset="../assets/img/process-emblem-420.avif 420w, ../assets/img/process-emblem-700.avif 700w" sizes="(min-width: 960px) 30vw, 80vw"><img src="../assets/img/process-emblem-700.webp" srcset="../assets/img/process-emblem-420.webp 420w, ../assets/img/process-emblem-700.webp 700w" sizes="(min-width: 960px) 30vw, 80vw" width="352" height="232" alt="" loading="lazy" decoding="async"></picture>
+</div>
+</div>
+<div class="process__steps" data-process-steps>
+<div class="process__line" aria-hidden="true"><span class="process__fill" data-process-fill></span><span class="process__head" data-process-head></span></div>
+<ol class="steps">
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg><span data-i18n="step1.title">Creare</span></h3>
+<p class="step__text" data-i18n="step1.text">Creative construite pe cercetare și produse rapid cu AI, gata de testat din prima zi.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-paper-plane-tilt"/></svg><span data-i18n="step2.title">Lansare</span></h3>
+<p class="step__text" data-i18n="step2.text">Campaniile pornesc pe Facebook și Instagram cu un plan clar de testare.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-chart-bar"/></svg><span data-i18n="step3.title">Analiză</span></h3>
+<p class="step__text" data-i18n="step3.text">Citim cifrele care contează și le transformăm în decizii, nu doar în rapoarte.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-gear-six"/></svg><span data-i18n="step4.title">Automatizare</span></h3>
+<p class="step__text" data-i18n="step4.text">Reguli și optimizare asistată de AI țin bugetele la lucru non-stop.</p>
+</div>
+</li>
+<li class="step" data-step>
+<span class="step__node" aria-hidden="true"></span>
+<div class="step__card">
+<h3 class="step__title"><svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg><span data-i18n="step5.title">Scalare</span></h3>
+<p class="step__text" data-i18n="step5.text">Reclamele și audiențele câștigătoare primesc mai mult buget, iar creșterea rămâne profitabilă pe măsură ce investiția crește.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section class="results" id="results" aria-labelledby="results-title">
+<div class="container">
+<div class="section-head section-head--center" data-reveal>
+<h2 class="h2" id="results-title" data-split data-i18n-html="results.title">Creștere <em>bazată pe date.</em></h2>
+<p class="section-lead" data-i18n="results.lead">Fiecare decizie e susținută de cifre. Acestea sunt metricile pentru care răspundem.</p>
+</div>
+</div>
+<div class="results__media" data-zoom>
+<picture><source type="image/avif" srcset="../assets/img/results-dashboard-640.avif 640w, ../assets/img/results-dashboard-1000.avif 1000w, ../assets/img/results-dashboard-1400.avif 1400w" sizes="(min-width: 1400px) 1300px, 94vw"><img class="results__img" src="../assets/img/results-dashboard-1000.webp" srcset="../assets/img/results-dashboard-640.webp 640w, ../assets/img/results-dashboard-1000.webp 1000w, ../assets/img/results-dashboard-1400.webp 1400w" sizes="(min-width: 1400px) 1300px, 94vw" width="1214" height="554" alt="Dashboard de performanță cu buget de reclame, conversii și un grafic de venituri în creștere" data-i18n-attr="alt:results.alt" loading="lazy" decoding="async"></picture>
+</div>
+<div class="container">
+<dl class="stats" data-reveal>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-chart-bar"/></svg><span>ROAS</span></dt>
+<dd data-count="42" data-sign="+">+42%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-users-three"/></svg><span data-i18n="stat.leads">Lead-uri</span></dt>
+<dd data-count="68" data-sign="+">+68%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-trend-up"/></svg><span data-i18n="stat.revenue">Venituri</span></dt>
+<dd data-count="53" data-sign="+">+53%</dd>
+</div>
+<div class="stat">
+<dt><svg class="icon" aria-hidden="true"><use href="#i-target"/></svg><span>CAC</span></dt>
+<dd data-count="37" data-sign="&minus;">&minus;37%</dd>
+</div>
+</dl>
+<p class="footnote" data-i18n="results.note">Cifre ilustrative. Rezultatele depind de brand, ofertă și buget.</p>
+</div>
+</section>
+<section class="cta" id="contact-cta" aria-labelledby="cta-title">
+<div class="container cta__content">
+<h2 class="cta__title" id="cta-title" data-reveal data-split data-i18n="cta.title">Creștem împreună.</h2>
+<p class="cta__sub" data-reveal style="--d:1" data-i18n="cta.sub">Meta Ads. Marketing. Growth Marketing.</p>
+<div class="cta__action" data-reveal style="--d:2">
+<a class="btn btn--primary btn--lg" href="contact.html" data-transition>
+<span data-i18n="cta.button">Contactează-ne pentru informații și prețuri</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+</a>
+</div>
+</div>
+<div class="cta__media" data-cta-media aria-hidden="true">
+<picture><source type="image/avif" srcset="../assets/img/cta-arrow-600.avif 600w, ../assets/img/cta-arrow-930.avif 930w" sizes="(min-width: 1000px) 930px, 92vw"><img class="cta__img" src="../assets/img/cta-arrow-930.webp" srcset="../assets/img/cta-arrow-600.webp 600w, ../assets/img/cta-arrow-930.webp 930w" sizes="(min-width: 1000px) 930px, 92vw" width="930" height="821" alt="" loading="lazy" decoding="async"></picture>
+</div>
+</section>
+</main>
+<footer class="footer">
+<div class="container">
+<div class="dash" data-dash aria-hidden="true"></div>
+<div class="footer__grid">
+<div class="footer__brand" data-reveal>
+<a class="footer__logo" href="index.html" aria-label="Scalium" data-home-link>
+<img src="../assets/img/logo-horizontal.svg" alt="Scalium" width="157" height="32" loading="lazy">
+</a>
+<p class="footer__tag" data-i18n="footer.tag">Automatizăm azi. Creștem mâine.</p>
+<ul class="social" aria-label="Rețele sociale" data-i18n-attr="aria-label:social.label">
+<li><a class="social__link" href="https://www.instagram.com/" target="_blank" rel="noopener" aria-label="Instagram"><svg class="icon" aria-hidden="true"><use href="#i-instagram-logo"/></svg></a></li>
+<li><a class="social__link" href="https://www.tiktok.com/" target="_blank" rel="noopener" aria-label="TikTok"><svg class="icon" aria-hidden="true"><use href="#i-tiktok-logo"/></svg></a></li>
+</ul>
+</div>
+<nav class="footer__col" aria-labelledby="f-services" data-reveal style="--d:1">
+<p class="footer__head" id="f-services" data-i18n="nav.services">Servicii</p>
+<a class="link" href="index.html#services" data-i18n="svc1.short">Scalare cu Meta Ads</a>
+<a class="link" href="index.html#services" data-i18n="svc2.short">Administrare marketing</a>
+<a class="link" href="index.html#services" data-i18n="svc3.short">Growth marketing</a>
+</nav>
+<nav class="footer__col" aria-labelledby="f-company" data-reveal style="--d:2">
+<p class="footer__head" id="f-company" data-i18n="footer.company">Companie</p>
+<a class="link" href="index.html#process" data-i18n="nav.process">Proces</a>
+<a class="link" href="index.html#results" data-i18n="nav.results">Rezultate</a>
+<a class="link" href="contact.html" data-transition data-i18n="cta.contact">Contactează-ne</a>
+</nav>
+<div class="footer__col" data-reveal style="--d:3">
+<p class="footer__head" data-i18n="lang.label">Limbă</p>
+<div class="lang lang--footer" role="group" aria-label="Limbă" data-i18n-attr="aria-label:lang.label">
+<button type="button" class="lang__opt" data-lang="en" aria-pressed="true" lang="en">English</button>
+<button type="button" class="lang__opt" data-lang="ro" aria-pressed="false" lang="ro">Română</button>
+<span class="lang__thumb" aria-hidden="true"></span>
+</div>
+</div>
+</div>
+<div class="footer__bottom">
+<p>&copy; <span data-year>2026</span> Scalium. <span data-i18n="footer.rights">Toate drepturile rezervate.</span></p>
+<button type="button" class="to-top" data-to-top>
+<span data-i18n="footer.top">Înapoi sus</span>
+<svg class="icon" aria-hidden="true"><use href="#i-arrow-up"/></svg>
+</button>
+</div>
+</div>
+</footer>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

@@ -6,12 +6,14 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const ROOT = path.resolve('dist/site');
-const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.avif': 'image/avif', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2' };
+const TYPES = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.avif': 'image/avif', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.xml': 'application/xml', '.txt': 'text/plain' };
 const server = http.createServer(async (req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p.endsWith('/')) p += 'index.html';
-  try { res.writeHead(200, { 'content-type': TYPES[path.extname(p)] || 'application/octet-stream' }); res.end(await readFile(path.join(ROOT, p))); }
-  catch { res.writeHead(404); res.end(); }
+  let body;
+  try { body = await readFile(path.join(ROOT, p)); } catch { res.writeHead(404); return res.end(); }
+  res.writeHead(200, { 'content-type': TYPES[path.extname(p)] || 'application/octet-stream' });
+  res.end(body);
 }).listen(4175);
 
 const browser = await chromium.launch().catch(() => chromium.launch({ executablePath: '/opt/pw-browsers/chromium' }));
@@ -56,8 +58,8 @@ check('nav "Process" scrolls to process', Math.abs(processTop) < 90, `top=${Math
 
 await openIntro(page);
 await page.click('.hero .btn--primary');
-await page.waitForURL('**/contact.html', { timeout: 4000 }).catch(() => {});
-check('hero "Contact us" opens the contact page', page.url().endsWith('contact.html'));
+await page.waitForURL((u) => u.pathname.endsWith('contact.html'), { timeout: 4000 }).catch(() => {});
+check('hero "Contact us" opens the contact page', new URL(page.url()).pathname.endsWith('contact.html'));
 await page.waitForTimeout(1200);
 const wipeGone = await page.evaluate(() => !document.documentElement.classList.contains('is-entering') && getComputedStyle(document.querySelector('.wipe')).visibility === 'hidden');
 check('page transition clears after arrival', wipeGone);
@@ -65,7 +67,7 @@ check('contact page keeps Romanian', (await page.textContent('h1')).includes('Ha
 
 await page.click('.back-link');
 await page.waitForURL((u) => !u.pathname.endsWith('contact.html'), { timeout: 4000 }).catch(() => {});
-check('"Back to home" returns home', !page.url().endsWith('contact.html'));
+check('"Back to home" returns home', !new URL(page.url()).pathname.endsWith('contact.html'));
 
 await page.goto(base + 'contact.html', { waitUntil: 'networkidle' });
 await page.click('.nav__links a[href$="#results"]');
@@ -221,6 +223,27 @@ await fp.click('.form__submit');
 await fp.waitForTimeout(800);
 check('after a failed send, focus returns to the button', await fp.evaluate(() => document.activeElement && document.activeElement.classList.contains('form__submit')));
 await fp.close();
+
+// SEO: Romanian pages are real Romanian HTML, every page names its canonical address and its twin,
+// and the sitemap and robots.txt are there
+const raw = async (u) => (await fetch(base + u)).text();
+const roHome = await raw('ro/');
+check('Romanian home page is pre-rendered in Romanian', /<html lang="ro"/.test(roHome) && roHome.includes('Scalează inteligent') && roHome.includes('<title>Scalium | Agenție'));
+check('pages carry canonical and hreflang links', (await raw('')).includes('rel="canonical" href="https://scalium.ro/"') && roHome.includes('rel="canonical" href="https://scalium.ro/ro/"') && roHome.includes('hreflang="en"'));
+const sm = await raw('sitemap.xml');
+check('sitemap lists all four pages', ['/', '/ro/', '/contact.html', '/ro/contact.html'].every((u) => sm.includes(`<loc>https://scalium.ro${u}</loc>`)));
+check('robots.txt points to the sitemap', (await raw('robots.txt')).includes('Sitemap: https://scalium.ro/sitemap.xml'));
+const sw = await ctx.newPage();
+await sw.goto(base, { waitUntil: 'networkidle' });
+await openIntro(sw);
+await sw.click('.nav .lang [data-lang="ro"]');
+check('switching to Romanian keeps the language in the address', new URL(sw.url()).searchParams.get('lang') === 'ro', sw.url());
+await sw.click('.nav .lang [data-lang="en"]');
+check('switching back clears it', !new URL(sw.url()).searchParams.has('lang'), sw.url());
+await sw.goto(base + 'ro/', { waitUntil: 'networkidle' });
+await sw.waitForTimeout(800);
+check('Romanian page loads its images and scripts', await sw.evaluate(() => document.documentElement.lang === 'ro' && !!window.ScaliumI18n && document.querySelector('.hero__img').naturalWidth > 0));
+await sw.close();
 
 // mobile menu
 const m = await browser.newContext({ viewport: { width: 390, height: 844 } });

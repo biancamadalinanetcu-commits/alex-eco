@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#020305">
 <meta name="color-scheme" content="dark">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <script>
   /* Runs before first paint: marks JS as available, restores the chosen language
      and starts the page-transition wipe when arriving from another Scalium page. */
@@ -10,9 +11,14 @@
     h.className = h.className.replace('no-js', 'js');
     try {
       var q = new URLSearchParams(location.search).get('lang');
-      var l = q || localStorage.getItem('scalium-lang') || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en');
-      if (l === 'ro') h.lang = 'ro';
-      h.setAttribute('data-lang', l === 'ro' ? 'ro' : 'en');
+      var stored = null;
+      try { stored = localStorage.getItem('scalium-lang'); } catch (e) {}
+      /* the /ro/ pages are Romanian by address; elsewhere the visitor's choice, then the browser */
+      h.setAttribute('data-page-lang', h.lang === 'ro' ? 'ro' : 'en');
+      var l = q || (h.lang === 'ro' ? 'ro' : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
+      l = l === 'ro' ? 'ro' : 'en';
+      h.lang = l;
+      h.setAttribute('data-lang', l);
       if (sessionStorage.getItem('scalium-wipe') && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         h.classList.add('is-entering');
         setTimeout(function () { h.classList.add('is-entered'); }, 1500); /* safety net if scripts fail */
