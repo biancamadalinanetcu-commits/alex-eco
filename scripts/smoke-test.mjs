@@ -142,7 +142,7 @@ check('failed send shows a fallback message', await cp.locator('[data-status="fa
 
 await cp.click('.form__submit');
 await cp.waitForSelector('[data-form-done]:not([hidden])', { timeout: 4000 }).catch(() => {});
-check('form sends to scalium.buisiness@gmail.com', !!sent && sent.url === 'https://formsubmit.co/ajax/scalium.buisiness@gmail.com', sent && sent.url);
+check('form sends to scalium.business@gmail.com', !!sent && sent.url === 'https://formsubmit.co/ajax/scalium.business@gmail.com', sent && sent.url);
 check('request carries service, email and phone', !!sent && sent.body.get('service') === 'Meta Ads scaling, Growth marketing'
   && sent.body.get('email') === 'ana@brand.ro' && sent.body.get('phone') === '0722 123 456' && sent.body.get('name') === 'Ana Test',
   sent && sent.body.toString());
