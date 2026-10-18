@@ -3,7 +3,7 @@
 export const RO = {
   'meta.home.title': 'Scalium | Agenție de Meta Ads și Growth Marketing',
   'meta.home.desc': 'Scalium ajută brandurile eCommerce să crească profitabil prin campanii Meta Ads bazate pe date, optimizare cu AI și growth marketing.',
-  'meta.contact.title': 'Contact | Scalium',
+  'meta.contact.title': 'Contact Scalium | Agenție de Meta Ads din România',
   'meta.contact.desc': 'Contactează Scalium pentru mai multe informații și prețuri despre Meta Ads, marketing și growth marketing.',
 
   skip: 'Sari la conținut',

@@ -785,8 +785,20 @@ function boot() {
   // Done synchronously: a deferred refresh would cancel a smooth scroll the visitor starts right after.
   document.addEventListener('langchange', () => ScrollTrigger.refresh());
 
+  // Back/forward keeps the visitor's place. Browsers only restore it from their page cache, and the
+  // home page leaves in 'manual' mode so a reload replays the intro, so the place is kept here too.
+  const placeKey = `scalium-y:${location.pathname}`;
+  window.addEventListener('pagehide', () => {
+    try { sessionStorage.setItem(placeKey, String(Math.round(window.scrollY))); } catch (e) { /* storage off */ }
+  });
+
   const settle = () => {
     ScrollTrigger.refresh();
+    if (window.__scaliumBack && !location.hash) {
+      let place = NaN;
+      try { place = Number(sessionStorage.getItem(placeKey)); } catch (e) { /* storage off */ }
+      if (place > 0 && Math.abs(window.scrollY - place) > 40) scrollToY(place, true);
+    }
     // Arriving on index.html#section from another page: re-aim once pin spacers exist.
     if (location.hash) {
       const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));

@@ -46,7 +46,7 @@ export const EN = {
   "contact.waText": "Hi Scalium, I would like more information and pricing.",
   "social.label": "Social media",
   "form.messagePh": "Your brand, your goals and your monthly ad budget.",
-  "meta.contact.title": "Contact | Scalium",
+  "meta.contact.title": "Contact Scalium | Meta Ads Agency in Romania",
   "meta.contact.desc": "Contact Scalium for more information and pricing on Meta Ads, marketing and growth marketing.",
   "intro.cue": "Scroll",
   "hero.lead": "We help eCommerce brands scale profitably with data-driven Meta Ads, AI optimization and performance-focused strategy.",

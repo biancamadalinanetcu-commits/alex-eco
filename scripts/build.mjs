@@ -259,6 +259,14 @@ const urlEntry = (path, lang) => `  <url>\n    <loc>${pageUrl(path, lang)}</loc>
   `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${pageUrl(path, 'en')}"/>\n  </url>`;
 await writeFile(`${SITE}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemap.sort().flatMap((p) => [urlEntry(p, 'en'), urlEntry(p, 'ro')]).join('\n')}\n</urlset>\n`);
 await writeFile(`${SITE}/robots.txt`, `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+
+// Netlify: one canonical host. www and the other of .ro/.com 301 to site_url, so Google
+// never indexes the same page twice. Rules only fire for domains attached to the site.
+const host = new URL(SITE_URL).hostname.replace(/^www\./, '');
+const twin = host.endsWith('.ro') ? host.replace(/\.ro$/, '.com') : host.endsWith('.com') ? host.replace(/\.com$/, '.ro') : null;
+const aliases = [`www.${host}`, host, ...(twin ? [twin, `www.${twin}`] : [])]
+  .filter((h) => `https://${h}` !== SITE_URL);
+await writeFile(`${SITE}/_redirects`, aliases.flatMap((h) => [`http://${h}/*`, `https://${h}/*`]).map((from) => `${from}  ${SITE_URL}/:splat  301!`).join('\n') + '\n');
 await buildTheme(pages);
 
 // Size report (what a first visit to the homepage downloads, before lazy images)

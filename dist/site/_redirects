@@ -1,0 +1,6 @@
+http://www.scalium.ro/*  https://scalium.ro/:splat  301!
+https://www.scalium.ro/*  https://scalium.ro/:splat  301!
+http://scalium.com/*  https://scalium.ro/:splat  301!
+https://scalium.com/*  https://scalium.ro/:splat  301!
+http://www.scalium.com/*  https://scalium.ro/:splat  301!
+https://www.scalium.com/*  https://scalium.ro/:splat  301!

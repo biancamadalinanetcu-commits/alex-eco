@@ -308,7 +308,7 @@ add_filter(
 			return 'Scalium | Meta Ads and Growth Marketing Agency';
 		}
 		if ( is_page( 'contact' ) ) {
-			return 'Contact | Scalium';
+			return 'Contact Scalium | Meta Ads Agency in Romania';
 		}
 		return $title;
 	}
