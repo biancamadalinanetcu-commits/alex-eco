@@ -36,6 +36,9 @@
          intro replays: main.js marks the page for that when it is left.) */
       var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
       window.__scaliumBack = !!nav && nav.type === 'back_forward';
+      /* a scroll the visitor made (wheel, touch, keys) vs. one a browser or an embedding viewer restored */
+      var moved = function () { window.__scaliumUserScrolled = true; };
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) { window.addEventListener(t, moved, { passive: true, capture: true }); });
       if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
       window.addEventListener('load', function () {
         if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go');

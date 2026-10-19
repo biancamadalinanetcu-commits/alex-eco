@@ -39,6 +39,9 @@ if (/^#(top|main|services|process|results|contact-cta)$/.test(location.hash)) h.
 intro replays: main.js marks the page for that when it is left.) */
 var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
 window.__scaliumBack = !!nav && nav.type === 'back_forward';
+/* a scroll the visitor made (wheel, touch, keys) vs. one a browser or an embedding viewer restored */
+var moved = function () { window.__scaliumUserScrolled = true; };
+['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(function (t) { window.addEventListener(t, moved, { passive: true, capture: true }); });
 if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
 window.addEventListener('load', function () {
 if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go');
@@ -54,7 +57,7 @@ if (!window.__scaliumBoot) { h.classList.remove('js'); h.classList.add('no-js');
 <link rel="icon" href="assets/img/favicon-32.png?v=59b075fd43" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=ede0211fe4">
 <link rel="stylesheet" href="assets/css/main.css?v=51e164c208">
-<script src="assets/js/main.js?v=342b388f14" defer></script>
+<script src="assets/js/main.js?v=bfee0e0f77" defer></script>
 <title>Contact Scalium | Meta Ads Agency in Romania</title>
 <link rel="canonical" href="https://scalium.ro/contact.html">
 <link rel="alternate" hreflang="en" href="https://scalium.ro/contact.html">

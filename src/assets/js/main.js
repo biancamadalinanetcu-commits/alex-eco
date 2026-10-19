@@ -167,6 +167,21 @@ function initReveal() {
 // One scrubbed value p (0 to 1) drives the whole scene through render(), so every element stays
 // in lockstep and the ScrollTrigger scrub smoothing applies to all of it at once.
 let introTrigger = null;
+
+// A fresh visit starts on the closed logo. Some hosts (an embedding viewer, a browser's own restore)
+// jump the page back to an old position just after it loads; undo jumps the visitor did not make.
+function holdTopUntilSettled() {
+  const toTop = () => {
+    if (window.__scaliumUserScrolled || window.scrollY <= 4) return;
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+    else window.scrollTo(0, 0);
+  };
+  window.addEventListener('scroll', toTop, { passive: true });
+  const stop = () => setTimeout(() => window.removeEventListener('scroll', toTop), 1500);
+  if (document.readyState === 'complete') stop();
+  else window.addEventListener('load', stop, { once: true });
+}
+
 function initIntro() {
   const wrap = $('[data-intro-wrap]');
   const intro = $('[data-intro]');
@@ -182,9 +197,10 @@ function initIntro() {
   if ('scrollRestoration' in history) window.addEventListener('pagehide', () => { history.scrollRestoration = 'manual'; });
   if (!window.__scaliumBack) {
     // On a slow connection the visitor may already be reading further down: skip the intro then.
-    if (window.scrollY > 4) { root.classList.add('intro-skip', 'hero-go'); return null; }
+    if (window.scrollY > 4 && window.__scaliumUserScrolled) { root.classList.add('intro-skip', 'hero-go'); return null; }
     ScrollTrigger.clearScrollMemory('manual');
     window.scrollTo(0, 0);
+    holdTopUntilSettled();
   }
 
   const heroLayers = $$('.hero__grid, .hero__bg', wrap);

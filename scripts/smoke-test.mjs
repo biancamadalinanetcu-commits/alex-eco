@@ -20,8 +20,9 @@ const browser = await chromium.launch().catch(() => chromium.launch({ executable
 const results = [];
 const check = (name, ok, extra = '') => results.push(`${ok ? 'PASS' : 'FAIL'}  ${name}${extra ? `  (${extra})` : ''}`);
 // The home page opens on the logo intro; the menu appears once it has opened, as for a real visitor.
+// Jumps past the intro the way a visitor would (an automatic jump right after load is undone on purpose).
 const openIntro = async (p) => {
-  await p.evaluate(() => { const s = document.querySelector('.pin-spacer'); window.scrollTo(0, s ? s.offsetHeight - innerHeight : 0); });
+  await p.evaluate(() => { window.__scaliumUserScrolled = true; const s = document.querySelector('.pin-spacer'); window.scrollTo(0, s ? s.offsetHeight - innerHeight : 0); });
   await p.waitForTimeout(1800);
 };
 
@@ -160,12 +161,21 @@ await slow.route('**/assets/js/main.js', async (route) => { await new Promise((r
 await slow.goto(base, { waitUntil: 'load', timeout: 20000 });
 await slow.waitForTimeout(800);
 check('logo intro survives a slow script', await slow.evaluate(() => !document.documentElement.classList.contains('intro-skip') && window.__scaliumIntro === true));
-await slow.evaluate(() => window.scrollTo(0, 900));
+await slow.evaluate(() => { window.__scaliumUserScrolled = true; window.scrollTo(0, 900); });
 await slow.waitForTimeout(1500);
 await slow.reload({ waitUntil: 'load', timeout: 20000 });
 await slow.waitForTimeout(800);
 check('reload starts again on the logo intro', await slow.evaluate(() => scrollY === 0 && window.__scaliumIntro === true));
 await slow.close();
+
+// an embedding viewer (or a browser) that jumps the page back to an old position just after load
+// must not skip the logo intro
+const restored = await ctx.newPage();
+await restored.goto(base, { waitUntil: 'load' });
+await restored.evaluate(() => window.scrollTo(0, 3000));
+await restored.waitForTimeout(1000);
+check('a restored scroll position right after load still opens on the intro', await restored.evaluate(() => scrollY === 0 && !document.documentElement.classList.contains('intro-done')));
+await restored.close();
 
 // review fixes: back navigation keeps the place, reduced motion hides the passage, the statement tilts
 // smoothly, the long message field scrolls under the mouse, errors are linked only while shown
