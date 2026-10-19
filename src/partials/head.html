@@ -15,7 +15,11 @@
       try { stored = localStorage.getItem('scalium-lang'); } catch (e) {}
       /* the /ro/ pages are Romanian by address; elsewhere the visitor's choice, then the browser */
       h.setAttribute('data-page-lang', h.lang === 'ro' ? 'ro' : 'en');
-      var l = q || (h.lang === 'ro' ? 'ro' : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
+      /* on a /ro/ page, keep English if the visitor switched to it on the previous Scalium page */
+      var ref = null;
+      try { ref = new URL(d.referrer); } catch (e) {}
+      var refLang = ref && ref.origin === location.origin ? ref.searchParams.get('lang') : null;
+      var l = q || (h.lang === 'ro' ? (refLang === 'en' ? 'en' : 'ro') : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
       l = l === 'ro' ? 'ro' : 'en';
       h.lang = l;
       h.setAttribute('data-lang', l);
@@ -33,7 +37,11 @@
       var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
       window.__scaliumBack = !!nav && nav.type === 'back_forward';
       if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
-      window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
+      window.addEventListener('load', function () {
+        if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go');
+        /* main.js never ran (blocked or failed): drop the animation-only styles so nothing stays hidden */
+        if (!window.__scaliumBoot) { h.classList.remove('js'); h.classList.add('no-js'); }
+      });
     } catch (e) {}
   })(document);
 </script>

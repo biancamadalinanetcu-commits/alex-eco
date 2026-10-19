@@ -19,8 +19,22 @@ define( 'SCALIUM_URI', get_template_directory_uri() );
  * URL of the contact page, whatever the permalink setting is.
  */
 function scalium_contact_url() {
+	$id = (int) get_option( 'scalium_contact_page_id' );
+	if ( $id && 'publish' === get_post_status( $id ) ) {
+		return get_permalink( $id );
+	}
 	$page = get_page_by_path( 'contact' );
 	return $page ? get_permalink( $page ) : home_url( '/contact/' );
+}
+
+/**
+ * Version string for an asset: its last change time, so browsers fetch a new copy after an update.
+ *
+ * @param string $file Path inside the theme.
+ */
+function scalium_asset_version( $file ) {
+	$path = get_theme_file_path( $file );
+	return file_exists( $path ) ? (string) filemtime( $path ) : SCALIUM_VERSION;
 }
 
 /**
@@ -227,15 +241,19 @@ add_action(
 );
 
 /**
- * Creates the "Contact" page once, so the contact buttons never lead to a 404.
- * Runs on theme activation and, as a fallback, once on the first request after install.
+ * Keeps a published "Contact" page, so the contact buttons never lead to a 404.
+ * Runs on theme activation and on every request (a cheap check), so a deleted page comes back.
  */
 function scalium_ensure_contact_page() {
-	if ( get_option( 'scalium_contact_page_ready' ) ) {
+	$id = (int) get_option( 'scalium_contact_page_id' );
+	if ( $id && 'publish' === get_post_status( $id ) ) {
 		return;
 	}
-	if ( ! get_page_by_path( 'contact' ) ) {
-		wp_insert_post(
+	$page = get_page_by_path( 'contact' );
+	if ( $page && 'publish' === $page->post_status ) {
+		$id = $page->ID;
+	} else {
+		$id = wp_insert_post(
 			array(
 				'post_title'   => 'Contact',
 				'post_name'    => 'contact',
@@ -245,12 +263,14 @@ function scalium_ensure_contact_page() {
 			)
 		);
 	}
-	update_option( 'scalium_contact_page_ready', 1 );
+	if ( $id && ! is_wp_error( $id ) ) {
+		update_option( 'scalium_contact_page_id', (int) $id );
+	}
 }
 add_action(
 	'after_switch_theme',
 	function () {
-		delete_option( 'scalium_contact_page_ready' );
+		delete_option( 'scalium_contact_page_id' );
 		scalium_ensure_contact_page();
 		flush_rewrite_rules();
 	}
@@ -260,22 +280,23 @@ add_action( 'init', 'scalium_ensure_contact_page' );
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		wp_enqueue_style( 'scalium', SCALIUM_URI . '/assets/css/main.css', array(), SCALIUM_VERSION );
+		wp_enqueue_style( 'scalium', SCALIUM_URI . '/assets/css/main.css', array(), scalium_asset_version( 'assets/css/main.css' ) );
 		wp_enqueue_script(
 			'scalium',
 			SCALIUM_URI . '/assets/js/main.js',
 			array(),
-			SCALIUM_VERSION,
+			scalium_asset_version( 'assets/js/main.js' ),
 			array(
 				'strategy'  => 'defer',
 				'in_footer' => false,
 			)
 		);
 		// Runs at the end of <body>, before main.js, so the chosen language is applied before animations start.
-		wp_enqueue_script( 'scalium-i18n', SCALIUM_URI . '/assets/js/i18n.js', array(), SCALIUM_VERSION, true );
+		wp_enqueue_script( 'scalium-i18n', SCALIUM_URI . '/assets/js/i18n.js', array(), scalium_asset_version( 'assets/js/i18n.js' ), true );
 
-		// The front page is fully hand-built: block editor styles are dead weight there.
-		if ( is_front_page() ) {
+		// The front page and an empty Contact page are fully hand-built: block editor styles are dead weight there.
+		$empty_contact = is_page( 'contact' ) && '' === trim( (string) get_post_field( 'post_content', get_queried_object_id() ) );
+		if ( is_front_page() || $empty_contact ) {
 			wp_dequeue_style( 'wp-block-library' );
 			wp_dequeue_style( 'wp-block-library-theme' );
 			wp_dequeue_style( 'classic-theme-styles' );
@@ -314,6 +335,28 @@ add_filter(
 	}
 );
 
+/**
+ * True for a real profile address, false for a platform's bare home page (no profile set yet).
+ *
+ * @param string $url Profile URL.
+ */
+function scalium_is_profile_url( $url ) {
+	$path = (string) wp_parse_url( (string) $url, PHP_URL_PATH );
+	return '' !== trim( $path, '/' );
+}
+
+// The Romanian version (?lang=ro) is its own page for search engines: core's canonical drops the flag.
+add_filter(
+	'get_canonical_url',
+	function ( $url ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- language flag in the address, display only.
+		if ( isset( $_GET['lang'] ) && 'ro' === sanitize_key( wp_unslash( $_GET['lang'] ) ) ) {
+			$url = add_query_arg( 'lang', 'ro', $url );
+		}
+		return $url;
+	}
+);
+
 // Language versions: the theme serves Romanian at ?lang=ro (the text switches in the browser).
 add_action(
 	'wp_head',
@@ -344,8 +387,8 @@ add_action(
 		$is_ro = isset( $_GET['lang'] ) && 'ro' === sanitize_key( wp_unslash( $_GET['lang'] ) );
 		$base  = is_front_page() ? home_url( '/' ) : get_permalink();
 		$self  = $is_ro ? add_query_arg( 'lang', 'ro', $base ) : $base;
-		if ( is_front_page() ) {
-			// WordPress prints a canonical link for pages and posts itself, but not for the front page.
+		if ( is_front_page() && ! is_singular() ) {
+			// WordPress prints a canonical link for pages and posts itself, but not for a "latest posts" front page.
 			printf( '<link rel="canonical" href="%s">' . "\n", esc_url( $self ) );
 		}
 
@@ -363,7 +406,7 @@ add_action(
 			$phone = '+' . scalium_setting( 'whatsapp' );
 			$data  = array(
 				'@context'      => 'https://schema.org',
-				'@type'         => 'ProfessionalService',
+				'@type'         => 'Organization',
 				'@id'           => home_url( '/#business' ),
 				'name'          => 'Scalium',
 				'url'           => home_url( '/' ),
@@ -374,7 +417,7 @@ add_action(
 				'telephone'     => $phone,
 				'knowsLanguage' => array( 'en', 'ro' ),
 				'areaServed'    => array( 'RO', 'Worldwide' ),
-				'sameAs'        => array( scalium_setting( 'instagram' ), scalium_setting( 'tiktok' ) ),
+				'sameAs'        => array_values( array_filter( array( scalium_setting( 'instagram' ), scalium_setting( 'tiktok' ) ), 'scalium_is_profile_url' ) ),
 				'contactPoint'  => array(
 					'@type'             => 'ContactPoint',
 					'contactType'       => 'sales',

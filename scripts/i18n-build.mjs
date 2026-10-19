@@ -77,5 +77,7 @@ export function translatePage(html, ro, page) {
     html = html.replace(/(<meta name="description" content=")[^"]*(")/, `$1${encodeAttr(desc)}$2`);
     html = html.replace(/(<meta property="og:description" content=")[^"]*(")/, `$1${encodeAttr(desc)}$2`);
   }
+  // the form tells the inbox which language the visitor used, also when it is sent without JavaScript
+  html = html.replace(/(name="language" value=")English(" data-form-lang)/, '$1Romanian$2');
   return html.replace(/<html lang="en"/, '<html lang="ro"');
 }

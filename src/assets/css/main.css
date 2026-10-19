@@ -426,6 +426,8 @@ html.intro-skip .intro { display: none; }
   animation: cue-run 1.9s var(--ease-io) infinite;
 }
 @keyframes cue-run { from { transform: translateY(-100%); } to { transform: translateY(240%); } }
+/* the cue is gone once the logo has opened; stop its loop so it costs nothing for the rest of the visit */
+html.intro-done .intro__cue-line::after { animation: none; }
 
 @media (prefers-reduced-motion: no-preference) {
   /* the logo assembles on load */
@@ -438,9 +440,12 @@ html.intro-skip .intro { display: none; }
 
   /* the hero waits behind the intro and plays its entrance as the logo opens */
   html.js:not(.intro-skip):not(.hero-go) body:has(.intro) :is(.hero__eyebrow, .hero__title .line > span, .hero__title em, .hero__lead, .hero__ctas, .hero__visual, .hero__bg),
-  html.js:not(.intro-skip):not(.hero-go) body:has(.intro) .hero__eyebrow .dash::after { animation-play-state: paused; }
+  html.js:not(.intro-skip):not(.hero-go) body:has(.intro) .hero__eyebrow .dash::after,
+  html.js:not(.intro-skip):not(.hero-go) body:has(.intro) .trails__comets path { animation-play-state: paused; }
   /* the menu appears once the logo has opened */
-  html.js:not(.intro-skip):not(.intro-done) body:has(.intro) .nav { opacity: 0; visibility: hidden; transform: translateY(-14px); }
+  /* (still in the tab order and the accessibility tree; keyboard focus brings it in) */
+  html.js:not(.intro-skip):not(.intro-done) body:has(.intro) .nav { opacity: 0; pointer-events: none; transform: translateY(-14px); }
+  html.js:not(.intro-skip):not(.intro-done) body:has(.intro) .nav:focus-within { opacity: 1; transform: none; pointer-events: auto; }
 }
 @media (prefers-reduced-motion: reduce) { .js .intro { display: none; } }
 @keyframes intro-blade { from { opacity: 0; transform: translate(-16%, 20%); } }
@@ -770,6 +775,12 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 
 /* horizontal, pinned (desktop with JS) */
 .process.is-horizontal .process__pin { height: 100vh; display: flex; align-items: center; }
+/* A clipped element switching to position:fixed scores as a full-screen layout shift in Chrome.
+   Clip the section instead (a fixed pin escapes it, so the look is the same). */
+@supports (overflow: clip) {
+  .process.is-horizontal { overflow-x: clip; }
+  .process.is-horizontal .process__pin { overflow: visible; }
+}
 .process.is-horizontal .process__track { flex-direction: row; align-items: center; gap: clamp(64px, 7vw, 120px); max-width: none; margin: 0; padding: 0 12vw 0 max(var(--gutter), (100vw - var(--maxw)) / 2 + var(--gutter)); will-change: transform; }
 .process.is-horizontal .process__intro { flex: 0 0 auto; width: min(500px, 36vw); }
 .process.is-horizontal .process__emblem { max-width: 340px; }
@@ -940,6 +951,8 @@ html[lang="ro"] .hero__title { font-size: clamp(2.2rem, 4.1vw, 4.05rem); }
 }
 .form__title { font-family: var(--display); font-size: clamp(1.4rem, 2vw, 1.8rem); line-height: 1.15; letter-spacing: -.025em; font-weight: 600; }
 .form__title:focus { outline: none; }
+/* skip-link and in-page jumps move focus to the section itself; no ring around a whole section */
+[tabindex="-1"]:focus { outline: none; }
 .form__body > * + * { margin-top: 26px; }
 .form__hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .field { position: relative; min-width: 0; margin-inline: 0; padding: 0; border: 0; }

@@ -81,7 +81,7 @@ vertical version.
   choice in the address. In WordPress the Romanian version is `?lang=ro`, announced with the same `hreflang` links.
 - **Sitemap and robots.** `dist/site/sitemap.xml` (both languages) and `dist/site/robots.txt` are generated. WordPress
   has its own sitemap at `/wp-sitemap.xml` (or the one from Yoast/Rank Math), which its robots.txt already lists.
-- **Structured data.** Business details for Google (ProfessionalService: services, email, phone, Instagram/TikTok,
+- **Structured data.** Business details for Google (Organization: services, email, phone, Instagram/TikTok,
   logo), Open Graph and Twitter cards with absolute image links, `robots` meta allowing large previews.
 - **Set the domain.** Put the real address in `src/config.json` as `site_url` (now `https://scalium.ro`) and rebuild;
   canonical links, hreflang, the sitemap and social previews all use it. WordPress uses its own Site Address.

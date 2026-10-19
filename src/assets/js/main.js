@@ -82,8 +82,14 @@ function initAnchors() {
     if (!target) return;
     e.preventDefault();
     closeMenu();
-    scrollToEl(target);
-    history.pushState(null, '', url.hash);
+    // "Skip to content" lands on the opened hero, not the closed logo intro.
+    if (target.id === 'main' && introTrigger) scrollToY(introTrigger.end);
+    else scrollToEl(target);
+    // Move keyboard focus with the scroll, so the next Tab continues from the target.
+    if (!target.matches('a[href], button, input, select, textarea, [tabindex]')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+    // Keep the section in the address without adding history entries Back would have to step through.
+    history.replaceState(history.state, '', url.hash);
   });
 
   $('[data-to-top]')?.addEventListener('click', () => {
@@ -118,6 +124,8 @@ function setMenu(open) {
   if (!menu || !toggle || open === menuOpen) return;
   menuOpen = open;
   toggle.setAttribute('aria-expanded', String(open));
+  // The overlay covers the page, so Tab must not wander into the content behind it.
+  $$('main, footer').forEach((el) => { el.inert = open; });
   if (open) {
     menu.hidden = false;
     requestAnimationFrame(() => menu.classList.add('is-open'));
@@ -173,6 +181,8 @@ function initIntro() {
   // (the head script switches it back to 'auto' for those) and onRefresh syncs the scene there.
   if ('scrollRestoration' in history) window.addEventListener('pagehide', () => { history.scrollRestoration = 'manual'; });
   if (!window.__scaliumBack) {
+    // On a slow connection the visitor may already be reading further down: skip the intro then.
+    if (window.scrollY > 4) { root.classList.add('intro-skip', 'hero-go'); return null; }
     ScrollTrigger.clearScrollMemory('manual');
     window.scrollTo(0, 0);
   }
@@ -276,6 +286,19 @@ function initIntro() {
   });
   introTrigger = tween.scrollTrigger;
   render(introTrigger.progress);
+
+  // Keyboard visitors skip the scroll animation: the first Tab opens the hero, so focus is never on
+  // something still hidden behind the logo.
+  const openForKeyboard = (e) => {
+    if (e.key !== 'Tab') return;
+    document.removeEventListener('keydown', openForKeyboard, true);
+    if (introTrigger.progress < 1) {
+      scrollToY(introTrigger.end, true);
+      tween.progress(1);
+      render(1);
+    }
+  };
+  document.addEventListener('keydown', openForKeyboard, true);
   return wrap;
 }
 
@@ -288,7 +311,7 @@ function initHero(introWrap) {
 
   // Pause the light trails while the hero is off screen.
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([entry]) => hero.classList.toggle('is-offscreen', !entry.isIntersecting)).observe(hero);
+    new IntersectionObserver((entries) => hero.classList.toggle('is-offscreen', !entries[entries.length - 1].isIntersecting)).observe(hero);
   }
   if (reduceMotion) return;
 
@@ -525,7 +548,7 @@ function initProcess() {
   const fill = $('[data-process-fill]');
   const head = $('[data-process-head]');
   const steps = $$('[data-step]');
-  if (!section || !pin || !track || !stepsWrap) return;
+  if (!section || !pin || !track || !stepsWrap || !fill || !head) return;
 
   if (reduceMotion) {
     steps.forEach((s) => s.classList.add('is-lit'));
@@ -542,14 +565,16 @@ function initProcess() {
     // so the last stage lights up before the section releases.
     // Cards ahead of the beam stand turned away on their hinge (the node on the line) and swing
     // flat to face the visitor as the beam reaches them, like pages of a timeline opening in 3D.
+    const setFill = gsap.quickSetter(fill, 'scaleX');
+    const setHead = gsap.quickSetter(head, 'x', 'px');
     const update = (t = 0) => {
       const x = Number(gsap.getProperty(track, 'x')) || 0;
       const vw = window.innerWidth;
       const lineW = stepsWrap.offsetWidth;
       const focus = -x + vw * (0.62 + 0.38 * t) - stepsWrap.offsetLeft;
       const p = gsap.utils.clamp(0, 1, focus / lineW);
-      gsap.set(fill, { scaleX: p });
-      gsap.set(head, { x: p * lineW });
+      setFill(p);
+      setHead(p * lineW);
       steps.forEach((s) => {
         s.classList.toggle('is-lit', s.offsetLeft <= focus);
         const ahead = gsap.utils.clamp(0, 1, (s.offsetLeft - focus) / (vw * 0.42));
@@ -651,6 +676,8 @@ function initContactForm() {
   const body = $('[data-form-body]', form);
   const done = $('[data-form-done]', form);
   const submit = $('.form__submit', form);
+  form.noValidate = true; // inline errors below replace the browser's bubbles
+  if (!done.hidden) done.classList.add('is-in'); // WordPress ?sent=1 result page
   const status = (which) => $$('[data-status]', form).forEach((el) => { el.hidden = el.dataset.status !== which; });
 
   const rules = {
@@ -761,6 +788,7 @@ function safe(fn, ...args) {
 }
 
 function boot() {
+  window.__scaliumBoot = true;
   $$('[data-year]').forEach((el) => { el.textContent = String(new Date().getFullYear()); });
 
   safe(initSmoothScroll);

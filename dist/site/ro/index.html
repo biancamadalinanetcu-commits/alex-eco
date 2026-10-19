@@ -18,7 +18,11 @@ var stored = null;
 try { stored = localStorage.getItem('scalium-lang'); } catch (e) {}
 /* the /ro/ pages are Romanian by address; elsewhere the visitor's choice, then the browser */
 h.setAttribute('data-page-lang', h.lang === 'ro' ? 'ro' : 'en');
-var l = q || (h.lang === 'ro' ? 'ro' : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
+/* on a /ro/ page, keep English if the visitor switched to it on the previous Scalium page */
+var ref = null;
+try { ref = new URL(d.referrer); } catch (e) {}
+var refLang = ref && ref.origin === location.origin ? ref.searchParams.get('lang') : null;
+var l = q || (h.lang === 'ro' ? (refLang === 'en' ? 'en' : 'ro') : stored || ((navigator.language || '').toLowerCase().indexOf('ro') === 0 ? 'ro' : 'en'));
 l = l === 'ro' ? 'ro' : 'en';
 h.lang = l;
 h.setAttribute('data-lang', l);
@@ -36,17 +40,21 @@ intro replays: main.js marks the page for that when it is left.) */
 var nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
 window.__scaliumBack = !!nav && nav.type === 'back_forward';
 if (window.__scaliumBack && 'scrollRestoration' in history) history.scrollRestoration = 'auto';
-window.addEventListener('load', function () { if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go'); });
+window.addEventListener('load', function () {
+if (!window.__scaliumIntro) h.classList.add('intro-skip', 'hero-go');
+/* main.js never ran (blocked or failed): drop the animation-only styles so nothing stays hidden */
+if (!window.__scaliumBoot) { h.classList.remove('js'); h.classList.add('no-js'); }
+});
 } catch (e) {}
 })(document);
 </script>
-<link rel="preload" href="../assets/fonts/mona-display-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../assets/fonts/mona-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="icon" href="../assets/img/logo-mark.svg" type="image/svg+xml">
-<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
-<link rel="stylesheet" href="../assets/css/main.css">
-<script src="../assets/js/main.js" defer></script>
+<link rel="preload" href="../assets/fonts/mona-display-latin.woff2?v=ac46c2ab06" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/mona-sans-latin.woff2?v=730fcea742" as="font" type="font/woff2" crossorigin>
+<link rel="icon" href="../assets/img/logo-mark.svg?v=ca390b54cb" type="image/svg+xml">
+<link rel="icon" href="../assets/img/favicon-32.png?v=59b075fd43" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png?v=ede0211fe4">
+<link rel="stylesheet" href="../assets/css/main.css?v=51e164c208">
+<script src="../assets/js/main.js?v=342b388f14" defer></script>
 <title>Scalium | Agenție de Meta Ads și Growth Marketing</title>
 <link rel="canonical" href="https://scalium.ro/ro/">
 <link rel="alternate" hreflang="en" href="https://scalium.ro/">
@@ -64,7 +72,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://scalium.ro/#business","name":"Scalium","url":"https://scalium.ro/","logo":"https://scalium.ro/assets/img/apple-touch-icon.png","image":"https://scalium.ro/assets/img/og-image.jpg","description":"Meta Ads, marketing and growth marketing agency for eCommerce brands.","email":"scalium.business@gmail.com","telephone":"+40792535738","knowsLanguage":["en","ro"],"areaServed":["RO","Worldwide"],"sameAs":["https://www.instagram.com/scalium.ro/","https://www.tiktok.com/"],"contactPoint":{"@type":"ContactPoint","contactType":"sales","email":"scalium.business@gmail.com","telephone":"+40792535738","availableLanguage":["English","Romanian"]},"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Brand scaling with Meta Ads"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Marketing management"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Growth marketing"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","@id":"https://scalium.ro/#business","name":"Scalium","url":"https://scalium.ro/","logo":"https://scalium.ro/assets/img/apple-touch-icon.png","image":"https://scalium.ro/assets/img/og-image.jpg","description":"Meta Ads, marketing and growth marketing agency for eCommerce brands.","email":"scalium.business@gmail.com","telephone":"+40792535738","knowsLanguage":["en","ro"],"areaServed":["RO","Worldwide"],"sameAs":["https://www.instagram.com/scalium.ro/"],"contactPoint":{"@type":"ContactPoint","contactType":"sales","email":"scalium.business@gmail.com","telephone":"+40792535738","availableLanguage":["English","Romanian"]},"makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Brand scaling with Meta Ads"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Marketing management"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Growth marketing"}}]}</script>
 </head>
 <body class="site" data-page="home">
 <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-arrow-right" viewBox="0 0 256 256"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></symbol><symbol id="i-arrow-up-right" viewBox="0 0 256 256"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></symbol><symbol id="i-arrow-left" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol><symbol id="i-arrow-up" viewBox="0 0 256 256"><path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/></symbol><symbol id="i-sparkle" viewBox="0 0 256 256"><path d="M197.58,129.06,146,110l-19-51.62a15.92,15.92,0,0,0-29.88,0L78,110l-51.62,19a15.92,15.92,0,0,0,0,29.88L78,178l19,51.62a15.92,15.92,0,0,0,29.88,0L146,178l51.62-19a15.92,15.92,0,0,0,0-29.88ZM137,164.22a8,8,0,0,0-4.74,4.74L112,223.85,91.78,169A8,8,0,0,0,87,164.22L32.15,144,87,123.78A8,8,0,0,0,91.78,119L112,64.15,132.22,119a8,8,0,0,0,4.74,4.74L191.85,144ZM144,40a8,8,0,0,1,8-8h16V16a8,8,0,0,1,16,0V32h16a8,8,0,0,1,0,16H184V64a8,8,0,0,1-16,0V48H152A8,8,0,0,1,144,40ZM248,88a8,8,0,0,1-8,8h-8v8a8,8,0,0,1-16,0V96h-8a8,8,0,0,1,0-16h8V72a8,8,0,0,1,16,0v8h8A8,8,0,0,1,248,88Z"/></symbol><symbol id="i-paper-plane-tilt" viewBox="0 0 256 256"><path d="M227.32,28.68a16,16,0,0,0-15.66-4.08l-.15,0L19.57,82.84a16,16,0,0,0-2.49,29.8L102,154l41.3,84.87A15.86,15.86,0,0,0,157.74,248q.69,0,1.38-.06a15.88,15.88,0,0,0,14-11.51l58.2-191.94c0-.05,0-.1,0-.15A16,16,0,0,0,227.32,28.68ZM157.83,231.85l-.05.14,0-.07-40.06-82.3,48-48a8,8,0,0,0-11.31-11.31l-48,48L24.08,98.25l-.07,0,.14,0L216,40Z"/></symbol><symbol id="i-chart-bar" viewBox="0 0 256 256"><path d="M224,200h-8V40a8,8,0,0,0-8-8H152a8,8,0,0,0-8,8V80H96a8,8,0,0,0-8,8v40H48a8,8,0,0,0-8,8v64H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16ZM160,48h40V200H160ZM104,96h40V200H104ZM56,144H88v56H56Z"/></symbol><symbol id="i-gear-six" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A112.1,112.1,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.62a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.08,8.08,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8.08,8.08,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z"/></symbol><symbol id="i-trend-up" viewBox="0 0 256 256"><path d="M240,56v64a8,8,0,0,1-16,0V75.31l-82.34,82.35a8,8,0,0,1-11.32,0L96,123.31,29.66,189.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0L136,140.69,212.69,64H168a8,8,0,0,1,0-16h64A8,8,0,0,1,240,56Z"/></symbol><symbol id="i-check" viewBox="0 0 256 256"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></symbol><symbol id="i-list" viewBox="0 0 256 256"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"/></symbol><symbol id="i-x" viewBox="0 0 256 256"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></symbol><symbol id="i-lightning" viewBox="0 0 256 256"><path d="M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17ZM109.37,214l10.47-52.38a8,8,0,0,0-5-9.06L62,132.71l84.62-90.66L136.16,94.43a8,8,0,0,0,5,9.06l52.8,19.8Z"/></symbol><symbol id="i-users-three" viewBox="0 0 256 256"><path d="M244.8,150.4a8,8,0,0,1-11.2-1.6A51.6,51.6,0,0,0,192,128a8,8,0,0,1-7.37-4.89,8,8,0,0,1,0-6.22A8,8,0,0,1,192,112a24,24,0,1,0-23.24-30,8,8,0,1,1-15.5-4A40,40,0,1,1,219,117.51a67.94,67.94,0,0,1,27.43,21.68A8,8,0,0,1,244.8,150.4ZM190.92,212a8,8,0,1,1-13.84,8,57,57,0,0,0-98.16,0,8,8,0,1,1-13.84-8,72.06,72.06,0,0,1,33.74-29.92,48,48,0,1,1,58.36,0A72.06,72.06,0,0,1,190.92,212ZM128,176a32,32,0,1,0-32-32A32,32,0,0,0,128,176ZM72,120a8,8,0,0,0-8-8A24,24,0,1,1,87.24,82a8,8,0,1,0,15.5-4A40,40,0,1,0,37,117.51,67.94,67.94,0,0,0,9.6,139.19a8,8,0,1,0,12.8,9.61A51.6,51.6,0,0,1,64,128,8,8,0,0,0,72,120Z"/></symbol><symbol id="i-target" viewBox="0 0 256 256"><path d="M221.87,83.16A104.1,104.1,0,1,1,195.67,49l22.67-22.68a8,8,0,0,1,11.32,11.32l-96,96a8,8,0,0,1-11.32-11.32l27.72-27.72a40,40,0,1,0,17.87,31.09,8,8,0,1,1,16-.9,56,56,0,1,1-22.38-41.65L184.3,60.39a87.88,87.88,0,1,0,23.13,29.67,8,8,0,0,1,14.44-6.9Z"/></symbol><symbol id="i-whatsapp-logo" viewBox="0 0 256 256"><path d="M187.58,144.84l-32-16a8,8,0,0,0-8,.5l-14.69,9.8a40.55,40.55,0,0,1-16-16l9.8-14.69a8,8,0,0,0,.5-8l-16-32A8,8,0,0,0,104,64a40,40,0,0,0-40,40,88.1,88.1,0,0,0,88,88,40,40,0,0,0,40-40A8,8,0,0,0,187.58,144.84ZM152,176a72.08,72.08,0,0,1-72-72A24,24,0,0,1,99.29,80.46l11.48,23L101,118a8,8,0,0,0-.73,7.51,56.47,56.47,0,0,0,30.15,30.15A8,8,0,0,0,138,155l14.61-9.74,23,11.48A24,24,0,0,1,152,176ZM128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm0,192a87.87,87.87,0,0,1-44.06-11.81,8,8,0,0,0-6.54-.67L40,216,52.47,178.6a8,8,0,0,0-.66-6.54A88,88,0,1,1,128,216Z"/></symbol><symbol id="i-instagram-logo" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160ZM176,24H80A56.06,56.06,0,0,0,24,80v96a56.06,56.06,0,0,0,56,56h96a56.06,56.06,0,0,0,56-56V80A56.06,56.06,0,0,0,176,24Zm40,152a40,40,0,0,1-40,40H80a40,40,0,0,1-40-40V80A40,40,0,0,1,80,40h96a40,40,0,0,1,40,40ZM192,76a12,12,0,1,1-12-12A12,12,0,0,1,192,76Z"/></symbol><symbol id="i-tiktok-logo" viewBox="0 0 256 256"><path d="M224,72a48.05,48.05,0,0,1-48-48,8,8,0,0,0-8-8H128a8,8,0,0,0-8,8V156a20,20,0,1,1-28.57-18.08A8,8,0,0,0,96,130.69V88a8,8,0,0,0-9.4-7.88C50.91,86.48,24,119.1,24,156a76,76,0,0,0,152,0V116.29A103.25,103.25,0,0,0,224,128a8,8,0,0,0,8-8V80A8,8,0,0,0,224,72Zm-8,39.64a87.19,87.19,0,0,1-43.33-16.15A8,8,0,0,0,160,102v54a60,60,0,0,1-120,0c0-25.9,16.64-49.13,40-57.6v27.67A36,36,0,1,0,136,156V32h24.5A64.14,64.14,0,0,0,216,87.5Z"/></symbol><symbol id="i-envelope-simple" viewBox="0 0 256 256"><path d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></symbol><symbol id="i-check-circle" viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></symbol></svg>
@@ -73,7 +81,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <header class="nav" data-nav>
 <div class="nav__inner">
 <a class="nav__logo" href="index.html" aria-label="Scalium" data-home-link>
-<img src="../assets/img/logo-horizontal.svg" alt="Scalium" width="137" height="28">
+<img src="../assets/img/logo-horizontal.svg?v=667b65a04e" alt="Scalium" width="137" height="28">
 </a>
 <nav class="nav__links" aria-label="Principal" data-i18n-attr="aria-label:nav.label">
 <a class="link" href="index.html#services" data-i18n="nav.services">Servicii</a>
@@ -186,7 +194,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </div>
 <div class="hero__visual" data-hero-visual>
 <div class="hero__tilt" data-tilt>
-<picture><source type="image/avif" srcset="../assets/img/hero-dashboard-560.avif 560w, ../assets/img/hero-dashboard-900.avif 900w, ../assets/img/hero-dashboard-1200.avif 1200w" sizes="(min-width: 1024px) 60vw, 100vw"><img class="hero__img" src="../assets/img/hero-dashboard-900.webp" srcset="../assets/img/hero-dashboard-560.webp 560w, ../assets/img/hero-dashboard-900.webp 900w, ../assets/img/hero-dashboard-1200.webp 1200w" sizes="(min-width: 1024px) 60vw, 100vw" width="972" height="750" alt="Dashboard Scalium pentru Meta Ads cu venituri totale, ROAS și campanii active" data-i18n-attr="alt:hero.alt" fetchpriority="high" loading="eager" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/hero-dashboard-560.avif?v=2fc4a6a082 560w, ../assets/img/hero-dashboard-900.avif?v=93023c5da8 900w, ../assets/img/hero-dashboard-1200.avif?v=d5455136f1 1200w" sizes="(min-width: 1024px) 60vw, 100vw"><img class="hero__img" src="../assets/img/hero-dashboard-900.webp?v=91e1523051" srcset="../assets/img/hero-dashboard-560.webp?v=dbb555aa7c 560w, ../assets/img/hero-dashboard-900.webp?v=91e1523051 900w, ../assets/img/hero-dashboard-1200.webp?v=ec591e05ad 1200w" sizes="(min-width: 1024px) 60vw, 100vw" width="972" height="750" alt="Dashboard Scalium pentru Meta Ads cu venituri totale, ROAS și campanii active" data-i18n-attr="alt:hero.alt" fetchpriority="high" loading="eager" decoding="async"></picture>
 </div>
 </div>
 </div>
@@ -238,7 +246,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <div class="services__list">
 <article class="service is-active" data-service="0" aria-labelledby="svc1-title">
 <div class="service__media" data-reveal-media>
-<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif 520w, ../assets/img/svc-meta-760.avif 760w, ../assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-meta-760.webp" srcset="../assets/img/svc-meta-520.webp 520w, ../assets/img/svc-meta-760.webp 760w, ../assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif?v=c97d2ef8c5 520w, ../assets/img/svc-meta-760.avif?v=ff3b7edfa1 760w, ../assets/img/svc-meta-1040.avif?v=6519adb62e 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-meta-760.webp?v=f35f9e7ff2" srcset="../assets/img/svc-meta-520.webp?v=88ffdab9c1 520w, ../assets/img/svc-meta-760.webp?v=f35f9e7ff2 760w, ../assets/img/svc-meta-1040.webp?v=02736cabc6 1040w" sizes="(min-width: 960px) 1px, 92vw" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <h3 class="service__title" id="svc1-title" data-i18n="svc1.title">Scalarea brandului cu Meta Ads</h3>
 <p class="service__text" data-i18n="svc1.text">Campanii pe Facebook și Instagram construite să crească bugetul fără să piardă din eficiență. Structurăm contul, găsim audiențele care cumpără și scalăm bugetele pe baza semnalelor care contează.</p>
@@ -251,7 +259,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </article>
 <article class="service" data-service="1" aria-labelledby="svc2-title">
 <div class="service__media" data-reveal-media>
-<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif 520w, ../assets/img/svc-managed-760.avif 760w, ../assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-managed-760.webp" srcset="../assets/img/svc-managed-520.webp 520w, ../assets/img/svc-managed-760.webp 760w, ../assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 1px, 92vw" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif?v=5e462c978a 520w, ../assets/img/svc-managed-760.avif?v=780b59c325 760w, ../assets/img/svc-managed-940.avif?v=77bd047af5 940w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-managed-760.webp?v=fafe4ea8bb" srcset="../assets/img/svc-managed-520.webp?v=0f02873009 520w, ../assets/img/svc-managed-760.webp?v=fafe4ea8bb 760w, ../assets/img/svc-managed-940.webp?v=a1536965a9 940w" sizes="(min-width: 960px) 1px, 92vw" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <h3 class="service__title" id="svc2-title" data-i18n="svc2.title">Marketing gestionat de noi</h3>
 <p class="service__text" data-i18n="svc2.text">Ne ocupăm de marketingul tău zi de zi: producția și testarea creativelor, lansări, raportare și optimizare. Ai o echipă senior fără să construiești una internă.</p>
@@ -264,7 +272,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </article>
 <article class="service" data-service="2" aria-labelledby="svc3-title">
 <div class="service__media" data-reveal-media>
-<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif 520w, ../assets/img/svc-growth-760.avif 760w, ../assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-growth-760.webp" srcset="../assets/img/svc-growth-520.webp 520w, ../assets/img/svc-growth-760.webp 760w, ../assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 1px, 92vw" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif?v=1d4f9740fd 520w, ../assets/img/svc-growth-760.avif?v=996519449f 760w, ../assets/img/svc-growth-1040.avif?v=0dff204ace 1040w" sizes="(min-width: 960px) 1px, 92vw"><img src="../assets/img/svc-growth-760.webp?v=bc359c33e6" srcset="../assets/img/svc-growth-520.webp?v=18b30564fc 520w, ../assets/img/svc-growth-760.webp?v=bc359c33e6 760w, ../assets/img/svc-growth-1040.webp?v=8ea674e867 1040w" sizes="(min-width: 960px) 1px, 92vw" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <h3 class="service__title" id="svc3-title" data-i18n="svc3.title">Growth marketing</h3>
 <p class="service__text" data-i18n="svc3.text">Creșterea vine din tot funnel-ul, nu dintr-un singur canal. Testăm oferte, landing page-uri și fluxuri de retenție, reparăm tracking-ul și folosim datele ca să găsim următoarea etapă de creștere.</p>
@@ -280,13 +288,13 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <div class="stage">
 <div class="stage__frame">
 <div class="stage__slide is-active" data-slide="0">
-<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif 520w, ../assets/img/svc-meta-760.avif 760w, ../assets/img/svc-meta-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-meta-760.webp" srcset="../assets/img/svc-meta-520.webp 520w, ../assets/img/svc-meta-760.webp 760w, ../assets/img/svc-meta-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-meta-520.avif?v=c97d2ef8c5 520w, ../assets/img/svc-meta-760.avif?v=ff3b7edfa1 760w, ../assets/img/svc-meta-1040.avif?v=6519adb62e 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-meta-760.webp?v=f35f9e7ff2" srcset="../assets/img/svc-meta-520.webp?v=88ffdab9c1 520w, ../assets/img/svc-meta-760.webp?v=f35f9e7ff2 760w, ../assets/img/svc-meta-1040.webp?v=02736cabc6 1040w" sizes="(min-width: 960px) 46vw, 1px" width="702" height="492" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <div class="stage__slide" data-slide="1">
-<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif 520w, ../assets/img/svc-managed-760.avif 760w, ../assets/img/svc-managed-940.avif 940w" sizes="(min-width: 960px) 40vw, 1px"><img src="../assets/img/svc-managed-760.webp" srcset="../assets/img/svc-managed-520.webp 520w, ../assets/img/svc-managed-760.webp 760w, ../assets/img/svc-managed-940.webp 940w" sizes="(min-width: 960px) 40vw, 1px" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-managed-520.avif?v=5e462c978a 520w, ../assets/img/svc-managed-760.avif?v=780b59c325 760w, ../assets/img/svc-managed-940.avif?v=77bd047af5 940w" sizes="(min-width: 960px) 40vw, 1px"><img src="../assets/img/svc-managed-760.webp?v=fafe4ea8bb" srcset="../assets/img/svc-managed-520.webp?v=0f02873009 520w, ../assets/img/svc-managed-760.webp?v=fafe4ea8bb 760w, ../assets/img/svc-managed-940.webp?v=a1536965a9 940w" sizes="(min-width: 960px) 40vw, 1px" width="470" height="360" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <div class="stage__slide" data-slide="2">
-<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif 520w, ../assets/img/svc-growth-760.avif 760w, ../assets/img/svc-growth-1040.avif 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-growth-760.webp" srcset="../assets/img/svc-growth-520.webp 520w, ../assets/img/svc-growth-760.webp 760w, ../assets/img/svc-growth-1040.webp 1040w" sizes="(min-width: 960px) 46vw, 1px" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/svc-growth-520.avif?v=1d4f9740fd 520w, ../assets/img/svc-growth-760.avif?v=996519449f 760w, ../assets/img/svc-growth-1040.avif?v=0dff204ace 1040w" sizes="(min-width: 960px) 46vw, 1px"><img src="../assets/img/svc-growth-760.webp?v=bc359c33e6" srcset="../assets/img/svc-growth-520.webp?v=18b30564fc 520w, ../assets/img/svc-growth-760.webp?v=bc359c33e6 760w, ../assets/img/svc-growth-1040.webp?v=8ea674e867 1040w" sizes="(min-width: 960px) 46vw, 1px" width="548" height="276" alt="" loading="lazy" decoding="async"></picture>
 </div>
 <span class="stage__scan" data-scan></span>
 </div>
@@ -304,7 +312,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <h2 class="h2" id="process-title" data-split data-i18n="process.title">De la prima reclamă la scalare predictibilă.</h2>
 <p class="section-lead" data-i18n="process.lead">Cinci etape, un singur ciclu. Fiecare ciclu îl alimentează pe următorul cu date mai bune.</p>
 <div class="process__emblem" data-reveal-media>
-<picture><source type="image/avif" srcset="../assets/img/process-emblem-420.avif 420w, ../assets/img/process-emblem-700.avif 700w" sizes="(min-width: 960px) 30vw, 80vw"><img src="../assets/img/process-emblem-700.webp" srcset="../assets/img/process-emblem-420.webp 420w, ../assets/img/process-emblem-700.webp 700w" sizes="(min-width: 960px) 30vw, 80vw" width="352" height="232" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/process-emblem-420.avif?v=8426d58a51 420w, ../assets/img/process-emblem-700.avif?v=9b79df6a3d 700w" sizes="(min-width: 960px) 30vw, 80vw"><img src="../assets/img/process-emblem-700.webp?v=da29a48db7" srcset="../assets/img/process-emblem-420.webp?v=28e27b77b5 420w, ../assets/img/process-emblem-700.webp?v=da29a48db7 700w" sizes="(min-width: 960px) 30vw, 80vw" width="352" height="232" alt="" loading="lazy" decoding="async"></picture>
 </div>
 </div>
 <div class="process__steps" data-process-steps>
@@ -358,7 +366,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </div>
 </div>
 <div class="results__media" data-zoom>
-<picture><source type="image/avif" srcset="../assets/img/results-dashboard-640.avif 640w, ../assets/img/results-dashboard-1000.avif 1000w, ../assets/img/results-dashboard-1400.avif 1400w" sizes="(min-width: 1400px) 1300px, 94vw"><img class="results__img" src="../assets/img/results-dashboard-1000.webp" srcset="../assets/img/results-dashboard-640.webp 640w, ../assets/img/results-dashboard-1000.webp 1000w, ../assets/img/results-dashboard-1400.webp 1400w" sizes="(min-width: 1400px) 1300px, 94vw" width="1214" height="554" alt="Dashboard de performanță cu buget de reclame, conversii și un grafic de venituri în creștere" data-i18n-attr="alt:results.alt" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/results-dashboard-640.avif?v=bcb28d7739 640w, ../assets/img/results-dashboard-1000.avif?v=6b2c03f373 1000w, ../assets/img/results-dashboard-1400.avif?v=5a490e574a 1400w" sizes="(min-width: 1400px) 1300px, 94vw"><img class="results__img" src="../assets/img/results-dashboard-1000.webp?v=1370b6987e" srcset="../assets/img/results-dashboard-640.webp?v=314b107e82 640w, ../assets/img/results-dashboard-1000.webp?v=1370b6987e 1000w, ../assets/img/results-dashboard-1400.webp?v=19c3773dfd 1400w" sizes="(min-width: 1400px) 1300px, 94vw" width="1214" height="554" alt="Dashboard de performanță cu buget de reclame, conversii și un grafic de venituri în creștere" data-i18n-attr="alt:results.alt" loading="lazy" decoding="async"></picture>
 </div>
 <div class="container">
 <dl class="stats" data-reveal>
@@ -394,7 +402,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </div>
 </div>
 <div class="cta__media" data-cta-media aria-hidden="true">
-<picture><source type="image/avif" srcset="../assets/img/cta-arrow-600.avif 600w, ../assets/img/cta-arrow-930.avif 930w" sizes="(min-width: 1000px) 930px, 92vw"><img class="cta__img" src="../assets/img/cta-arrow-930.webp" srcset="../assets/img/cta-arrow-600.webp 600w, ../assets/img/cta-arrow-930.webp 930w" sizes="(min-width: 1000px) 930px, 92vw" width="930" height="821" alt="" loading="lazy" decoding="async"></picture>
+<picture><source type="image/avif" srcset="../assets/img/cta-arrow-600.avif?v=d6c64adbbd 600w, ../assets/img/cta-arrow-930.avif?v=7cac6da3d3 930w" sizes="(min-width: 1000px) 930px, 92vw"><img class="cta__img" src="../assets/img/cta-arrow-930.webp?v=7fe8431fff" srcset="../assets/img/cta-arrow-600.webp?v=b06d6edaa3 600w, ../assets/img/cta-arrow-930.webp?v=7fe8431fff 930w" sizes="(min-width: 1000px) 930px, 92vw" width="930" height="821" alt="" loading="lazy" decoding="async"></picture>
 </div>
 </section>
 </main>
@@ -404,7 +412,7 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 <div class="footer__grid">
 <div class="footer__brand" data-reveal>
 <a class="footer__logo" href="index.html" aria-label="Scalium" data-home-link>
-<img src="../assets/img/logo-horizontal.svg" alt="Scalium" width="157" height="32" loading="lazy">
+<img src="../assets/img/logo-horizontal.svg?v=667b65a04e" alt="Scalium" width="157" height="32" loading="lazy">
 </a>
 <p class="footer__tag" data-i18n="footer.tag">Automatizăm azi. Creștem mâine.</p>
 <ul class="social" aria-label="Rețele sociale" data-i18n-attr="aria-label:social.label">
@@ -442,6 +450,6 @@ window.addEventListener('load', function () { if (!window.__scaliumIntro) h.clas
 </div>
 </div>
 </footer>
-<script src="../assets/js/i18n.js"></script>
+<script src="../assets/js/i18n.js?v=fd0714e33c"></script>
 </body>
 </html>

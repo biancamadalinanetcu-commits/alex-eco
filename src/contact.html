@@ -9,7 +9,10 @@
 <meta property="og:title" content="Contact Scalium | Meta Ads Agency in Romania">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Scalium">
+<meta property="og:description" content="Contact Scalium for more information and pricing on Meta Ads, marketing and growth marketing.">
 <meta property="og:image" content="{{site_url}}/assets/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <!-- @wp:end -->
 </head>
@@ -54,7 +57,7 @@
 
         <!-- Request form. The static site sends it through FormSubmit; the WordPress theme handles it itself
              (email + a copy under "Contact requests" in wp-admin). -->
-        <form class="form" id="contact-form" action="{{form_action}}" method="POST" novalidate data-contact-form data-endpoint="{{form_endpoint}}">
+        <form class="form" id="contact-form" action="{{form_action}}" method="POST" data-contact-form data-endpoint="{{form_endpoint}}">
           <div class="form__body" data-form-body{{form_sent_body}}>
             <h2 class="form__title" data-i18n="form.title">Tell us about your brand</h2>
             <input type="hidden" name="_subject" value="New request from the Scalium website">
